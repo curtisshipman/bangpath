@@ -1,0 +1,107 @@
+/* ============================================================
+   bangpath-nav.css
+   Shared sticky navigation bar — !bang!path! site
+   Linked from every HTML file. Do not embed these styles inline.
+   ============================================================ */
+
+/* Uses CSS variables defined in each page's own <style> block.
+   Falls back to hardcoded values for files that use different
+   variable names — all resolve to the same visual result.     */
+
+.site-nav {
+  background: rgba(10, 10, 10, 0.97);
+  border-bottom: 1px solid #2a2a2a;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.site-nav-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.site-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-home {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: #e8001c;
+  text-decoration: none;
+  padding: 11px 20px 11px 0;
+  margin-right: 12px;
+  border-right: 1px solid #2a2a2a;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+
+.nav-home:hover {
+  color: #f0f0f0;
+}
+
+.nav-link {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #888888;
+  text-decoration: none;
+  padding: 13px 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link:hover {
+  color: #f0f0f0;
+}
+
+.nav-link.active {
+  color: #e8001c;
+  border-bottom-color: #e8001c;
+}
+
+.nav-link.phase {
+  color: #00d4ff;
+}
+
+.nav-link.phase:hover {
+  color: #f0f0f0;
+}
+
+.nav-link.phase.active {
+  color: #00d4ff;
+  border-bottom-color: #00d4ff;
+}
+
+.nav-sep {
+  width: 1px;
+  background: #2a2a2a;
+  margin: 8px 6px;
+  flex-shrink: 0;
+}
+
+/* Mobile: tighten padding */
+@media (max-width: 640px) {
+  .site-nav-inner {
+    padding: 0 16px;
+  }
+  .nav-link {
+    padding: 13px 8px;
+  }
+}
