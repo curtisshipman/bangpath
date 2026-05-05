@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!bang!path! — Baby Got Back</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+  :root {
+    --black:   #0a0a0b;
+    --deep:    #111114;
+    --panel:   #16161a;
+    --border:  #2a2a30;
+    --accent:  #e8003d;
+    --accent2: #ff8c00;
+    --accent3: #00d4ff;
+    --muted:   #5a5a6a;
+    --body:    #c8c8d4;
+    --bright:  #f0f0f8;
+    --mono:    'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--body);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .site-header {
+    background: var(--deep);
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 80px,
+      rgba(232,0,61,0.04) 80px, rgba(232,0,61,0.04) 81px
+    );
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .band-name {
+    font-family: var(--display);
+    font-size: 72px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(232,0,61,0.4);
+  }
+
+  .song-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .song-title-display {
+    font-family: var(--display);
+    font-size: 52px;
+    letter-spacing: 4px;
+    color: var(--bright);
+    line-height: 1;
+    margin-top: 12px;
+  }
+
+  .song-source {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 8px;
+  }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .chip { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; padding: 5px 12px; border-radius: 2px; text-transform: uppercase; }
+  .chip-red   { background: rgba(232,0,61,0.15);  color: var(--accent);  border: 1px solid rgba(232,0,61,0.35); }
+  .chip-amber { background: rgba(255,140,0,0.15); color: var(--accent2); border: 1px solid rgba(255,140,0,0.35); }
+  .chip-cyan  { background: rgba(0,212,255,0.12); color: var(--accent3); border: 1px solid rgba(0,212,255,0.3); }
+  .chip-green { background: rgba(0,200,83,0.15);  color: #00c853;        border: 1px solid rgba(0,200,83,0.35); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px 80px; }
+
+  .section-header {
+    display: flex; align-items: baseline; gap: 16px;
+    margin: 48px 0 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px;
+  }
+  .section-num   { font-family: var(--mono);    font-size: 11px; color: var(--accent);  letter-spacing: 2px; }
+  .section-title { font-family: var(--display); font-size: 32px; color: var(--bright);  letter-spacing: 3px; }
+  .section-sub   { font-family: var(--mono);    font-size: 10px; color: var(--muted);   letter-spacing: 1px; margin-left: auto; }
+
+  .callout { border-left: 3px solid var(--accent3); background: rgba(0,212,255,0.04); padding: 16px 20px; margin: 20px 0; font-size: 14px; }
+  .callout.red   { border-color: var(--accent);  background: rgba(232,0,61,0.05); }
+  .callout.amber { border-color: var(--accent2); background: rgba(255,140,0,0.05); }
+  .callout.green { border-color: #00c853;        background: rgba(0,200,83,0.04); }
+  .callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent3); margin-bottom: 8px; }
+  .callout.red   .callout-label { color: var(--accent); }
+  .callout.amber .callout-label { color: var(--accent2); }
+  .callout.green .callout-label { color: #00c853; }
+
+  .source-box {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-left: 3px solid var(--accent3);
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+  .source-label { font-family: var(--mono); font-size: 10px; color: var(--accent3); letter-spacing: 2px; margin-bottom: 6px; }
+
+  .joke-box {
+    background: rgba(0,200,83,0.06);
+    border: 1px solid rgba(0,200,83,0.35);
+    border-left: 3px solid #00c853;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+  .joke-label { font-family: var(--mono); font-size: 10px; color: #00c853; letter-spacing: 3px; margin-bottom: 8px; }
+
+  .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--border); margin: 20px 0; }
+  .fact-cell  { background: var(--panel); padding: 14px 18px; }
+  .fact-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .fact-value { font-size: 14px; color: var(--bright); font-weight: 600; }
+  .fact-value.red   { color: var(--accent); }
+  .fact-value.amber { color: var(--accent2); }
+  .fact-value.cyan  { color: var(--accent3); }
+  .fact-value.green { color: #00c853; }
+
+  .sub-label {
+    font-family: var(--mono); font-size: 11px; color: var(--accent);
+    letter-spacing: 3px; text-transform: uppercase; margin: 28px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sub-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .sub-label.amber { color: var(--accent2); }
+  .sub-label.cyan  { color: var(--accent3); }
+
+  /* CHORD GRID */
+  .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; margin: 16px 0; }
+  .chord-card { background: var(--panel); border: 1px solid var(--border); padding: 14px; text-align: center; }
+  .chord-card-name { font-family: var(--display); font-size: 26px; color: var(--bright); letter-spacing: 2px; margin-bottom: 2px; }
+  .chord-card-type { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-bottom: 10px; line-height: 1.4; }
+  .chord-diagram { font-family: var(--mono); font-size: 11px; color: var(--body); line-height: 1.65; text-align: left; white-space: pre; display: inline-block; }
+  .chord-diagram .o { color: #00c853; }
+  .chord-diagram .x { color: var(--accent); }
+  .chord-diagram .d { color: var(--accent3); }
+  .chord-diagram .b { color: var(--accent2); }
+  .chord-fingers { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 8px; text-align: left; display: inline-block; }
+  .chord-note { font-family: var(--mono); font-size: 9px; color: var(--accent2); margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; text-align: left; line-height: 1.5; }
+
+  /* OSTINATO BOX */
+  .ostinato-box {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-family: var(--mono);
+  }
+  .ostinato-title { font-family: var(--display); font-size: 22px; color: var(--bright); letter-spacing: 3px; margin-bottom: 6px; }
+  .ostinato-sub   { font-size: 10px; color: var(--accent2); letter-spacing: 2px; margin-bottom: 16px; }
+
+  .ostinato-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 3px;
+    margin: 12px 0;
+  }
+  .ost-cell {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 8px 4px;
+    text-align: center;
+  }
+  .ost-cell .note  { font-family: var(--display); font-size: 18px; letter-spacing: 1px; color: var(--accent3); }
+  .ost-cell .beat  { font-size: 9px; color: var(--muted); margin-top: 2px; letter-spacing: 1px; }
+  .ost-cell .fret  { font-size: 10px; color: var(--accent2); margin-top: 2px; }
+  .ost-cell.accent-1 { border-color: var(--accent); background: rgba(232,0,61,0.08); }
+  .ost-cell.accent-1 .note { color: var(--accent); }
+  .ost-cell.accent-3 { border-color: var(--accent2); background: rgba(255,140,0,0.08); }
+  .ost-cell.accent-3 .note { color: var(--accent2); }
+
+  /* ARRANGEMENT OPTIONS */
+  .arr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+  .arr-cell { background: var(--panel); padding: 18px 20px; }
+  .arr-num  { font-family: var(--display); font-size: 28px; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .arr-title{ font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 2px; margin-bottom: 10px; }
+  .arr-body { font-size: 13px; color: var(--body); }
+
+  /* STRUM */
+  .strum-block { background: var(--panel); border: 1px solid var(--border); padding: 20px 24px; margin: 16px 0; }
+  .strum-title { font-family: var(--display); font-size: 20px; color: var(--bright); letter-spacing: 2px; margin-bottom: 4px; }
+  .strum-feel  { font-family: var(--mono); font-size: 10px; color: var(--accent2); letter-spacing: 2px; margin-bottom: 16px; }
+  .beat-grid   { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+  .beat { font-family: var(--mono); font-size: 12px; padding: 7px 10px; background: var(--deep); border: 1px solid var(--border); color: var(--muted); text-align: center; min-width: 38px; line-height: 1.2; }
+  .beat.down  { color: var(--accent);  border-color: var(--accent);  background: rgba(232,0,61,0.10); }
+  .beat.up    { color: var(--accent3); border-color: var(--accent3); background: rgba(0,212,255,0.08); }
+  .beat.mute  { color: var(--accent2); border-color: var(--accent2); background: rgba(255,140,0,0.10); font-weight: bold; }
+  .beat.skip  { color: var(--muted);   border-color: var(--border);  border-style: dashed; background: transparent; }
+  .beat-label { font-family: var(--mono); font-size: 9px; color: var(--muted); text-align: center; margin-top: 2px; }
+  .beat-wrap  { text-align: center; }
+  .strum-legend { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .legend-item  { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .legend-swatch { width: 18px; height: 18px; border-radius: 1px; }
+  .legend-swatch.down { background: rgba(232,0,61,0.2);   border: 1px solid var(--accent); }
+  .legend-swatch.up   { background: rgba(0,212,255,0.12); border: 1px solid var(--accent3); }
+  .legend-swatch.mute { background: rgba(255,140,0,0.2);  border: 1px solid var(--accent2); }
+  .legend-swatch.skip { background: transparent; border: 1px dashed var(--border); }
+
+  /* STRUCTURE */
+  .structure-box {
+    background: var(--deep); border: 1px solid var(--border); border-left: 3px solid var(--accent3);
+    padding: 16px 20px; font-family: var(--mono); font-size: 12px; line-height: 2;
+    margin: 12px 0; overflow-x: auto; white-space: pre;
+  }
+
+  /* SECTION CHARTS */
+  .section-chart { background: var(--panel); border: 1px solid var(--border); margin: 16px 0; overflow: hidden; }
+  .sc-header { display: flex; align-items: center; gap: 16px; background: var(--deep); border-bottom: 1px solid var(--border); padding: 12px 18px; flex-wrap: wrap; }
+  .sc-name { font-family: var(--display); font-size: 20px; letter-spacing: 3px; color: var(--bright); }
+  .sc-tag  { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; padding: 3px 8px; border-radius: 2px; }
+  .sc-tag.red   { color: var(--accent);  background: rgba(232,0,61,0.12);  border: 1px solid rgba(232,0,61,0.3); }
+  .sc-tag.amber { color: var(--accent2); background: rgba(255,140,0,0.10); border: 1px solid rgba(255,140,0,0.3); }
+  .sc-tag.cyan  { color: var(--accent3); background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); }
+  .sc-tag.green { color: #00c853;        background: rgba(0,200,83,0.08);  border: 1px solid rgba(0,200,83,0.25); }
+  .sc-body { padding: 16px 18px; }
+
+  .bar-row { display: grid; gap: 1px; background: var(--border); margin: 10px 0; }
+  .bar-row-1 { grid-template-columns: 1fr; }
+  .bar-row-2 { grid-template-columns: repeat(2,1fr); }
+  .bar-row-3 { grid-template-columns: repeat(3,1fr); }
+  .bar-row-4 { grid-template-columns: repeat(4,1fr); }
+  .bar-cell  { background: var(--deep); padding: 10px 14px; }
+  .bar-num   { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
+  .bar-chord { font-family: var(--display); font-size: 22px; letter-spacing: 2px; color: var(--accent3); }
+  .bar-chord.amber  { color: var(--accent2); }
+  .bar-chord.red    { color: var(--accent); }
+  .bar-chord.bright { color: var(--bright); }
+  .bar-note  { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+  .sc-instruction { font-size: 13px; color: var(--body); margin-top: 10px; padding: 8px 12px; background: rgba(0,212,255,0.04); border-left: 2px solid var(--accent3); }
+
+  /* TECH */
+  .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--border); margin: 16px 0; }
+  .tech-cell  { background: var(--panel); padding: 16px 18px; }
+  .tech-num   { font-family: var(--display); font-size: 28px; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .tech-title { font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 2px; margin-bottom: 8px; }
+  .tech-body  { font-size: 13px; color: var(--body); }
+
+  /* FEEL */
+  .feel-box { background: rgba(0,212,255,0.04); border: 1px solid rgba(0,212,255,0.15); border-left: 3px solid var(--accent3); padding: 16px 20px; margin: 12px 0; }
+  .feel-label { font-family: var(--mono); font-size: 10px; color: var(--accent3); letter-spacing: 3px; margin-bottom: 8px; }
+  .feel-body  { font-size: 14px; color: var(--body); font-style: italic; }
+
+  /* TEMPO */
+  .tempo-row { display: flex; gap: 1px; background: var(--border); margin: 12px 0; }
+  .tempo-cell { flex: 1; background: var(--deep); padding: 14px 16px; text-align: center; }
+  .tempo-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-bottom: 4px; }
+  .tempo-value { font-family: var(--display); font-size: 28px; letter-spacing: 2px; }
+  .tempo-cell.start  .tempo-value { color: var(--muted); }
+  .tempo-cell.mid    .tempo-value { color: var(--accent2); }
+  .tempo-cell.target .tempo-value { color: var(--accent3); }
+  .tempo-cell.perf   .tempo-value { color: var(--accent); }
+
+  /* GATE */
+  .gate-list { list-style: none; margin: 12px 0; }
+  .gate-list li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .gate-list li:last-child { border-bottom: none; }
+  .gate-list li::before { content: '[ ]'; font-family: var(--mono); font-size: 12px; color: var(--accent); white-space: nowrap; margin-top: 2px; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin-top: 60px; }
+  p  { margin-bottom: 10px; color: var(--body); }
+
+  @media print {
+    body { background: #0a0a0b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══ -->
+<div class="site-header">
+  <div class="header-inner">
+    <div class="band-name">!BANG!PATH!</div>
+    <div class="song-tag">// RHYTHM CHART · NEW SETLIST ADDITION · THE JOKE IS THE SETLIST</div>
+    <div class="song-title-display">BABY GOT BACK</div>
+    <div class="song-source">SIR MIX-A-LOT · 1992 · ALBUM: MACK DADDY</div>
+    <div class="chip-row">
+      <span class="chip chip-red">KEY: C MINOR</span>
+      <span class="chip chip-amber">120 BPM</span>
+      <span class="chip chip-cyan">STANDARD TUNING</span>
+      <span class="chip chip-amber">BARRE LOAD: HIGH (ONE CHORD, FOREVER)</span>
+      <span class="chip chip-cyan">75% TARGET: 90 BPM</span>
+      <span class="chip chip-green">★ HIP-HOP → METAL · THE ARRANGEMENT IS THE JOKE</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SOURCE NOTES -->
+  <div style="margin-top: 32px;">
+    <div class="source-box">
+      <div class="source-label">// SOURCE RECONCILIATION — 3 FILES, 2 VERSIONS</div>
+      <p style="font-size:13px; margin:0 0 8px;"><strong style="color:var(--accent3);">File 1 (UG Tab):</strong> Bass tab, 4-string EADG, 120 BPM. Pattern 0-0-0-3-1-1-3-1 = C-C-C-Eb-Db-Db-Eb-Db ostinato. Used for key confirmation (C minor) and BPM (120). Chord shapes sourced elsewhere per bass tab protocol.</p>
+      <p style="font-size:13px; margin:0 0 8px;"><strong style="color:var(--accent3);">File 2 (Sir Mix-A-Lot chord chart):</strong> Standard EADGBE. Chords: Cm · C · D# · C#. Confirms Cm tonality throughout. Authoritative source for original arrangement.</p>
+      <p style="font-size:13px; margin:0;"><strong style="color:var(--accent3);">File 3 (Jonathan Coulton chord chart):</strong> Reference material — a different artist's guitar translation of this hip-hop track to C major (C · F · Dm · G · Em · Am). Provided to show existing precedent. <strong style="color:var(--bright);">Not used for this chart</strong> — building to original Sir Mix-A-Lot Cm arrangement.</p>
+    </div>
+  </div>
+
+  <!-- THE JOKE -->
+  <div class="joke-box">
+    <div class="joke-label">// ★ THE ARRANGEMENT PHILOSOPHY — THIS ONE IS DIFFERENT</div>
+    <p style="font-size:14px; margin:0 0 10px;"><strong style="color:#00c853;">Baby Got Back is not a covers challenge. It's a statement.</strong> A metal band that plays new wave covers has just played the Friends theme as an encore. The crowd thinks it's over. Then you play Baby Got Back. Heavy. Mean. In C minor. The joke is that you committed to it as hard as anything else in the set.</p>
+    <p style="font-size:13px; margin:0; color:var(--body);">The original is a hip-hop track with almost no harmonic movement — one bass ostinato in Cm, essentially all the way through. Your metal arrangement translates that ostinato to guitar using one of two approaches documented below. The lack of chord changes is not a problem — it's the feature. The groove IS the song. Your job is to be a locked, heavy, unrelenting machine for 4 minutes while someone raps over you. Do not improvise. Do not noodle. Lock in and stay there.</p>
+  </div>
+
+  <!-- ═══ 01 · OVERVIEW ═══ -->
+  <div class="section-header">
+    <span class="section-num">01 //</span>
+    <span class="section-title">OVERVIEW</span>
+    <span class="section-sub">THE BIG PICTURE</span>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">// Mission Brief</div>
+    <p style="margin:0 0 10px;">The original <em>Baby Got Back</em> is built on a single bass synth ostinato in C minor. The harmonic palette is extremely sparse: <strong style="color:var(--bright);">Cm is home, with brief Eb (D#) and Db (C#) movements</strong> — these are the 3rd and 2nd of the C minor scale, creating a descending chromatic motion. The song is structurally a rap track — the "chorus" is really just the hook over the same groove. There are no verse/chorus harmonic shifts in the guitar sense. Everything is Cm.</p>
+    <p style="margin:0;">For rhythm guitar: you are playing <strong style="color:var(--bright);">the role of the synth bass</strong>. Your two main options are (A) hold the Cm barre chord with a locked rhythmic stab pattern throughout, or (B) play the actual bass ostinato notes as a riff on the lower strings. Both are documented. Choose based on your band's arrangement — if your bassist covers the ostinato faithfully, Option A (chord stabs) is correct. If you want the guitar to carry the riff, Option B works. Don't do both simultaneously.</p>
+  </div>
+
+  <!-- ═══ 02 · FACTS GRID ═══ -->
+  <div class="section-header">
+    <span class="section-num">02 //</span>
+    <span class="section-title">SONG FACTS</span>
+  </div>
+
+  <div class="facts-grid">
+    <div class="fact-cell"><div class="fact-label">Key</div><div class="fact-value cyan">C Minor</div></div>
+    <div class="fact-cell"><div class="fact-label">BPM</div><div class="fact-value amber">120</div></div>
+    <div class="fact-cell"><div class="fact-label">Time Signature</div><div class="fact-value">4/4</div></div>
+    <div class="fact-cell"><div class="fact-label">Tuning</div><div class="fact-value">Standard EADGBE</div></div>
+    <div class="fact-cell"><div class="fact-label">Chord Count</div><div class="fact-value green">1 (+ 2 passing)</div></div>
+    <div class="fact-cell"><div class="fact-label">75% Target</div><div class="fact-value cyan">90 BPM</div></div>
+    <div class="fact-cell"><div class="fact-label">Barre Load</div><div class="fact-value red">HIGH (Cm throughout)</div></div>
+    <div class="fact-cell"><div class="fact-label">Artist</div><div class="fact-value">Sir Mix-A-Lot · 1992</div></div>
+    <div class="fact-cell"><div class="fact-label">Original Genre</div><div class="fact-value">Hip-Hop / Rap</div></div>
+    <div class="fact-cell"><div class="fact-label">Arrangement</div><div class="fact-value green">★ Hip-Hop → Heavy Metal</div></div>
+  </div>
+
+  <!-- ═══ 03 · THE OSTINATO ═══ -->
+  <div class="section-header">
+    <span class="section-num">03 //</span>
+    <span class="section-title">THE OSTINATO</span>
+    <span class="section-sub">THE DNA OF THE SONG</span>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">// Understand This First — Everything Else Follows</div>
+    <p style="margin:0;">The bass ostinato is confirmed by both sources. On bass (EADG), it's frets 0-0-0-3-1-1-3-1 on the low E string. Decoded: <strong style="color:var(--accent2);">C–C–C–Eb–Db–Db–Eb–Db</strong>. This 8-note figure repeats for essentially the entire song. It outlines C minor by emphasizing the root (C), the minor 3rd (Eb/D#), and the 2nd (Db/C#). On guitar, this riff lives on the low E string at frets 8-8-8-11-9-9-11-9. Your arrangement choice determines whether you play this riff or hold the Cm chord over it.</p>
+  </div>
+
+  <div class="ostinato-box">
+    <div class="ostinato-title">BASS OSTINATO — DECODED</div>
+    <div class="ostinato-sub">// REPEATS ENTIRE SONG · C MINOR · SOURCE: BASS TAB CONFIRMED</div>
+    <div class="ostinato-grid">
+      <div class="ost-cell accent-1">
+        <div class="note">C</div>
+        <div class="fret">E fret 8</div>
+        <div class="beat">beat 1</div>
+      </div>
+      <div class="ost-cell">
+        <div class="note">C</div>
+        <div class="fret">E fret 8</div>
+        <div class="beat">1&amp;</div>
+      </div>
+      <div class="ost-cell">
+        <div class="note">C</div>
+        <div class="fret">E fret 8</div>
+        <div class="beat">beat 2</div>
+      </div>
+      <div class="ost-cell accent-3">
+        <div class="note">Eb</div>
+        <div class="fret">E fret 11</div>
+        <div class="beat">2&amp;</div>
+      </div>
+      <div class="ost-cell">
+        <div class="note">Db</div>
+        <div class="fret">E fret 9</div>
+        <div class="beat">beat 3</div>
+      </div>
+      <div class="ost-cell">
+        <div class="note">Db</div>
+        <div class="fret">E fret 9</div>
+        <div class="beat">3&amp;</div>
+      </div>
+      <div class="ost-cell accent-3">
+        <div class="note">Eb</div>
+        <div class="fret">E fret 11</div>
+        <div class="beat">beat 4</div>
+      </div>
+      <div class="ost-cell">
+        <div class="note">Db</div>
+        <div class="fret">E fret 9</div>
+        <div class="beat">4&amp;</div>
+      </div>
+    </div>
+    <div style="margin-top:14px; font-size:12px; color:var(--muted);">// Guitar low E string · Red = C root · Amber = Eb/Db colour tones · Repeats × entire song</div>
+    <div style="margin-top:8px; font-family:var(--mono); font-size:12px; color:var(--accent3);">e|—8—8—8—11—9—9—11—9—| repeat</div>
+  </div>
+
+  <!-- ═══ 04 · CHORD DIAGRAMS ═══ -->
+  <div class="section-header">
+    <span class="section-num">04 //</span>
+    <span class="section-title">CHORD DIAGRAMS</span>
+    <span class="section-sub">Cm DOMINANT · Eb + Db PASSING</span>
+  </div>
+
+  <div class="chord-grid">
+
+    <!-- Cm — THE MAIN EVENT -->
+    <div class="chord-card" style="border-color: var(--accent); box-shadow: 0 0 12px rgba(232,0,61,0.15);">
+      <div class="chord-card-name" style="color:var(--accent);">Cm</div>
+      <div class="chord-card-type">C MINOR · BARRE 3rd FRET · THE WHOLE SONG</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">3fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |   |—<span class="d">●</span>—|
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 4 (barre 3fr)</div>
+      <div class="chord-note">// THIS IS THE ENTIRE SONG<br>// Am-shape barre at fret 3<br>// Learn it. Live there. Stay forever.</div>
+    </div>
+
+    <!-- Eb / D# — passing -->
+    <div class="chord-card">
+      <div class="chord-card-name">Eb</div>
+      <div class="chord-card-type">Eb MAJOR (D#) · BARRE 6th FRET · PASSING</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">6fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |   |—<span class="d">●</span>—|
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 4 (barre 6fr)</div>
+      <div class="chord-note">// Same shape as Cm — slide up 3 frets<br>// The minor 3rd of C minor<br>// Brief passing chord in chorus/hook</div>
+    </div>
+
+    <!-- Db / C# — passing -->
+    <div class="chord-card">
+      <div class="chord-card-name">Db</div>
+      <div class="chord-card-type">Db MAJOR (C#) · BARRE 4th FRET · PASSING</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">4fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |   |—<span class="d">●</span>—|
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 4 (barre 4fr)</div>
+      <div class="chord-note">// Same shape as Cm — slide up 1 fret<br>// The 2nd of C minor (chromatic colour)<br>// Brief passing chord — resolves back to Cm</div>
+    </div>
+
+    <!-- Power chord alt -->
+    <div class="chord-card">
+      <div class="chord-card-name">Cm5</div>
+      <div class="chord-card-type">C MINOR POWER CHORD · METAL OPTION</div>
+      <div class="chord-diagram"><span class="x">x</span>
+<span class="x">x</span>
+<span class="x">x</span>
+<span class="x">x</span>
+e |—<span class="d">●</span>—|   |
+B  <span class="x">×</span>
+G  <span class="x">×</span>
+D  <span class="x">×</span>
+A |   |—<span class="d">●</span>—|
+E |—<span class="d">●</span>—|   |</div>
+      <div class="chord-fingers">1 3 (fret 8 E, fret 10 A)</div>
+      <div class="chord-note">// OPTIONAL metal arrangement<br>// Low E fret 8 + A fret 10<br>// Heavier, more aggressive tone option</div>
+    </div>
+
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">// The Shape Advantage</div>
+    <p style="margin:0;">All three chords (Cm, Db, Eb) use <strong style="color:var(--accent2);">the identical Am-barre shape</strong>. The only difference is position: Cm=3fr, Db=4fr, Eb=6fr. You learned one shape. You're done. The passing chord movements are just 1-fret and 3-fret slides of the exact same hand position. If you can play Cm cleanly, you can play all three.</p>
+  </div>
+
+  <!-- ═══ 05 · ARRANGEMENT OPTIONS ═══ -->
+  <div class="section-header">
+    <span class="section-num">05 //</span>
+    <span class="section-title">ARRANGEMENT OPTIONS</span>
+    <span class="section-sub">CHOOSE ONE — DON'T MIX</span>
+  </div>
+
+  <div class="arr-grid">
+    <div class="arr-cell">
+      <div class="arr-num">A</div>
+      <div class="arr-title">// CHORD STAB — RECOMMENDED</div>
+      <div class="arr-body">Hold Cm barre throughout. Play a locked rhythmic stab pattern — downstrokes with palm muting between hits. Let your bassist play the ostinato riff. You provide rhythmic weight and harmonic foundation. When the hook hits Eb/Db, briefly shift the barre shape up. Clean, heavy, appropriate for a metal arrangement. This is what a rhythm guitarist does on a rap track — you're the engine, not the melody.<br><br><strong style="color:#00c853;">Best when:</strong> Your bassist is covering the ostinato riff faithfully.</div>
+    </div>
+    <div class="arr-cell">
+      <div class="arr-num">B</div>
+      <div class="arr-title">// OSTINATO RIFF — ALTERNATE</div>
+      <div class="arr-body">Play the bass ostinato as a guitar riff on the low E string: <span style="color:var(--accent3); font-family:var(--mono);">e|—8—8—8—11—9—9—11—9—|</span> at 120 BPM, 8th notes. This is the recognizable hook. It's one string, 3 fret positions (8, 9, 11), no barre required. The riff IS the song — when people hear it, they'll recognize it immediately. More technically demanding at tempo but more melodically interesting.<br><br><strong style="color:#00c853;">Best when:</strong> You want the guitar to carry the recognizable riff, or your bassist is playing something different.</div>
+    </div>
+  </div>
+
+  <div class="callout red">
+    <div class="callout-label">// ⚠ Don't Do Both Simultaneously</div>
+    <p style="margin:0;">If guitar plays the ostinato riff (Option B) AND bassist plays the ostinato riff, you get muddy doubling at the same pitch. If guitar plays chord stabs (Option A) AND bassist plays a different groove, you lose the riff entirely. Coordinate with your bassist before rehearsal. The chart below documents Option A (chord stabs) as primary, with Option B riff positions noted.</p>
+  </div>
+
+  <!-- ═══ 06 · STRUMMING / STAB PATTERN ═══ -->
+  <div class="section-header">
+    <span class="section-num">06 //</span>
+    <span class="section-title">STAB PATTERN</span>
+    <span class="section-sub">OPTION A · WHOLE SONG · 120 BPM</span>
+  </div>
+
+  <div class="strum-block">
+    <div class="strum-title">HIP-HOP STAB — PALM MUTED DOWNSTROKES</div>
+    <div class="strum-feel">// WHOLE SONG · LOCKED POCKET · NO VARIATION</div>
+    <div style="display:flex; gap: 32px; flex-wrap:wrap; margin-top:8px;">
+      <div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:8px;">PRIMARY PATTERN</div>
+        <div class="beat-grid">
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">1</div></div>
+          <div class="beat-wrap"><div class="beat mute">✕</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">2</div></div>
+          <div class="beat-wrap"><div class="beat mute">✕</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">3</div></div>
+          <div class="beat-wrap"><div class="beat mute">✕</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">4</div></div>
+          <div class="beat-wrap"><div class="beat mute">✕</div><div class="beat-label">&amp;</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:8px;">HEAVIER OPTION</div>
+        <div class="beat-grid">
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">1</div></div>
+          <div class="beat-wrap"><div class="beat skip">—</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">2</div></div>
+          <div class="beat-wrap"><div class="beat skip">—</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">3</div></div>
+          <div class="beat-wrap"><div class="beat skip">—</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">4</div></div>
+          <div class="beat-wrap"><div class="beat skip">—</div><div class="beat-label">&amp;</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="strum-legend">
+      <div class="legend-item"><div class="legend-swatch down"></div>DOWNSTROKE (PALM MUTED)</div>
+      <div class="legend-item"><div class="legend-swatch mute"></div>MUTED STRUM / CHICK</div>
+      <div class="legend-item"><div class="legend-swatch skip"></div>SKIP / REST</div>
+    </div>
+
+    <div style="margin-top:14px; padding:10px 14px; background:rgba(255,140,0,0.06); border-left:2px solid var(--accent2);">
+      <div style="font-family:var(--mono); font-size:10px; color:var(--accent2); letter-spacing:2px; margin-bottom:4px;">// THE ONLY RULE: LOCK IN AND DON'T MOVE</div>
+      <div style="font-size:13px; color:var(--body);">Primary pattern: downstroke on every beat, muted chick on every &amp;. This produces a hip-hop groove on guitar — the downstrokes are the hit, the chicks fill the space. Heavier option: downstrokes only, no fills. Simpler and heavier. Either works. The rule is the same for both: <strong style="color:var(--accent2);">no variation, no improvisation, no fills</strong>. You are a drum machine that plays Cm. Be the machine.</div>
+    </div>
+  </div>
+
+  <!-- ═══ 07 · SONG STRUCTURE ═══ -->
+  <div class="section-header">
+    <span class="section-num">07 //</span>
+    <span class="section-title">SONG STRUCTURE</span>
+    <span class="section-sub">SPOILER: IT'S ALL Cm</span>
+  </div>
+
+  <div class="structure-box"><span style="color:var(--accent3);">SPOKEN INTRO   </span>  <span style="color:var(--bright);">Cm</span>  (hold / tacet — "Oh my god Becky…" spoken over Cm drone)
+<span style="color:var(--accent);">BASS OSTINATO  </span>  <span style="color:var(--bright);">Cm</span>  (riff establishes — guitar enters here if Option A)
+<span style="color:var(--muted);">VERSE 1        </span>  <span style="color:var(--bright);">Cm</span>  ("I like big butts…" — locked Cm stab throughout)
+<span style="color:var(--accent2);">HOOK           </span>  <span style="color:var(--bright);">Cm → Eb → Db → Cm</span>  ("Baby got back!" — brief Eb/Db passing chords)
+<span style="color:var(--muted);">VERSE 2        </span>  <span style="color:var(--bright);">Cm</span>  (same as verse 1 — still Cm, still locked)
+<span style="color:var(--accent2);">HOOK           </span>  <span style="color:var(--bright);">Cm → Eb → Db → Cm</span>  (same passing motion)
+<span style="color:var(--muted);">VERSE 3        </span>  <span style="color:var(--bright);">Cm</span>  ("So your girlfriend rolls a Honda…")
+<span style="color:var(--accent2);">HOOK           </span>  <span style="color:var(--bright);">Cm → Eb → Db → Cm</span>
+<span style="color:var(--accent3);">OUTRO          </span>  <span style="color:var(--bright);">Cm</span>  ("Little in the middle but she got much back" × 4 — then end)</div>
+
+  <div class="callout">
+    <div class="callout-label">// Structure Reality Check</div>
+    <p style="margin:0;">This song has almost no harmonic movement. The Eb and Db passing chords in the hook last approximately 1 beat each before returning to Cm. For live performance: if you miss the Eb/Db passing chords entirely and stay on Cm through the hook, it still works — the bass ostinato carries those notes. Prioritize the groove over the passing chords. A perfect locked Cm is better than a fumbled Eb transition.</p>
+  </div>
+
+  <!-- ═══ 08 · SECTION CHARTS ═══ -->
+  <div class="section-header">
+    <span class="section-num">08 //</span>
+    <span class="section-title">SECTION CHARTS</span>
+  </div>
+
+  <!-- INTRO -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">SPOKEN INTRO</div>
+      <div class="sc-tag cyan">HOLD OR TACET · "OH MY GOD BECKY…"</div>
+      <div class="sc-tag amber">~8 BARS</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-1">
+        <div class="bar-cell">
+          <div class="bar-num">BARS 1–8</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">Hold or tacet — spoken word over bass ostinato only</div>
+        </div>
+      </div>
+      <div class="sc-instruction">The spoken intro ("Oh my god Becky, look at her butt…") is a cappella over the bass ostinato. Guitar recommendation: <strong style="color:var(--bright);">tacet entirely</strong> or hold a silent Cm shape until the rapper launches into verse 1. The big guitar entrance on bar 1 of the verse is more impactful than muddying the spoken intro. Let the bass have this moment.</div>
+    </div>
+  </div>
+
+  <!-- VERSE -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">VERSE (ALL THREE)</div>
+      <div class="sc-tag red">Cm LOCKED · DO NOT VARY · EVER</div>
+      <div class="sc-tag amber">~16 BARS EACH</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-4">
+        <div class="bar-cell">
+          <div class="bar-num">BARS 1–4</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">Stab pattern locked</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BARS 5–8</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">Same</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BARS 9–12</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">Same</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BARS 13–16</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">Same → Hook incoming</div>
+        </div>
+      </div>
+      <div class="sc-instruction">This is the job. Cm. Stab pattern. Every bar. No variation. Your value here is not musical interest — it is precision and endurance. The rapper is doing all the work. Your contribution is an unbreakable locked groove that makes the whole thing feel heavy. Think of it as a single long note that you're sustaining through a stab pattern. Do not get bored. Do not add fills. Be the machine.</div>
+    </div>
+  </div>
+
+  <!-- HOOK -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">HOOK — "BABY GOT BACK!"</div>
+      <div class="sc-tag amber">Cm → Eb → Db → Cm · BRIEF PASSING MOTION</div>
+      <div class="sc-tag cyan">~4 BARS</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-4">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 1</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">"Baby got back!"<br>Fret 3 — home</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 2</div>
+          <div class="bar-chord amber">Eb · Db</div>
+          <div class="bar-note">~2 beats each<br>Frets 6 → 4</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 3</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">Return to fret 3<br>"LA face Oakland booty"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 4</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">→ back to verse</div>
+        </div>
+      </div>
+      <div class="sc-instruction">The Eb (fret 6) and Db (fret 4) passing chords are quick — approximately 2 beats each in bar 2. Same barre shape both times, just slide up from Cm at fret 3. The motion is: stab Cm → slide to Eb → slide down to Db → slide back to Cm. All three chords are the identical hand shape. If the transition feels rushed, simplify: stay on Cm for the entire hook and let the bass ostinato carry the Eb/Db colour. The groove is more important than the passing chords.</div>
+    </div>
+  </div>
+
+  <!-- OUTRO -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">OUTRO</div>
+      <div class="sc-tag green">Cm LOOP · BIG ENDING</div>
+      <div class="sc-tag red">LIVE ENDING: FINAL Cm DOWNSTROKE + FEEDBACK</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-2">
+        <div class="bar-cell">
+          <div class="bar-num">LOOP × 4</div>
+          <div class="bar-chord">Cm</div>
+          <div class="bar-note">"Little in the middle but she got much back"<br>× 4 repetitions</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">FINAL BAR</div>
+          <div class="bar-chord red">Cm ■</div>
+          <div class="bar-note">One big downstroke → mute hard → done</div>
+        </div>
+      </div>
+      <div class="sc-instruction"><strong style="color:var(--accent);">LIVE ENDING:</strong> On the final "Baby got back!" — one massive Cm downstroke, full strings, maximum attack. Then dead mute. Hard stop. If your amp has any gain, let one half-second of feedback decay before the mute. The contrast of 4 minutes of locked groove suddenly stopping is the punctuation. Walk to the mic. Take the bow. Never explain.</div>
+    </div>
+  </div>
+
+  <!-- ═══ 09 · TECHNIQUE NOTES ═══ -->
+  <div class="section-header">
+    <span class="section-num">09 //</span>
+    <span class="section-title">TECHNIQUE NOTES</span>
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-cell">
+      <div class="tech-num">01</div>
+      <div class="tech-title">// Cm BARRE ENDURANCE</div>
+      <div class="tech-body">Baby Got Back is approximately 4 minutes long. You will hold the Cm barre chord at fret 3 for almost the entire duration, playing a stab pattern at 120 BPM. This is a hand endurance test disguised as a comedy song. Build to this — run the song at 90 BPM first, increasing to 120. If your hand tightens, you're gripping too hard. The Cm barre should be firm enough to ring cleanly, not strangled. Check your thumb position: it should be behind the middle finger of your fretting hand, not creeping over the neck.</div>
+    </div>
+    <div class="tech-cell">
+      <div class="tech-num">02</div>
+      <div class="tech-title">// PALM MUTING FOR HIP-HOP FEEL</div>
+      <div class="tech-body">The hip-hop stab feel comes from controlled palm muting between downstrokes. Rest the heel of your picking hand lightly on the strings near the bridge — enough to slightly deaden the sustain without fully killing the note. When you strum down, the palm briefly lifts; when you hit the muted chick on the &amp;, the palm re-engages. This "on-off" palm is what creates the staccato hip-hop pocket. Without it, you just have a strummed chord. With it, you have a rhythmic weapon.</div>
+    </div>
+    <div class="tech-cell">
+      <div class="tech-num">03</div>
+      <div class="tech-title">// THE EB/DB SLIDE TRANSITION</div>
+      <div class="tech-body">Cm (fret 3) → Eb (fret 6) → Db (fret 4) → Cm (fret 3) is all the same barre shape. Practice this specific sequence in isolation: stab at fret 3, slide to fret 6 (same pressure, no need to re-form the chord), stab at fret 6, slide to fret 4, stab, slide back to fret 3. The slides happen during the muted chick beats — your hand moves while the muted stroke covers the transition. This is the only technical challenge in the song. Everything else is endurance.</div>
+    </div>
+    <div class="tech-cell">
+      <div class="tech-num">04</div>
+      <div class="tech-title">// OPTION B: THE RIFF (LOW E STRING)</div>
+      <div class="tech-body">If playing Option B (the ostinato riff): frets 8-8-8-11-9-9-11-9 on the low E string, 8th notes at 120 BPM. Use downstrokes throughout — this is a rap/metal riff, not a lead line. The pattern sits in three positions: fret 8 (C), fret 9 (Db), fret 11 (Eb). Index covers fret 8/9, ring covers fret 11. The jump from fret 9 to fret 11 is two frets — a stretch that becomes automatic quickly. Run this riff before adding any other guitar technique. It must be locked before it lives in a performance.</div>
+    </div>
+  </div>
+
+  <!-- ═══ 10 · FEEL DESCRIPTION ═══ -->
+  <div class="section-header">
+    <span class="section-num">10 //</span>
+    <span class="section-title">FEEL DESCRIPTION</span>
+  </div>
+
+  <div class="feel-box">
+    <div class="feel-label">// THE TARGET STATE</div>
+    <div class="feel-body">You are a metal band playing a 1992 hip-hop anthem with complete sincerity. The groove is heavy, locked, and relentless. The Cm barre is a wall of sound underneath the rap. You are not winking at the audience. You are not playing this ironically. You have decided that this is the best song ever recorded and you are playing it accordingly. The joke is not in your performance — the joke is the setlist. Your job is to be so committed, so locked, so heavy that the audience has no choice but to believe that a metal band covering Baby Got Back is the most natural thing that has ever happened in a music venue. You are Sir Mix-A-Lot's rhythm section. Act like it.</div>
+  </div>
+
+  <!-- ═══ 11 · TEMPO LADDER ═══ -->
+  <div class="section-header">
+    <span class="section-num">11 //</span>
+    <span class="section-title">TEMPO LADDER</span>
+  </div>
+
+  <div class="tempo-row">
+    <div class="tempo-cell start">
+      <div class="tempo-label">START</div>
+      <div class="tempo-value">60</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell mid">
+      <div class="tempo-label">STEP 2</div>
+      <div class="tempo-value">75</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell target">
+      <div class="tempo-label">75% TARGET</div>
+      <div class="tempo-value">90</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell mid">
+      <div class="tempo-label">STEP 4</div>
+      <div class="tempo-value">108</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell perf">
+      <div class="tempo-label">PERFORMANCE</div>
+      <div class="tempo-value">120</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+  </div>
+
+  <!-- ═══ 12 · GATE CHECKLIST ═══ -->
+  <div class="section-header">
+    <span class="section-num">12 //</span>
+    <span class="section-title">GATE CHECKLIST</span>
+    <span class="section-sub">PERFORMANCE READY CRITERIA</span>
+  </div>
+
+  <ul class="gate-list">
+    <li>Cm barre (fret 3) rings cleanly with no buzzing — all 5 strings audible</li>
+    <li>Stab pattern (downstroke + muted chick) locked at 120 BPM for 4 full minutes without hand fatigue</li>
+    <li>Palm muting technique produces audible staccato pocket — not fully muted, not open ring</li>
+    <li>Cm → Eb → Db → Cm slide transition executes during muted beats — no gap in the groove</li>
+    <li>Option B (if used): riff 8-8-8-11-9-9-11-9 locked at 120 BPM, downstrokes only</li>
+    <li>Coordination with bassist confirmed: Option A or B chosen, no unplanned doubling</li>
+    <li>Full song endurance: 4 minutes at 120 BPM, Cm barre, no tension buildup</li>
+    <li>Live ending rehearsed: final Cm downstroke timing agreed with band, hard stop signaled</li>
+    <li>★ Zero irony in performance. Full commitment. You believe this is a great song. Act accordingly.</li>
+  </ul>
+
+  <hr>
+  <div style="padding: 32px 0 0; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 1.5px;">
+    !BANG!PATH! RHYTHM CHART · BABY GOT BACK · SIR MIX-A-LOT 1992 · KEY: Cm · 120 BPM · STANDARD TUNING<br>
+    SOURCES: UG TAB (BASS — CONFIRMS KEY Cm + BPM 120) · SIR MIX-A-LOT CHORD CHART (Cm CONFIRMED) · JONATHAN COULTON CHART (REFERENCE ONLY — NOT USED)<br>
+    NOTE: COULTON CHART PROVIDED AS TRANSLATION REFERENCE — CHART BUILT TO ORIGINAL ARRANGEMENT<br>
+    ★ HIP-HOP → HEAVY METAL · THE ARRANGEMENT IS THE JOKE · PLAY IT STRAIGHT<br>
+    CHART BUILD: !bang!path! DARK INDUSTRIAL DESIGN SYSTEM · v1.0
+  </div>
+
+</div>
+</body>
+</html>

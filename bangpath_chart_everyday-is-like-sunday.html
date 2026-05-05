@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!bang!path! — Everyday Is Like Sunday · Rhythm Chart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+  :root {
+    --black:         #0a0a0a;
+    --near-black:    #111111;
+    --dark:          #1a1a1a;
+    --panel:         #1f1f1f;
+    --border:        #2a2a2a;
+    --red:           #e8001c;
+    --amber:         #ff8c00;
+    --cyan:          #00d4ff;
+    --green:         #00e676;
+    --white:         #f0f0f0;
+    --muted:         #888888;
+    --body:          #cccccc;
+    --bright:        #f0f0f0;
+    --light-grey:    #cccccc;
+    --accent:        #e8001c;
+    --accent2:       #ff8c00;
+    --accent3:       #00d4ff;
+    --accent4:       #9b72cf;
+    --display: 'Bebas Neue', sans-serif;
+    --mono:    'Share Tech Mono', monospace;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--body);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .site-header {
+    background: var(--near-black);
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 80px,
+      rgba(232,0,28,0.04) 80px, rgba(232,0,28,0.04) 81px
+    );
+  }
+
+  .header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 36px 32px 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .band-name {
+    font-family: var(--display);
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: 5px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(232,0,28,0.25);
+  }
+
+  .song-title-header {
+    font-family: var(--display);
+    font-size: clamp(20px, 4vw, 40px);
+    letter-spacing: 4px;
+    color: var(--bright);
+    line-height: 1;
+    margin-top: 4px;
+  }
+
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    margin-top: 10px;
+    border-left: 2px solid var(--accent3);
+    padding-left: 12px;
+  }
+
+  .header-chips {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    letter-spacing: 1px;
+  }
+
+  .chip span       { color: var(--accent2); }
+  .chip.good span  { color: var(--green); }
+  .chip.info span  { color: var(--accent3); }
+  .chip.warn span  { color: var(--accent); }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 48px 0 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .section-num   { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 2px; }
+  .section-title { font-family: var(--display); font-size: clamp(20px, 3vw, 30px); color: var(--bright); letter-spacing: 3px; }
+  .section-sub   { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-left: auto; }
+
+  .callout        { border-left: 3px solid var(--accent3); background: rgba(0,212,255,0.04); padding: 16px 20px; margin: 16px 0; }
+  .callout.amber  { border-color: var(--accent2); background: rgba(255,140,0,0.05); }
+  .callout.warn   { border-color: var(--accent);  background: rgba(232,0,28,0.05); }
+  .callout.green  { border-color: var(--green);   background: rgba(0,230,118,0.04); }
+  .callout.grey   { border-color: var(--muted);   background: rgba(136,136,136,0.05); }
+
+  .callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .callout         .callout-label { color: var(--accent3); }
+  .callout.amber   .callout-label { color: var(--accent2); }
+  .callout.warn    .callout-label { color: var(--accent); }
+  .callout.green   .callout-label { color: var(--green); }
+  .callout.grey    .callout-label { color: var(--muted); }
+  .callout p { margin: 0; color: var(--body); font-size: 14px; }
+  .callout p + p { margin-top: 8px; }
+
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin-top: 20px;
+  }
+
+  .fact-cell  { background: var(--panel); padding: 16px 18px; }
+  .fact-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+  .fact-value { font-family: var(--display); font-size: 20px; color: var(--bright); letter-spacing: 2px; line-height: 1.1; }
+  .fact-value.accent { color: var(--accent); }
+  .fact-value.amber  { color: var(--accent2); }
+  .fact-value.cyan   { color: var(--accent3); }
+  .fact-value.green  { color: var(--green); }
+  .fact-sub   { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  /* CHORD DIAGRAMS */
+  .chord-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .chord-card { background: var(--panel); border: 1px solid var(--border); padding: 14px 16px; text-align: center; }
+  .chord-card.open-easy { border-color: var(--green); }
+  .chord-card.barre     { border-color: var(--accent2); }
+  .chord-card.featured  { border-color: var(--accent3); }
+
+  .chord-name-display { font-family: var(--display); font-size: 24px; letter-spacing: 2px; color: var(--bright); margin-bottom: 3px; line-height: 1; }
+  .chord-card.open-easy .chord-name-display { color: var(--green); }
+  .chord-card.barre     .chord-name-display { color: var(--accent2); }
+  .chord-card.featured  .chord-name-display { color: var(--accent3); }
+
+  .chord-type { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; }
+  .chord-diagram { font-family: var(--mono); font-size: 11px; color: var(--light-grey); line-height: 1.7; text-align: left; white-space: pre; display: inline-block; }
+  .chord-fingering { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 5px; font-style: italic; line-height: 1.4; }
+  .chord-note { font-family: var(--mono); font-size: 9px; color: var(--accent2); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase; }
+
+  /* TAB BLOCK */
+  .tab-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--near-black);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    padding: 14px 18px;
+    margin: 12px 0;
+    white-space: pre;
+    line-height: 1.9;
+    overflow-x: auto;
+    color: var(--body);
+  }
+
+  .tab-block .hi      { color: var(--accent3); font-weight: 700; }
+  .tab-block .comment { color: var(--muted); font-style: italic; }
+
+  /* PATTERN BLOCK */
+  .pattern-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent);
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .pattern-title { font-family: var(--display); font-size: 20px; color: var(--accent); letter-spacing: 3px; margin-bottom: 4px; }
+  .pattern-feel  { font-family: var(--mono); font-size: 11px; color: var(--accent3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+
+  .beat-grid { display: flex; gap: 3px; flex-wrap: wrap; margin: 10px 0; align-items: center; }
+
+  .beat {
+    font-family: var(--mono); font-size: 10px;
+    min-width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--dark);
+    color: var(--muted);
+  }
+
+  .beat.down   { color: var(--bright);  background: rgba(232,0,28,0.12);  border-color: var(--accent); }
+  .beat.up     { color: var(--accent3); background: rgba(0,212,255,0.08); border-color: var(--accent3); }
+  .beat.rest   { background: transparent; border: 1px dashed var(--border); color: var(--muted); opacity: 0.3; }
+  .beat.label  { background: transparent; border: none; color: var(--muted); font-size: 9px; min-width: 16px; }
+  .beat.bar    { background: transparent; border: none; border-left: 2px solid var(--border); min-width: 5px; height: 32px; }
+
+  .strum-legend { display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
+  .legend-item  { font-family: var(--mono); font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .legend-swatch { width: 11px; height: 11px; border: 1px solid; }
+
+  /* STRUCTURE */
+  .structure-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--near-black);
+    border: 1px solid var(--border);
+    padding: 4px 0;
+    margin: 16px 0;
+  }
+
+  .struct-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    gap: 10px;
+    padding: 9px 18px;
+    border-bottom: 1px solid rgba(42,42,42,0.5);
+    align-items: baseline;
+  }
+
+  .struct-row:last-child { border-bottom: none; }
+  .struct-label  { color: var(--accent); letter-spacing: 1px; font-size: 10px; }
+  .struct-chords { color: var(--bright); letter-spacing: 1px; font-size: 12px; }
+  .struct-chords .ch   { color: var(--accent3); font-weight: 700; }
+  .struct-chords .sep  { color: var(--muted); padding: 0 3px; }
+  .struct-notes  { color: var(--muted); font-size: 10px; text-align: right; white-space: nowrap; }
+
+  /* SECTION CHARTS */
+  .section-chart { background: var(--panel); border: 1px solid var(--border); margin: 10px 0; overflow: hidden; }
+
+  .sc-header {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .sc-name { font-family: var(--display); font-size: 17px; color: var(--accent); letter-spacing: 3px; }
+  .sc-name.verse   { color: var(--accent3); }
+  .sc-name.chorus  { color: var(--accent2); }
+  .sc-name.prechorus { color: var(--accent4); }
+  .sc-name.bridge  { color: var(--green); }
+  .sc-name.outro   { color: var(--muted); }
+  .sc-meta { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; text-align: right; }
+
+  .sc-body { padding: 14px 16px; }
+
+  .bar-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--body);
+    line-height: 1.9;
+    margin: 2px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .bar-num         { font-size: 10px; color: var(--muted); min-width: 36px; flex-shrink: 0; }
+  .bar-chord       { color: var(--accent3); font-weight: 700; font-size: 13px; }
+  .bar-instruction { color: var(--body); font-size: 11px; }
+  .bar-repeat      { color: var(--muted); font-size: 10px; margin-left: auto; letter-spacing: 1px; }
+  .bar-lyric       { color: var(--muted); font-size: 10px; font-style: italic; }
+
+  .section-note { font-size: 13px; color: var(--body); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .section-note strong { color: var(--bright); }
+
+  /* TECHNIQUE BLOCKS */
+  .technique-block { border: 1px solid var(--border); background: var(--dark); margin: 14px 0; overflow: hidden; }
+  .tech-header {
+    background: rgba(255,140,0,0.08);
+    border-bottom: 1px solid rgba(255,140,0,0.2);
+    padding: 9px 16px;
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  .tech-num  { font-family: var(--mono); font-size: 10px; color: var(--accent2); letter-spacing: 2px; }
+  .tech-name { font-family: var(--display); font-size: 17px; color: var(--accent2); letter-spacing: 2px; }
+  .tech-body { padding: 12px 16px; font-size: 13px; color: var(--body); line-height: 1.6; }
+  .tech-body strong { color: var(--bright); }
+  .tech-body p + p { margin-top: 8px; }
+
+  /* FEEL BOX */
+  .feel-box { background: rgba(0,212,255,0.04); border: 1px solid rgba(0,212,255,0.12); padding: 14px 18px; margin: 12px 0; }
+  .feel-label { font-family: var(--mono); font-size: 10px; color: var(--accent3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .feel-body  { font-size: 13px; color: var(--body); font-style: italic; line-height: 1.6; }
+
+  /* TEMPO LADDER */
+  .tempo-ladder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+  .tempo-rung        { background: var(--panel); padding: 12px 14px; text-align: center; }
+  .tempo-rung.target { background: rgba(232,0,28,0.08); border: 1px solid var(--accent); }
+  .tempo-bpm         { font-family: var(--display); font-size: 26px; color: var(--muted); letter-spacing: 2px; line-height: 1; }
+  .tempo-rung.target .tempo-bpm { color: var(--accent); }
+  .tempo-desc        { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase; }
+
+  /* GATE BOX */
+  .gate-box   { background: rgba(232,0,28,0.05); border: 2px solid var(--accent); padding: 18px 22px; margin: 24px 0; }
+  .gate-title { font-family: var(--display); font-size: 22px; color: var(--accent); letter-spacing: 3px; margin-bottom: 10px; }
+  .gate-list  { list-style: none; }
+  .gate-list li {
+    font-family: var(--mono); font-size: 12px; color: var(--body);
+    padding: 6px 0; border-bottom: 1px solid rgba(232,0,28,0.12);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .gate-list li:last-child { border-bottom: none; }
+  .gate-list li::before    { content: '[ ]'; color: var(--accent); flex-shrink: 0; }
+
+  /* FOOTER */
+  hr.footer-rule { border: none; border-top: 1px solid var(--border); margin-top: 60px; }
+  .footer-inner  { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; flex-wrap: wrap; gap: 12px; }
+  .footer-band   { font-family: var(--display); font-size: 24px; color: var(--accent); letter-spacing: 4px; }
+  .footer-sub    { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 4px; }
+  .footer-right  { text-align: right; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .site-header { background: #fff; border-bottom: 2px solid #e8001c; }
+    .band-name { color: #e8001c; text-shadow: none; }
+    .song-title-header { color: #111; }
+    .section-chart, .pattern-block, .technique-block, .fact-cell { background: #f5f5f5 !important; }
+  }
+
+  @media (max-width: 640px) {
+    .header-inner, .container { padding-left: 16px; padding-right: 16px; }
+    .struct-row { grid-template-columns: 110px 1fr; }
+    .struct-notes { display: none; }
+    .chord-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="band-name">!bang!path!</div>
+    <div class="song-title-header">EVERYDAY IS LIKE SUNDAY</div>
+    <div class="header-tag">// Rhythm Guitar Chart · Morrissey · 1988 · Metal Treatment</div>
+    <div class="header-chips">
+      <div class="chip">TUNING <span>STANDARD E A D G B E</span></div>
+      <div class="chip good">KEY <span>C MAJOR</span></div>
+      <div class="chip">BPM <span>117 — BOTH SOURCES AGREE</span></div>
+      <div class="chip good">CHORDS <span>4 TOTAL · C F G Am</span></div>
+      <div class="chip warn">INTRO TAB <span>MELODIC FIGURE — NOT CHORD STRUM</span></div>
+      <div class="chip">PRACTICE START <span>78 BPM</span></div>
+      <div class="chip good">75% TARGET <span>88 BPM</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <div class="callout grey" style="margin-top:36px;">
+    <div class="callout-label">// The Desolate Song</div>
+    <p>Everyday Is Like Sunday is Morrissey at his most bleak and his most beautifully orchestrated. The original has sweeping strings, a melancholic vocal, and a very specific sparse guitar feel. Four chords — C, F, G, Am — in C major. The chord chart gives an explicit strumming pattern. The tab reveals the intro is a melodic arpeggiated figure, not strummed chords. The challenge is the same as Only You: the chords are simple, so everything else is on display. What carries this song is restraint, tone, and a desolate gravity that the strumming pattern needs to convey without being aggressive.</p>
+  </div>
+
+  <!-- FACTS -->
+  <div class="facts-grid">
+    <div class="fact-cell">
+      <div class="fact-label">Key</div>
+      <div class="fact-value cyan">C MAJOR</div>
+      <div class="fact-sub">Both sources confirmed</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">BPM</div>
+      <div class="fact-value">117</div>
+      <div class="fact-sub">Both sources confirmed</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Total Chords</div>
+      <div class="fact-value green">4</div>
+      <div class="fact-sub">C · F · G · Am</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Intro Type</div>
+      <div class="fact-value amber" style="font-size:14px;padding-top:4px;">MELODIC TAB</div>
+      <div class="fact-sub">Arpeggiated figure · not strummed</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Barre Load</div>
+      <div class="fact-value accent">F ONLY</div>
+      <div class="fact-sub">One barre chord · fret 1</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Main Challenge</div>
+      <div class="fact-value" style="font-size:13px;padding-top:4px;">DESOLATION AS FEEL</div>
+      <div class="fact-sub">The emotion has to be in the playing</div>
+    </div>
+  </div>
+
+  <!-- WHAT THE TAB REVEALS -->
+  <div class="section-header">
+    <div class="section-num">01 //</div>
+    <div class="section-title">WHAT THE TAB REVEALS</div>
+    <div class="section-sub">INTRO IS A MELODIC FIGURE · ARRANGEMENT DECISION REQUIRED</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">// Tab Analysis — Arpeggiated Intro</div>
+    <p>The guitar tab shows the intro (bars 1–8) as a melodic arpeggiated figure — individual notes picked on strings D-G-B-e with fret positions 3-3-3 moving to 5-6-5. This is the guitar doubling or complementing the orchestral string line from the original Morrissey recording, not strumming chords. The verse and chorus then use full chord strumming with the pattern from the chord chart.</p>
+  </div>
+
+  <div class="tab-block"><span class="comment">// INTRO — Arpeggiated figure (bars 1-4 pattern, tab confirmed)</span>
+<span class="comment">// C chord shape held throughout · individual strings picked</span>
+
+e  ──────────────────────<span class="hi">5</span>──────<span class="hi">6</span>──<span class="hi">5</span>──
+B  ─────────<span class="hi">5</span>──────────<span class="hi">5</span>──────────────
+G  ──<span class="hi">3</span>─────<span class="hi">3</span>──<span class="hi">3</span>──<span class="hi">3</span>──────────────────
+D  ──<span class="hi">3</span>─────<span class="hi">3</span>──<span class="hi">3</span>──<span class="hi">3</span>──────────────────
+
+<span class="comment">// let ring throughout · one note at a time · not strummed</span>
+<span class="comment">// 117 BPM · "moderate" feel despite tempo</span></div>
+
+  <div class="callout amber">
+    <div class="callout-label">// Arrangement Decision — Melodic or Strummed Intro</div>
+    <p><strong>Option 1 — Melodic approach:</strong> Play the arpeggiated figure as tabbed. More faithful to the original. Creates the orchestral atmosphere before the verse settles in. Requires single-note cleanliness and a delicate touch. High exposure — each note is its own event.</p>
+    <p><strong>Option 2 — Chord strum intro:</strong> Start the song strumming a C chord with the main pattern. Simpler, heavier, skips the delicate opening. Loses the song's signature intro atmosphere but is easier to execute cleanly from bar 1.</p>
+    <p>For a metal arrangement the melodic intro creates contrast — you arrive with delicacy before the verse settles into full chord territory. Discuss with your guitarist. If they're playing a complementary melodic line, the intro can be coordinated between you.</p>
+  </div>
+
+  <!-- CHORD VOCABULARY -->
+  <div class="section-header">
+    <div class="section-num">02 //</div>
+    <div class="section-title">CHORD VOCABULARY</div>
+    <div class="section-sub">4 CHORDS · C MAJOR · STANDARD TUNING</div>
+  </div>
+
+  <div class="chord-grid">
+
+    <div class="chord-card featured">
+      <div class="chord-name-display">C</div>
+      <div class="chord-type">OPEN · ROOT · EVERYWHERE</div>
+      <div class="chord-diagram">e  ─0─
+B  ─1─
+G  ─0─
+D  ─2─
+A  ─3─
+E  ─x─</div>
+      <div class="chord-fingering">Ring: A fret 3<br>Middle: D fret 2<br>Index: B fret 1</div>
+      <div class="chord-note">HOME · INTRO + VERSE + CHORUS</div>
+    </div>
+
+    <div class="chord-card barre">
+      <div class="chord-name-display">F</div>
+      <div class="chord-type">BARRE · FRET 1 · E-SHAPE</div>
+      <div class="chord-diagram">e  ─1─
+B  ─1─
+G  ─2─
+D  ─3─
+A  ─3─
+E  ─1─</div>
+      <div class="chord-fingering">Full barre fret 1<br>Ring: A fret 3<br>Pinky: D fret 3</div>
+      <div class="chord-note">EVERYWHERE · THE ONLY BARRE</div>
+    </div>
+
+    <div class="chord-card open-easy">
+      <div class="chord-name-display">G</div>
+      <div class="chord-type">OPEN · CHORUS + PRE-CHORUS</div>
+      <div class="chord-diagram">e  ─3─
+B  ─3─
+G  ─0─
+D  ─0─
+A  ─2─
+E  ─3─</div>
+      <div class="chord-fingering">Ring: e fret 3<br>Pinky: B fret 3<br>Middle: A fret 2</div>
+      <div class="chord-note">CHORUS · "EVERY DAY IS LIKE SUNDAY"</div>
+    </div>
+
+    <div class="chord-card open-easy">
+      <div class="chord-name-display">Am</div>
+      <div class="chord-type">OPEN · PRE-CHORUS + BRIDGE</div>
+      <div class="chord-diagram">e  ─0─
+B  ─1─
+G  ─2─
+D  ─2─
+A  ─0─
+E  ─x─</div>
+      <div class="chord-fingering">Index: B fret 1<br>Middle: D fret 2<br>Ring: G fret 2</div>
+      <div class="chord-note">PRE-CHORUS + BRIDGE</div>
+    </div>
+
+  </div>
+
+  <div class="callout green">
+    <div class="callout-label">// C Major — The Most Guitar-Friendly Key</div>
+    <p>C major gives you three open chords out of four — C, G, and Am all use open strings. Only the F barre requires any barre work, and you've been drilling that across most of the setlist. This should be one of the more comfortable songs to play. The chord shapes are all well within your capability at this point. Let the ease of the chords free your attention to focus on feel and tone instead.</p>
+  </div>
+
+  <!-- THE PATTERN -->
+  <div class="section-header">
+    <div class="section-num">03 //</div>
+    <div class="section-title">THE PATTERN</div>
+    <div class="section-sub">FROM THE OFFICIAL CHORD CHART · WHOLE SONG 117 BPM</div>
+  </div>
+
+  <div class="pattern-block">
+    <div class="pattern-title">MAIN PATTERN — DESOLATE PUSH</div>
+    <div class="pattern-feel">FEEL: Grey · Bleak · Unhurried urgency · Every beat lands with resignation</div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Official chord chart pattern: <strong>D · D↑ · D↑ · D</strong> — downstroke on beat 1, down-up pairs on beats 2 and 3, single downstroke on beat 4. At 117 BPM this pattern has a quality of resigned forward motion — not aggressive, not cheerful, but unstoppable. Like a tide coming in on an empty beach.</p>
+
+    <div class="beat-grid">
+      <div class="beat label">1</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">&</div>
+      <div class="beat rest">—</div>
+      <div class="beat label">2</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">&</div>
+      <div class="beat up">U↑</div>
+      <div class="beat bar"></div>
+      <div class="beat label">3</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">&</div>
+      <div class="beat up">U↑</div>
+      <div class="beat label">4</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">&</div>
+      <div class="beat rest">—</div>
+    </div>
+
+    <div class="strum-legend">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(232,0,28,0.2);border-color:var(--accent);"></div>
+        D↓ = Downstroke · firm but not aggressive · weight without force
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(0,212,255,0.1);border-color:var(--accent3);"></div>
+        U↑ = Upstroke on beats 2& and 3& · lighter · top 3-4 strings
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:transparent;border:1px dashed var(--border);opacity:0.5;"></div>
+        — = Skip on beats 1& and 4& · arm keeps moving · strings missed
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">// What "Resigned Forward Motion" Means in Practice</div>
+    <p>The pattern should feel like it's carrying the song rather than driving it. There's a difference between a pattern that pushes forward with energy and one that moves forward with inevitability. This song needs the latter. The downstrokes on beats 1 and 4 should land with weight — not velocity. Think "heavy" not "fast." The up-strokes on 2& and 3& are barely there — just enough to keep the rhythm moving without adding lightness or bounce that would conflict with the song's emotional temperature.</p>
+  </div>
+
+  <!-- SONG STRUCTURE -->
+  <div class="section-header">
+    <div class="section-num">04 //</div>
+    <div class="section-title">SONG STRUCTURE</div>
+    <div class="section-sub">INTRO · 2 VERSES · PRE-CH · CHORUS · BRIDGE · CHORUS · POST-CH</div>
+  </div>
+
+  <div class="structure-block">
+    <div class="struct-row">
+      <div class="struct-label">INTRO</div>
+      <div class="struct-chords">
+        <span class="ch">C</span>
+        <span class="sep"> · melodic arpeggiated figure · 8 bars · arrangement decision needed</span>
+      </div>
+      <div class="struct-notes">Melodic or chord strum</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">VERSE 1, 2</div>
+      <div class="struct-chords">
+        <span class="ch">C</span><span class="sep">–</span>
+        <span class="ch">F</span>
+        <span class="sep"> alternating · one chord per line</span>
+      </div>
+      <div class="struct-notes">2 chords only · sparse</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">PRE-CHORUS</div>
+      <div class="struct-chords">
+        <span class="ch">F</span><span class="sep">–</span>
+        <span class="ch">G</span>
+        <span class="sep"> // </span>
+        <span class="ch">C</span><span class="sep">–</span>
+        <span class="ch">F</span>
+        <span class="sep"> // </span>
+        <span class="ch">Am</span><span class="sep">–</span>
+        <span class="ch">F</span>
+        <span class="sep"> · "Armageddon come"</span>
+      </div>
+      <div class="struct-notes">All 4 chords appear · build</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">CHORUS</div>
+      <div class="struct-chords">
+        <span class="ch">C</span><span class="sep">–</span>
+        <span class="ch">G</span><span class="sep">–</span>
+        <span class="ch">F</span>
+        <span class="sep"> × 2 · "Every day is like Sunday"</span>
+      </div>
+      <div class="struct-notes">3 chords · hook</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">BRIDGE</div>
+      <div class="struct-chords">
+        <span class="ch">Am</span><span class="sep">–</span>
+        <span class="ch">C</span>
+        <span class="sep"> // </span>
+        <span class="ch">Am</span><span class="sep">–</span>
+        <span class="ch">G</span><span class="sep">–</span>
+        <span class="ch">F</span><span class="sep">–</span>
+        <span class="ch">G</span><span class="sep">–</span>
+        <span class="ch">F</span><span class="sep">–</span>
+        <span class="ch">G</span>
+      </div>
+      <div class="struct-notes">Am leads · G F alternation</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">POST-CHORUS / OUTRO</div>
+      <div class="struct-chords">
+        <span class="ch">C</span><span class="sep">–</span>
+        <span class="ch">G</span><span class="sep">–</span>
+        <span class="ch">F</span><span class="sep">–</span>
+        <span class="ch">C</span>
+        <span class="sep"> // </span>
+        <span class="ch">G</span><span class="sep">–</span>
+        <span class="ch">F</span>
+        <span class="sep"> · repeating · end hard on </span>
+        <span class="ch">C</span>
+      </div>
+      <div class="struct-notes">!bang!path! does not fade</div>
+    </div>
+  </div>
+
+  <!-- SECTION CHARTS -->
+  <div class="section-header">
+    <div class="section-num">05 //</div>
+    <div class="section-title">SECTION CHARTS</div>
+    <div class="section-sub">WHAT TO PLAY · WHEN</div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">INTRO</div>
+      <div class="sc-meta">8 bars · C chord held · melodic or chord approach · establish the tone</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Bars 1–8</span>
+        <span class="bar-chord">C</span>
+        <span class="bar-instruction">· melodic arpeggiated figure OR C chord with main pattern · see arrangement decision above</span>
+      </div>
+      <div class="section-note"><strong>The intro sets the emotional temperature:</strong> Before a single lyric is sung, the audience should feel something. Whether you play the melodic figure or strum the C chord, the emotional content is the same — grey, oceanic, slightly sad. Play it like the song is already somewhere in the middle of its feeling when you start. Not tentative. Not cheerful. Present and weighted from the first note.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name verse">VERSE</div>
+      <div class="sc-meta">C · F · alternating · one chord per line · maximum space</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Per line</span>
+        <span class="bar-chord">C – F</span>
+        <span class="bar-instruction">· two chords the whole verse · "Trudging slowly over wet sand" / "Back to the bench where your clothes were stolen"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Pattern</span>
+        <span class="bar-instruction">· main pattern applies · D · D↑ · D↑ · D · each chord gets one full bar</span>
+        <span class="bar-repeat">× 2 verses</span>
+      </div>
+      <div class="section-note"><strong>Two chords, maximum impact:</strong> Just C and F. The verse's sparseness is its emotional argument — this is a song about desolation, and the simplicity of the chord movement reflects that. Do not try to embellish or add movement to the verse. The lyric is doing the work. Your job is to hold the harmonic floor while Morrissey walks across it. Every time F resolves back to C, it should feel like a door closing quietly.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name prechorus">PRE-CHORUS</div>
+      <div class="sc-meta">F G / C F / Am F · all 4 chords · "Armageddon come" · build toward chorus</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Line 1</span>
+        <span class="bar-chord">F – G</span>
+        <span class="bar-instruction">· "This is the coastal town" / "In the seaside town"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Line 2</span>
+        <span class="bar-chord">C – F</span>
+        <span class="bar-instruction">· "That they forgot to close down" / "That they forgot to bomb"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Line 3</span>
+        <span class="bar-chord">Am</span>
+        <span class="bar-instruction">· "Armageddon come Armageddon!" — Am arrives darkly</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Line 4</span>
+        <span class="bar-chord">F</span>
+        <span class="bar-instruction">· "Come, Armageddon! Come!" → chorus launches</span>
+        <span class="bar-repeat">→ CHORUS</span>
+      </div>
+      <div class="section-note"><strong>The Am arrival:</strong> Am is the darkest chord in this song — minor against the major key of C, it creates sudden shadow. "Armageddon come Armageddon!" sits on Am for a reason. Play it with slightly more weight than the other pre-chorus chords. The Am → F → C (chorus) resolution is the emotional arc of the song in miniature — darkness seeking release.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name chorus">CHORUS</div>
+      <div class="sc-meta">C G F · "Every day is like Sunday / Every day is silent and grey" · the hook</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Line 1</span>
+        <span class="bar-chord">C – G – F</span>
+        <span class="bar-instruction">· "Every day is like Sunday"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Line 2</span>
+        <span class="bar-chord">C – G – F</span>
+        <span class="bar-instruction">· "Every day is silent and grey"</span>
+        <span class="bar-repeat">× 2 per chorus</span>
+      </div>
+      <div class="section-note"><strong>The C → G → F movement:</strong> C resolves to G lifts to F — this three-chord sequence has a slightly unexpected movement that gives the chorus its specific emotional quality. G should feel like a brief lift before F settles back. Don't rush through the G — give it its bar, let it open slightly before F closes the phrase. The second pass of "silent and grey" should feel more resigned than the first.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name bridge">BRIDGE</div>
+      <div class="sc-meta">Am C / Am G F G F G · G and F alternating · "on your face..."</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Lines 1–2</span>
+        <span class="bar-chord">Am – C</span>
+        <span class="bar-instruction">· "Trudging back over pebbles and sand" · Am leads</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Line 3</span>
+        <span class="bar-chord">Am – G</span>
+        <span class="bar-instruction">· "And a strange dust lands on your hands"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Lines 4–7</span>
+        <span class="bar-chord">F – G – F – G</span>
+        <span class="bar-instruction">· "And on your face / On your face / On your face / On your face..." · alternating</span>
+      </div>
+      <div class="section-note"><strong>The F G alternation:</strong> The bridge's repeated "On your face" lines sit on alternating F and G chords — a simple two-chord oscillation that creates tension through repetition rather than harmonic complexity. Each "On your face" should feel more inevitable than the last. Don't add energy to the repetition — let it accumulate on its own.</div>
+    </div>
+  </div>
+
+  <!-- TECHNIQUE NOTES -->
+  <div class="section-header">
+    <div class="section-num">06 //</div>
+    <div class="section-title">TECHNIQUE NOTES</div>
+    <div class="section-sub">THREE THINGS TO NAIL</div>
+  </div>
+
+  <div class="technique-block">
+    <div class="tech-header">
+      <div class="tech-num">TECH 01 //</div>
+      <div class="tech-name">THE EMOTIONAL WEIGHT IN DOWNSTROKES</div>
+    </div>
+    <div class="tech-body">
+      <p><strong>The central technique for this song:</strong> The downstroke on beat 1 of each bar should carry emotional weight without being physically loud. This is the hardest thing to teach because it's about feel, not mechanics. The difference between a downstroke that sounds "resigned" and one that sounds "energetic" is in the deceleration — the stroke slows slightly as it completes rather than snapping through sharply.</p>
+      <p><strong>How to practice it:</strong> Play a C chord with a single downstroke on beat 1. Before you hit the strings, imagine you're signing your name for something you don't want to sign. The stroke should feel heavy and considered, not reflexive. Do this for 5 minutes on a single C chord before adding any pattern or other chords. The feel you develop in that 5 minutes is the emotional foundation of the whole song.</p>
+    </div>
+  </div>
+
+  <div class="technique-block">
+    <div class="tech-header">
+      <div class="tech-num">TECH 02 //</div>
+      <div class="tech-name">THE F BARRE IN CONTEXT — AGAIN</div>
+    </div>
+    <div class="tech-body">
+      <p><strong>F at fret 1 throughout the whole song:</strong> Verse, pre-chorus, chorus, bridge, outro — F is everywhere. By this point in your practice schedule the F barre should be completely automatic from all the other songs that use it. If it isn't, this is the diagnostic song — if F is still giving you trouble here, address the barre technique specifically.</p>
+      <p><strong>Specific concern:</strong> In the verse, the pattern is C → F → C → F with one bar per chord. At 117 BPM that gives you exactly one bar to move from C (open, fingers off the neck) to F (full barre fret 1). The C → F transition needs to happen in the dead space of beat 4 — your fretting hand starts moving during the last beat of the C bar so the F lands clean on beat 1 of the next.</p>
+    </div>
+  </div>
+
+  <div class="technique-block">
+    <div class="tech-header">
+      <div class="tech-num">TECH 03 //</div>
+      <div class="tech-name">DESOLATION DYNAMICS — MAKING SIMPLICITY INTERESTING</div>
+    </div>
+    <div class="tech-body">
+      <p><strong>The paradox:</strong> Four chords, the same pattern for most of the song, 117 BPM for 3+ minutes. Without deliberate dynamic shaping this becomes a flat, mechanical experience. The song's emotional journey needs to be expressed through subtle variation in attack and ring — not through adding complexity that isn't there.</p>
+      <p><strong>The map:</strong> Intro: quiet and considered (60% attack). Verse: slightly more present (65%). Pre-chorus: building toward darkness (75%). Am on "Armageddon": 85% — the heaviest moment before the chorus. Chorus: open and resigned (70% — not triumphant). Bridge: controlled (70%). Post-chorus/outro: gradually building toward the final C (70% rising to 80%). The arc is not loud-to-soft or soft-to-loud — it's controlled-to-momentarily-dark-and-back, twice.</p>
+    </div>
+  </div>
+
+  <!-- FEEL BOX -->
+  <div class="feel-box">
+    <div class="feel-label">// What Good Execution Sounds Like</div>
+    <div class="feel-body">The intro creates a grey, oceanic atmosphere — whether melodic or strummed, it should feel like looking at a beach out of season. The verse is bleak and simple: C and F, nothing else, the lyric doing all the emotional work. The pre-chorus builds toward Am's darkness with accumulated weight. "Armageddon come Armageddon!" lands with the heaviest note in the song. The chorus resolves — C G F — like a sigh. "Every day is silent and grey" sounds exactly as grey as the title promises. The bridge's F G alternation accumulates without escalating. The final chorus and outro repeat until the final C chord settles everything into resigned acceptance. The song does not end triumphantly. It ends with certainty — the certainty that tomorrow will also be like Sunday. Play the final chord like you believe that.</div>
+  </div>
+
+  <!-- TEMPO LADDER -->
+  <div class="section-header">
+    <div class="section-num">07 //</div>
+    <div class="section-title">TEMPO LADDER</div>
+    <div class="section-sub">FEEL FIRST · CHORDS SECOND · PATTERN THIRD</div>
+  </div>
+
+  <div class="tempo-ladder">
+    <div class="tempo-rung">
+      <div class="tempo-bpm">72</div>
+      <div class="tempo-desc">Week 1<br>Feel drill<br>One chord only</div>
+    </div>
+    <div class="tempo-rung">
+      <div class="tempo-bpm">80</div>
+      <div class="tempo-desc">Week 2<br>Full song<br>All sections</div>
+    </div>
+    <div class="tempo-rung target">
+      <div class="tempo-bpm">88</div>
+      <div class="tempo-desc">75% TARGET<br>Phase 3 gate</div>
+    </div>
+    <div class="tempo-rung">
+      <div class="tempo-bpm">105</div>
+      <div class="tempo-desc">Phase 4<br>With band</div>
+    </div>
+    <div class="tempo-rung">
+      <div class="tempo-bpm">117</div>
+      <div class="tempo-desc">Performance<br>Full tempo</div>
+    </div>
+  </div>
+
+  <!-- GATE CHECK -->
+  <div class="gate-box">
+    <div class="gate-title">SONG GATE — EVERYDAY IS LIKE SUNDAY</div>
+    <ul class="gate-list">
+      <li>Arrangement decision made: melodic arpeggiated intro OR chord strum intro — discussed with band and committed</li>
+      <li>C → F transition clean at 88 BPM: F barre lands on beat 1 of the new bar without gap, not late</li>
+      <li>Pattern consistent throughout: beats 1& and 4& skips never accidentally hit strings</li>
+      <li>Am on "Armageddon" is the heaviest moment in the song — audibly more weighted than the verse and chorus chords</li>
+      <li>Chorus C → G → F: G opens slightly before F closes — movement between the three chords is audible</li>
+      <li>Full song at 88 BPM without stopping — all sections including bridge and post-chorus</li>
+      <li>Record yourself. Listen back. Does the song sound like something you'd hear on a grey November Sunday, or does it sound like a rehearsal? If the latter — the emotional weight isn't there yet. Not ready.</li>
+    </ul>
+  </div>
+
+  <hr class="footer-rule">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-band">!bang!path!</div>
+      <div class="footer-sub">EVERYDAY IS LIKE SUNDAY · RHYTHM CHART · MORRISSEY 1988</div>
+    </div>
+    <div class="footer-right">
+      <div>Sources: Official Tab (117 BPM confirmed) + Official Chord Chart</div>
+      <div style="margin-top:4px;">Key: C Major · Standard Tuning · 117 BPM · Both sources agree</div>
+      <div style="margin-top:4px;color:var(--border);">Intro is arpeggiated in original tab. Arrangement decision required.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

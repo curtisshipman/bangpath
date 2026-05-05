@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!bang!path! — In a Big Country · Rhythm Chart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+  :root {
+    --black:         #0a0a0a;
+    --near-black:    #111111;
+    --dark:          #1a1a1a;
+    --panel:         #1f1f1f;
+    --border:        #2a2a2a;
+    --red:           #e8001c;
+    --amber:         #ff8c00;
+    --cyan:          #00d4ff;
+    --green:         #00e676;
+    --white:         #f0f0f0;
+    --grey:          #888888;
+    --light-grey:    #cccccc;
+    --muted:         #888888;
+    --body:          #cccccc;
+    --bright:        #f0f0f0;
+    --accent:        #e8001c;
+    --accent2:       #ff8c00;
+    --accent3:       #00d4ff;
+    --accent4:       #9b72cf;
+    --display: 'Bebas Neue', sans-serif;
+    --mono:    'Share Tech Mono', monospace;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--body);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .site-header {
+    background: var(--near-black);
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 80px,
+      rgba(232,0,28,0.04) 80px, rgba(232,0,28,0.04) 81px
+    );
+  }
+
+  .header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 36px 32px 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .band-name {
+    font-family: var(--display);
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: 5px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(232,0,28,0.25);
+  }
+
+  .song-title-header {
+    font-family: var(--display);
+    font-size: clamp(26px, 5vw, 50px);
+    letter-spacing: 4px;
+    color: var(--bright);
+    line-height: 1;
+    margin-top: 4px;
+  }
+
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    margin-top: 10px;
+    border-left: 2px solid var(--accent3);
+    padding-left: 12px;
+  }
+
+  .header-chips {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    letter-spacing: 1px;
+  }
+
+  .chip span { color: var(--accent2); }
+  .chip.good span { color: var(--green); }
+  .chip.info span { color: var(--accent3); }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 48px 0 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .section-num { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 2px; }
+  .section-title { font-family: var(--display); font-size: clamp(20px, 3vw, 30px); color: var(--bright); letter-spacing: 3px; }
+  .section-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-left: auto; }
+
+  .callout {
+    border-left: 3px solid var(--accent3);
+    background: rgba(0,212,255,0.04);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .callout.amber { border-color: var(--accent2); background: rgba(255,140,0,0.05); }
+  .callout.green { border-color: var(--green); background: rgba(0,230,118,0.04); }
+  .callout.warn  { border-color: var(--accent); background: rgba(232,0,28,0.05); }
+  .callout.lead  { border-color: var(--accent4); background: rgba(155,114,207,0.05); }
+
+  .callout-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .callout .callout-label { color: var(--accent3); }
+  .callout.amber .callout-label { color: var(--accent2); }
+  .callout.green .callout-label { color: var(--green); }
+  .callout.warn .callout-label  { color: var(--accent); }
+  .callout.lead .callout-label  { color: var(--accent4); }
+  .callout p { margin: 0; color: var(--body); font-size: 14px; }
+  .callout p + p { margin-top: 8px; }
+
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin-top: 20px;
+  }
+
+  .fact-cell { background: var(--panel); padding: 16px 18px; }
+  .fact-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+  .fact-value { font-family: var(--display); font-size: 20px; color: var(--bright); letter-spacing: 2px; line-height: 1.1; }
+  .fact-value.accent { color: var(--accent); }
+  .fact-value.amber  { color: var(--accent2); }
+  .fact-value.cyan   { color: var(--accent3); }
+  .fact-value.green  { color: var(--green); }
+  .fact-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  /* CHORD DIAGRAMS */
+  .chord-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .chord-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .chord-card.primary   { border-color: var(--accent3); }
+  .chord-card.open-easy { border-color: var(--green); }
+  .chord-card.barre     { border-color: var(--accent2); }
+
+  .chord-name-display { font-family: var(--display); font-size: 24px; letter-spacing: 2px; color: var(--bright); margin-bottom: 3px; line-height: 1; }
+  .chord-card.primary .chord-name-display   { color: var(--accent3); }
+  .chord-card.open-easy .chord-name-display { color: var(--green); }
+  .chord-card.barre .chord-name-display     { color: var(--accent2); }
+
+  .chord-type { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 10px; }
+
+  .chord-diagram {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--light-grey);
+    line-height: 1.7;
+    text-align: left;
+    white-space: pre;
+    display: inline-block;
+  }
+
+  .chord-fingering { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 6px; font-style: italic; }
+  .chord-note { font-family: var(--mono); font-size: 9px; color: var(--accent2); letter-spacing: 1px; margin-top: 5px; text-transform: uppercase; }
+
+  /* PATTERN BLOCKS */
+  .pattern-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent);
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .pattern-title { font-family: var(--display); font-size: 20px; color: var(--accent); letter-spacing: 3px; margin-bottom: 4px; }
+  .pattern-feel  { font-family: var(--mono); font-size: 11px; color: var(--accent3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+
+  .beat-grid { display: flex; gap: 3px; flex-wrap: wrap; margin: 12px 0; align-items: center; }
+
+  .beat {
+    font-family: var(--mono);
+    font-size: 11px;
+    min-width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--dark);
+    color: var(--muted);
+  }
+
+  .beat.down  { color: var(--bright);   background: rgba(232,0,28,0.12);   border-color: var(--accent); }
+  .beat.up    { color: var(--accent3);  background: rgba(0,212,255,0.08);  border-color: var(--accent3); }
+  .beat.mute  { color: var(--muted); opacity: 0.4; text-decoration: line-through; }
+  .beat.rest  { background: transparent; border: 1px dashed var(--border); color: var(--muted); opacity: 0.35; }
+  .beat.accent-hit { color: var(--accent2); background: rgba(255,140,0,0.15); border-color: var(--accent2); font-weight: 700; }
+  .beat.label { background: transparent; border: none; color: var(--muted); font-size: 10px; min-width: 18px; }
+  .beat.bar   { background: transparent; border: none; border-left: 2px solid var(--border); min-width: 6px; height: 34px; }
+
+  .strum-legend { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; }
+  .legend-item  { font-family: var(--mono); font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 12px; height: 12px; border: 1px solid; }
+
+  /* STRUCTURE */
+  .structure-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--near-black);
+    border: 1px solid var(--border);
+    padding: 4px 0;
+    margin: 16px 0;
+  }
+
+  .struct-row {
+    display: grid;
+    grid-template-columns: 170px 1fr auto;
+    gap: 12px;
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(42,42,42,0.5);
+    align-items: baseline;
+  }
+
+  .struct-row:last-child { border-bottom: none; }
+  .struct-label  { color: var(--accent); letter-spacing: 1px; font-size: 11px; }
+  .struct-chords { color: var(--bright); letter-spacing: 1px; font-size: 13px; }
+  .struct-chords .ch  { color: var(--accent3); font-weight: 700; }
+  .struct-chords .sep { color: var(--muted); padding: 0 3px; }
+  .struct-chords .lead-note { color: var(--accent4); font-size: 10px; }
+  .struct-notes  { color: var(--muted); font-size: 10px; text-align: right; white-space: nowrap; }
+
+  /* SECTION CHARTS */
+  .section-chart { background: var(--panel); border: 1px solid var(--border); margin: 12px 0; overflow: hidden; }
+
+  .sc-header {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .sc-name { font-family: var(--display); font-size: 18px; color: var(--accent); letter-spacing: 3px; }
+  .sc-name.chorus    { color: var(--accent2); }
+  .sc-name.post      { color: var(--accent4); }
+  .sc-name.bridge    { color: var(--accent3); }
+  .sc-name.outro     { color: var(--muted); }
+  .sc-meta { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; text-align: right; }
+
+  .sc-body { padding: 16px 18px; }
+
+  .bar-line {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--body);
+    line-height: 1.9;
+    margin: 3px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .bar-num   { font-size: 10px; color: var(--muted); min-width: 32px; flex-shrink: 0; }
+  .bar-chord { color: var(--accent3); font-weight: 700; font-size: 14px; min-width: 44px; }
+  .bar-instruction { color: var(--body); font-size: 11px; }
+  .bar-repeat { color: var(--muted); font-size: 10px; margin-left: auto; letter-spacing: 1px; }
+  .bar-lead  { color: var(--accent4); font-size: 10px; font-style: italic; }
+
+  .section-note { font-size: 13px; color: var(--body); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .section-note strong { color: var(--bright); }
+
+  /* TECHNIQUE BLOCKS */
+  .technique-block { border: 1px solid var(--border); background: var(--dark); margin: 16px 0; overflow: hidden; }
+
+  .tech-header {
+    background: rgba(255,140,0,0.08);
+    border-bottom: 1px solid rgba(255,140,0,0.2);
+    padding: 10px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+  }
+
+  .tech-num  { font-family: var(--mono); font-size: 10px; color: var(--accent2); letter-spacing: 2px; }
+  .tech-name { font-family: var(--display); font-size: 18px; color: var(--accent2); letter-spacing: 2px; }
+  .tech-body { padding: 14px 18px; font-size: 13px; color: var(--body); line-height: 1.6; }
+  .tech-body strong { color: var(--bright); }
+  .tech-body p + p  { margin-top: 8px; }
+
+  /* TAB BLOCK */
+  .tab-block {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--near-black);
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    margin: 10px 0;
+    white-space: pre;
+    line-height: 2;
+    overflow-x: auto;
+    color: var(--body);
+  }
+
+  .tab-block .comment { color: var(--muted); font-style: italic; }
+  .tab-block .hi      { color: var(--accent3); }
+
+  /* FEEL BOX */
+  .feel-box { background: rgba(0,212,255,0.04); border: 1px solid rgba(0,212,255,0.15); padding: 14px 18px; margin: 12px 0; }
+  .feel-label { font-family: var(--mono); font-size: 10px; color: var(--accent3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .feel-body  { font-size: 13px; color: var(--body); font-style: italic; line-height: 1.6; }
+
+  /* TEMPO LADDER */
+  .tempo-ladder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  .tempo-rung { background: var(--panel); padding: 12px 14px; text-align: center; }
+  .tempo-rung.target { background: rgba(232,0,28,0.08); border: 1px solid var(--accent); }
+  .tempo-bpm  { font-family: var(--display); font-size: 26px; color: var(--muted); letter-spacing: 2px; line-height: 1; }
+  .tempo-rung.target .tempo-bpm { color: var(--accent); }
+  .tempo-desc { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase; }
+
+  /* GATE BOX */
+  .gate-box { background: rgba(232,0,28,0.05); border: 2px solid var(--accent); padding: 18px 22px; margin: 24px 0; }
+  .gate-title { font-family: var(--display); font-size: 22px; color: var(--accent); letter-spacing: 3px; margin-bottom: 10px; }
+  .gate-list { list-style: none; }
+  .gate-list li {
+    font-family: var(--mono); font-size: 12px; color: var(--body);
+    padding: 6px 0; border-bottom: 1px solid rgba(232,0,28,0.15);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .gate-list li:last-child { border-bottom: none; }
+  .gate-list li::before { content: '[ ]'; color: var(--accent); flex-shrink: 0; }
+
+  /* FOOTER */
+  hr.footer-rule { border: none; border-top: 1px solid var(--border); margin-top: 60px; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; flex-wrap: wrap; gap: 12px; }
+  .footer-band { font-family: var(--display); font-size: 24px; color: var(--accent); letter-spacing: 4px; }
+  .footer-sub  { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 4px; }
+  .footer-right { text-align: right; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .site-header { background: #fff; border-bottom: 2px solid #e8001c; }
+    .band-name { color: #e8001c; text-shadow: none; }
+    .song-title-header { color: #111; }
+    .section-chart, .pattern-block, .technique-block, .fact-cell { background: #f5f5f5 !important; }
+  }
+
+  @media (max-width: 640px) {
+    .header-inner, .container { padding-left: 16px; padding-right: 16px; }
+    .struct-row { grid-template-columns: 120px 1fr; }
+    .struct-notes { display: none; }
+    .chord-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="band-name">!bang!path!</div>
+    <div class="song-title-header">IN A BIG COUNTRY</div>
+    <div class="header-tag">// Rhythm Guitar Chart · Big Country · 1983 · Metal Treatment</div>
+    <div class="header-chips">
+      <div class="chip">TUNING <span>STANDARD E A D G B E</span></div>
+      <div class="chip info">KEY <span>E MAJOR</span></div>
+      <div class="chip">ORIGINAL BPM <span>127</span></div>
+      <div class="chip">PRACTICE START <span>85 BPM</span></div>
+      <div class="chip good">75% TARGET <span>95 BPM</span></div>
+      <div class="chip">BARRE LOAD <span>MEDIUM — MIXED OPEN &amp; BARRE</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <div class="callout green" style="margin-top:36px;">
+    <div class="callout-label">// Good News First</div>
+    <p>In a Big Country is one of the most guitar-friendly songs on the setlist. It's built for guitars — the iconic "bagpipe" sound in the original is actually a guitar technique (tremolo arm + specific picking). The chord vocabulary is manageable: E major is a natural guitar key with open chord options. The main challenge is <strong>stamina at 127 BPM</strong> with driving eighth notes — this is an endurance song, not a technical one. Get the pattern locked and the rest follows.</p>
+  </div>
+
+  <div class="callout lead">
+    <div class="callout-label">// Lead Guitarist — This Is Your Song</div>
+    <p>The signature cascading riff (frets 9-6-7 on D/G strings) and the high post-chorus runs (frets 16-19) are lead guitar territory. That iconic "bagpipe" melodic line is what makes this song recognizable — your lead guitarist needs to own it. Rhythm guitar's job is to hold the driving chord bed underneath while lead does the memorable stuff. This is a good division of labor song.</p>
+  </div>
+
+  <!-- FACTS -->
+  <div class="facts-grid">
+    <div class="fact-cell">
+      <div class="fact-label">Key</div>
+      <div class="fact-value green">E MAJOR</div>
+      <div class="fact-sub">Best guitar key. Natural resonance.</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Original BPM</div>
+      <div class="fact-value">127</div>
+      <div class="fact-sub">Relentless driving tempo</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Primary Pattern</div>
+      <div class="fact-value amber">DRIVING 8THS</div>
+      <div class="fact-sub">Down-up all the way through</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Barre Load</div>
+      <div class="fact-value cyan">MEDIUM</div>
+      <div class="fact-sub">Mix of open + barre shapes</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Main Challenge</div>
+      <div class="fact-value accent" style="font-size:15px;padding-top:4px;">PICK ARM STAMINA</div>
+      <div class="fact-sub">127 BPM 8ths for 4+ minutes</div>
+    </div>
+    <div class="fact-cell">
+      <div class="fact-label">Structure</div>
+      <div class="fact-value" style="font-size:14px;padding-top:4px;">V · CH · POST · V2 · CH · BR · V3 · CH · OUTRO</div>
+      <div class="fact-sub">9 sections · full song ~4:5</div>
+    </div>
+  </div>
+
+  <!-- CHORD VOCABULARY -->
+  <div class="section-header">
+    <div class="section-num">01 //</div>
+    <div class="section-title">CHORD VOCABULARY</div>
+    <div class="section-sub">5 CHORDS · ALL IN E MAJOR</div>
+  </div>
+
+  <div class="chord-grid">
+
+    <div class="chord-card open-easy">
+      <div class="chord-name-display">E</div>
+      <div class="chord-type">OPEN · ROOT CHORD</div>
+      <div class="chord-diagram">e  ─0─
+B  ─0─
+G  ─1─
+D  ─2─
+A  ─2─
+E  ─0─</div>
+      <div class="chord-fingering">Index: G fret 1<br>Middle: A fret 2<br>Ring: D fret 2</div>
+      <div class="chord-note">MOST COMMON · WIDE OPEN</div>
+    </div>
+
+    <div class="chord-card open-easy">
+      <div class="chord-name-display">A</div>
+      <div class="chord-type">OPEN · 2nd MOST COMMON</div>
+      <div class="chord-diagram">e  ─0─
+B  ─2─
+G  ─2─
+D  ─2─
+A  ─0─
+E  ─x─</div>
+      <div class="chord-fingering">Bar middle three strings<br>fret 2 with one finger</div>
+      <div class="chord-note">VERSE &amp; CHORUS</div>
+    </div>
+
+    <div class="chord-card barre">
+      <div class="chord-name-display">C#m</div>
+      <div class="chord-type">BARRE · FRET 4 · A-SHAPE</div>
+      <div class="chord-diagram">e  ─4─
+B  ─5─
+G  ─6─
+D  ─6─
+A  ─4─
+E  ─x─</div>
+      <div class="chord-fingering">Index: fret 4 (A→e)<br>Ring/pinky: fret 6</div>
+      <div class="chord-note">CHORUS ANCHOR</div>
+    </div>
+
+    <div class="chord-card barre">
+      <div class="chord-name-display">F#m</div>
+      <div class="chord-type">BARRE · FRET 2 · E-SHAPE</div>
+      <div class="chord-diagram">e  ─2─
+B  ─2─
+G  ─2─
+D  ─4─
+A  ─4─
+E  ─2─</div>
+      <div class="chord-fingering">Full E-shape barre fret 2</div>
+      <div class="chord-note">VERSE MOVEMENT</div>
+    </div>
+
+    <div class="chord-card barre">
+      <div class="chord-name-display">B</div>
+      <div class="chord-type">BARRE · FRET 2 · A-SHAPE</div>
+      <div class="chord-diagram">e  ─2─
+B  ─4─
+G  ─4─
+D  ─4─
+A  ─2─
+E  ─x─</div>
+      <div class="chord-fingering">Index: fret 2 (A→e)<br>Ring: fret 4 (D·G·B)</div>
+      <div class="chord-note">CHORUS RESOLUTION</div>
+    </div>
+
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">// The Open Chord Advantage</div>
+    <p>E and A are open chords — no barre required. In E major you get two of your five chords for free. This is why E major is the best guitar key. The three barre chords (C#m, F#m, B) are all manageable shapes. C#m at fret 4 is the trickiest — practice the A → C#m transition specifically as it comes up repeatedly in the chorus.</p>
+  </div>
+
+  <!-- THE PATTERN -->
+  <div class="section-header">
+    <div class="section-num">02 //</div>
+    <div class="section-title">THE PATTERN</div>
+    <div class="section-sub">DRIVING 8THS — THE ENGINE OF THIS SONG</div>
+  </div>
+
+  <p style="margin-bottom:16px;font-size:14px;">The original chord chart gives this pattern explicitly: <strong>D · DU · D · DU</strong> — a driving eighth-note pattern that runs through most of the song. At 127 BPM this pattern runs at 254 strokes per minute. Wrist efficiency is everything. This is the song that will tell you whether your pick arm is loose enough.</p>
+
+  <div class="pattern-block">
+    <div class="pattern-title">MAIN PATTERN — DRIVING EIGHTHS</div>
+    <div class="pattern-feel">FEEL: Relentless · Anthemic · No swing · Straight grid · Celtic momentum</div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">One bar of 4/4. Down on every beat, up on every "and." The pattern from the chord chart: Down · Down-Up · Down · Down-Up. The upstrokes on beats 2 and 4 are slightly lighter than the downstrokes — the pattern has a natural accent on beats 1 and 3.</p>
+
+    <div class="beat-grid">
+      <div class="beat label">1</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat rest">—</div>
+      <div class="beat label">2</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat up">U↑</div>
+      <div class="beat bar"></div>
+      <div class="beat label">3</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat rest">—</div>
+      <div class="beat label">4</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat up">U↑</div>
+    </div>
+
+    <div class="strum-legend">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(232,0,28,0.2);border-color:var(--accent);"></div>
+        D↓ = Firm downstroke · full chord contact
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(0,212,255,0.1);border-color:var(--accent3);"></div>
+        U↑ = Lighter upstroke · top 3-4 strings
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:transparent;border:1px dashed var(--border);opacity:0.5;"></div>
+        — = Skip (beat 1+ and 3+) · arm keeps moving but misses strings
+      </div>
+    </div>
+  </div>
+
+  <div class="pattern-block" style="border-top-color:var(--accent2);">
+    <div class="pattern-title" style="color:var(--accent2);">CHORUS VARIATION — FULL EIGHTH DRIVE</div>
+    <div class="pattern-feel" style="color:var(--accent3);">FEEL: Open · Anthemic lift · Every 8th note hits</div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">The chorus opens up to continuous eighth notes — all down-up, no skips. This is the payoff. Bigger sound, more attack. The C#m → E → A → B movement underneath the "In a big country" vocal needs to feel like it's lifting off.</p>
+
+    <div class="beat-grid">
+      <div class="beat label">1</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat up">U↑</div>
+      <div class="beat label">2</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat up">U↑</div>
+      <div class="beat bar"></div>
+      <div class="beat label">3</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat up">U↑</div>
+      <div class="beat label">4</div>
+      <div class="beat down">D↓</div>
+      <div class="beat label">+</div>
+      <div class="beat up">U↑</div>
+    </div>
+  </div>
+
+  <!-- SONG STRUCTURE -->
+  <div class="section-header">
+    <div class="section-num">03 //</div>
+    <div class="section-title">FULL SONG STRUCTURE</div>
+    <div class="section-sub">WHAT YOU PLAY · WHEN</div>
+  </div>
+
+  <div class="structure-block">
+    <div class="struct-row">
+      <div class="struct-label">INTRO</div>
+      <div class="struct-chords">
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">C#m</span><span class="sep">–</span>
+        <span class="ch">F#m</span>
+        <span class="sep"> // </span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span>
+        <span class="sep"> · </span>
+        <span class="lead-note">Lead: bagpipe riff over top</span>
+      </div>
+      <div class="struct-notes">Driving 8ths · establish pulse</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">VERSE 1, 2, 3</div>
+      <div class="struct-chords">
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span>
+        <span class="sep"> // </span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">F#m</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">B</span>
+      </div>
+      <div class="struct-notes">D·DU·D·DU pattern</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">CHORUS</div>
+      <div class="struct-chords">
+        <span class="ch">C#m</span><span class="sep">–</span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">B</span><span class="sep">–</span>
+        <span class="ch">C#m</span>
+        <span class="sep"> // </span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">C#m</span><span class="sep">–</span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">B</span>
+        <span class="sep"> // </span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">F#m</span>
+      </div>
+      <div class="struct-notes">Full 8th drive · anthem</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">POST-CHORUS</div>
+      <div class="struct-chords">
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">F#m</span><span class="sep">–</span>
+        <span class="ch">E</span>
+        <span class="sep"> // </span>
+        <span class="ch">A</span>
+        <span class="sep"> · </span>
+        <span class="lead-note">Lead: high fret runs (frets 16-19)</span>
+      </div>
+      <div class="struct-notes">Hold chord bed · lead flies</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">BRIDGE</div>
+      <div class="struct-chords">
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">C#m</span><span class="sep">–</span>
+        <span class="ch">F#m</span><span class="sep">–</span>
+        <span class="ch">E</span>
+        <span class="sep"> // </span>
+        <span class="ch">C#m</span><span class="sep">–</span>
+        <span class="ch">F#m</span><span class="sep">–</span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span>
+      </div>
+      <div class="struct-notes">Build · all 5 chords active</div>
+    </div>
+    <div class="struct-row">
+      <div class="struct-label">OUTRO / FADE</div>
+      <div class="struct-chords">
+        <span class="ch">C#m</span><span class="sep">–</span>
+        <span class="ch">E</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">B</span>
+        <span class="sep"> · </span>
+        <span class="ch">B</span><span class="sep">–</span>
+        <span class="ch">A</span><span class="sep">–</span>
+        <span class="ch">F#m</span>
+        <span class="sep"> repeat</span>
+      </div>
+      <div class="struct-notes">!bang!path! ends hard — no fade</div>
+    </div>
+  </div>
+
+  <!-- SECTION CHARTS -->
+  <div class="section-header">
+    <div class="section-num">04 //</div>
+    <div class="section-title">SECTION CHARTS</div>
+    <div class="section-sub">BAR-BY-BAR · WHAT TO PLAY</div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">INTRO</div>
+      <div class="sc-meta">~8 bars · Driving 8ths · Lead plays the bagpipe riff · You hold the bed</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Bars 1–2</span>
+        <span class="bar-chord">E · A</span>
+        <span class="bar-instruction">· driving 8th pattern · two bars each</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 3–4</span>
+        <span class="bar-chord">C#m · F#m</span>
+        <span class="bar-instruction">· same pattern · barre chord entry</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 5–8</span>
+        <span class="bar-chord">E · A</span>
+        <span class="bar-instruction">· repeat · lead guitarist plays the iconic riff over you</span>
+        <span class="bar-lead">Lead: 9-6-7 fret cascade on D/G strings</span>
+      </div>
+      <div class="section-note"><strong>Your job in the intro:</strong> Be the foundation. The bagpipe riff your lead guitarist plays is what the audience will recognize — your chord bed underneath it is what makes it sound full. Don't compete. Lock the eighth note pulse and let the lead cut through above you. If the rhythm guitar is too loud in the intro, the lead riff gets buried.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">VERSE</div>
+      <div class="sc-meta">~8 bars · D·DU·D·DU pattern · Slightly restrained vs chorus</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Bars 1–2</span>
+        <span class="bar-chord">E</span>
+        <span class="bar-instruction">· 2 bars · open E · D·DU·D·DU</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bar 3</span>
+        <span class="bar-chord">E · A</span>
+        <span class="bar-instruction">· one bar · two chords · 2 hits each</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bar 4</span>
+        <span class="bar-chord">E · A · F#m · A · B</span>
+        <span class="bar-instruction">· moving bar · one hit per chord</span>
+        <span class="bar-repeat">× 4 verse sections</span>
+      </div>
+      <div class="section-note"><strong>The moving bar:</strong> Bar 4 of each verse phrase moves through E → A → F#m → A → B quickly. At 127 BPM this is one chord per half-beat in places. Practice this bar in isolation at 80 BPM — it's the trickiest rhythmic moment in the verse. The F#m barre at fret 2 needs to be instant. No hesitation.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name chorus">CHORUS</div>
+      <div class="sc-meta">~8 bars · Full 8th drive · The anthem moment · Open up</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Bars 1–2</span>
+        <span class="bar-chord">C#m · E · A · B · C#m</span>
+        <span class="bar-instruction">· "In a big country dreams stay with you"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 3–4</span>
+        <span class="bar-chord">E · C#m · E · B</span>
+        <span class="bar-instruction">· "Like a lover's voice fires the mountainside"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 5–6</span>
+        <span class="bar-chord">A · F#m</span>
+        <span class="bar-instruction">· "Stay alive" · 2 bars · let it ring</span>
+        <span class="bar-repeat">× 2-3 chorus repeats</span>
+      </div>
+      <div class="section-note"><strong>This is the moment:</strong> Full eighth note drive, no skips. The C#m opener is the hook — make sure that barre is fully fretted before the first downstroke. A buzzing C#m on the chorus downbeat is the most audible mistake in the song. The A → F#m movement at "Stay alive" gives a brief moment to reset before the next chorus pass.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name post">POST-CHORUS</div>
+      <div class="sc-meta">~4 bars · Hold E · Lead guitarist takes over · Your job is support</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Bars 1–2</span>
+        <span class="bar-chord">E · F#m · E</span>
+        <span class="bar-instruction">· driving 8ths · moderate attack</span>
+        <span class="bar-lead">Lead: high position runs frets 16-19</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 3–4</span>
+        <span class="bar-chord">A</span>
+        <span class="bar-instruction">· hold A · let lead resolve</span>
+      </div>
+      <div class="section-note"><strong>Pull back here:</strong> The post-chorus lead runs are the other iconic guitar moment in this song — alongside the intro bagpipe riff. Your chord bed needs to be present but not competing. This is not a moment to play harder. Lock the pulse, reduce attack slightly, let the lead cut.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name bridge">BRIDGE</div>
+      <div class="sc-meta">~8 bars · All 5 chords · Builds back to final chorus</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Bars 1–2</span>
+        <span class="bar-chord">E · A · C#m · F#m · E</span>
+        <span class="bar-instruction">· "So take that look out of here"</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 3–4</span>
+        <span class="bar-chord">C#m · F#m</span>
+        <span class="bar-instruction">· "Because it's happened doesn't mean..."</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Bars 5–8</span>
+        <span class="bar-chord">E · A · C#m · F#m · E · A</span>
+        <span class="bar-instruction">· build toward final chorus · increase attack each bar</span>
+        <span class="bar-repeat">→ FINAL CHORUS</span>
+      </div>
+      <div class="section-note"><strong>Dynamic build:</strong> The bridge is where you earn the final chorus. Start the bridge at ~70% attack and build bar by bar. By bar 8 you should be at full intensity. The final chorus should feel like it arrives with maximum energy — that only works if the bridge has been building toward it.</div>
+    </div>
+  </div>
+
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name outro">OUTRO</div>
+      <div class="sc-meta">Repeat chord sequence · Original fades · !bang!path! ends hard</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-line">
+        <span class="bar-num">Pattern</span>
+        <span class="bar-chord">C#m – E – A – B – C#m – E</span>
+        <span class="bar-instruction">· repeat</span>
+      </div>
+      <div class="bar-line">
+        <span class="bar-num">Then</span>
+        <span class="bar-chord">B – A – F#m</span>
+        <span class="bar-instruction">· repeat to close</span>
+      </div>
+      <div class="section-note"><strong>The ending:</strong> Decide this in rehearsal — a big unison stop on E, or a final ringing open E chord held until it dies. Either works. What doesn't work is fading. "In a Big Country" in a metal arrangement should end like a statement, not a suggestion.</div>
+    </div>
+  </div>
+
+  <!-- TECHNIQUE NOTES -->
+  <div class="section-header">
+    <div class="section-num">05 //</div>
+    <div class="section-title">TECHNIQUE NOTES</div>
+    <div class="section-sub">THREE THINGS TO MASTER</div>
+  </div>
+
+  <div class="technique-block">
+    <div class="tech-header">
+      <div class="tech-num">TECH 01 //</div>
+      <div class="tech-name">PICK ARM EFFICIENCY — THE ENDURANCE PROBLEM</div>
+    </div>
+    <div class="tech-body">
+      <p><strong>The problem:</strong> 127 BPM eighth notes for 4+ minutes is 508+ strokes minimum. If your pick arm is tense, you will fatigue before the song ends. This is not a technique problem — it's a tension problem.</p>
+      <p><strong>The fix:</strong> Your pick arm should rotate at the wrist, not pump from the elbow. The wrist motion is a small, loose rotation — like turning a doorknob slightly. The elbow stays relatively still. If your forearm is burning halfway through the song, you're using too much arm.</p>
+      <div class="tab-block"><span class="comment">// Endurance drill</span>
+<span class="hi">Set metronome to 100 BPM. Play open E string, straight 8th notes, for 3 minutes.</span>
+<span class="hi">Wrist only. Elbow relaxed. Pick grip: firm enough not to drop it, no tighter.</span>
+<span class="comment">// If your arm is sore after 90 seconds, the motion is wrong — find the loose spot</span></div>
+    </div>
+  </div>
+
+  <div class="technique-block">
+    <div class="tech-header">
+      <div class="tech-num">TECH 02 //</div>
+      <div class="tech-name">THE A → C#m TRANSITION</div>
+    </div>
+    <div class="tech-body">
+      <p><strong>Why it matters:</strong> This change happens on the first beat of the chorus — the most exposed moment in the song. A is an open chord. C#m is a barre at fret 4. That's a big jump that needs to happen in zero time.</p>
+      <p><strong>The trick:</strong> Start moving your fretting hand toward fret 4 on the last upstroke of the A chord — before the beat. Your hand should be arriving at the barre position as the downstroke lands, not after it. Anticipate the move by half a beat.</p>
+      <div class="tab-block"><span class="comment">// Transition drill — A → C#m</span>
+<span class="hi">A chord (open) → mute → C#m barre fret 4</span>
+<span class="comment">// 60 BPM, one change per bar. Increase by 4 BPM when clean.</span>
+<span class="comment">// Goal: 100 BPM clean before adding to song context</span></div>
+    </div>
+  </div>
+
+  <div class="technique-block">
+    <div class="tech-header">
+      <div class="tech-num">TECH 03 //</div>
+      <div class="tech-name">DYNAMIC SHAPING — VERSE VS CHORUS</div>
+    </div>
+    <div class="tech-body">
+      <p><strong>The difference that matters:</strong> Both verse and chorus use the same pick pattern. The only thing that changes the feel between them is your attack and how open you let the chords ring. Verse: slightly restrained, more palm contact on the low strings. Chorus: full attack, maximum ring, let the open strings resonate.</p>
+      <p><strong>Practice this consciously:</strong> Run the last bar of the verse into the first bar of the chorus and listen for the lift. If there's no audible difference in energy between the two, the arrangement isn't working. The chorus should feel like stepping from a hallway into a cathedral.</p>
+    </div>
+  </div>
+
+  <!-- FEEL BOX -->
+  <div class="feel-box">
+    <div class="feel-label">// What Good Execution Sounds Like</div>
+    <div class="feel-body">The verse feels like a march — purposeful, forward-moving, controlled. Each chord change is clean and the pattern never rushes. The chorus sounds like it opens up — bigger, more resonant, the barre chords ringing fully instead of being clipped. The post-chorus pulls back slightly so the lead guitar can cut through. The bridge builds deliberately. The final chorus hits harder than any previous chorus. The ending is decisive. At no point does the rhythm guitar sound like it's struggling — it sounds like a machine that has been running at exactly 127 BPM since it was turned on and will run at exactly 127 BPM until it is turned off.</div>
+  </div>
+
+  <!-- TEMPO LADDER -->
+  <div class="section-header">
+    <div class="section-num">06 //</div>
+    <div class="section-title">TEMPO LADDER</div>
+    <div class="section-sub">BUILD THE ENDURANCE PROGRESSIVELY</div>
+  </div>
+
+  <div class="tempo-ladder">
+    <div class="tempo-rung">
+      <div class="tempo-bpm">70</div>
+      <div class="tempo-desc">Week 1<br>Chord shapes + transitions</div>
+    </div>
+    <div class="tempo-rung">
+      <div class="tempo-bpm">85</div>
+      <div class="tempo-desc">Week 2<br>Full pattern · full song</div>
+    </div>
+    <div class="tempo-rung target">
+      <div class="tempo-bpm">95</div>
+      <div class="tempo-desc">75% TARGET<br>Phase 3 gate</div>
+    </div>
+    <div class="tempo-rung">
+      <div class="tempo-bpm">110</div>
+      <div class="tempo-desc">Phase 4<br>With band</div>
+    </div>
+    <div class="tempo-rung">
+      <div class="tempo-bpm">127</div>
+      <div class="tempo-desc">Performance<br>Full tempo</div>
+    </div>
+  </div>
+
+  <!-- GATE CHECK -->
+  <div class="gate-box">
+    <div class="gate-title">SONG GATE — IN A BIG COUNTRY</div>
+    <ul class="gate-list">
+      <li>All 5 chords ring cleanly on demand — E, A, C#m, F#m, B — no repositioning needed</li>
+      <li>A → C#m transition lands clean on beat 1 of chorus at 95 BPM — no gap, no buzz</li>
+      <li>D·DU·D·DU pattern locked at 95 BPM with metronome for 3 full minutes without fatigue</li>
+      <li>Verse vs chorus dynamic difference is audible — chorus noticeably bigger than verse</li>
+      <li>Full song start to finish at 95 BPM without stopping</li>
+      <li>Post-chorus: pull back attack so lead guitar can cut through — practice this with your lead guitarist specifically</li>
+      <li>Record yourself at 95 BPM. Listen back. Pick arm sounds loose, not labored.</li>
+    </ul>
+  </div>
+
+  <hr class="footer-rule">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-band">!bang!path!</div>
+      <div class="footer-sub">IN A BIG COUNTRY · RHYTHM CHART · BIG COUNTRY 1983</div>
+    </div>
+    <div class="footer-right">
+      <div>Source: Ultimate Guitar Tab + Official Chord Chart</div>
+      <div style="margin-top:4px;">Key: E Major · Standard Tuning · 127 BPM</div>
+      <div style="margin-top:4px;color:var(--border);">Rhythm guitar chart only — lead riff is your guitarist's territory.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

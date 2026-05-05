@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!bang!path! — Broken Wings</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+  :root {
+    --black:   #0a0a0b;
+    --deep:    #111114;
+    --panel:   #16161a;
+    --border:  #2a2a30;
+    --accent:  #e8003d;
+    --accent2: #ff8c00;
+    --accent3: #00d4ff;
+    --muted:   #5a5a6a;
+    --body:    #c8c8d4;
+    --bright:  #f0f0f8;
+    --mono:    'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--body);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .site-header {
+    background: var(--deep);
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 80px,
+      rgba(232,0,61,0.04) 80px, rgba(232,0,61,0.04) 81px
+    );
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .band-name {
+    font-family: var(--display);
+    font-size: 72px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(232,0,61,0.4);
+  }
+
+  .song-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .song-title-display {
+    font-family: var(--display);
+    font-size: 52px;
+    letter-spacing: 4px;
+    color: var(--bright);
+    line-height: 1;
+    margin-top: 12px;
+  }
+
+  .song-source {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 8px;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 5px 12px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .chip-red   { background: rgba(232,0,61,0.15);   color: var(--accent);  border: 1px solid rgba(232,0,61,0.35); }
+  .chip-amber { background: rgba(255,140,0,0.15);  color: var(--accent2); border: 1px solid rgba(255,140,0,0.35); }
+  .chip-cyan  { background: rgba(0,212,255,0.12);  color: var(--accent3); border: 1px solid rgba(0,212,255,0.3); }
+  .chip-warn  { background: rgba(232,0,61,0.25);   color: #ff6b6b;        border: 1px solid rgba(232,0,61,0.5); }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 48px 0 24px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+
+  .section-num   { font-family: var(--mono);    font-size: 11px; color: var(--accent);  letter-spacing: 2px; }
+  .section-title { font-family: var(--display); font-size: 32px; color: var(--bright);  letter-spacing: 3px; }
+  .section-sub   { font-family: var(--mono);    font-size: 10px; color: var(--muted);   letter-spacing: 1px; margin-left: auto; }
+
+  .callout {
+    border-left: 3px solid var(--accent3);
+    background: rgba(0,212,255,0.04);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .callout.red   { border-color: var(--accent);  background: rgba(232,0,61,0.05); }
+  .callout.amber { border-color: var(--accent2); background: rgba(255,140,0,0.05); }
+
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 8px;
+  }
+  .callout.red   .callout-label { color: var(--accent); }
+  .callout.amber .callout-label { color: var(--accent2); }
+
+  .conflict-box {
+    background: rgba(232,0,61,0.07);
+    border: 1px solid rgba(232,0,61,0.4);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+  .conflict-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+  .fact-cell { background: var(--panel); padding: 14px 18px; }
+  .fact-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .fact-value { font-family: var(--sans); font-size: 14px; color: var(--bright); font-weight: 600; }
+  .fact-value.red   { color: var(--accent); }
+  .fact-value.amber { color: var(--accent2); }
+  .fact-value.cyan  { color: var(--accent3); }
+
+  .sub-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 28px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sub-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .sub-label.amber { color: var(--accent2); }
+  .sub-label.cyan  { color: var(--accent3); }
+
+  /* CHORD GRID */
+  .chord-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .chord-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px;
+    text-align: center;
+  }
+  .chord-card-name {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--bright);
+    letter-spacing: 2px;
+    margin-bottom: 2px;
+  }
+  .chord-card-type {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .chord-diagram {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--body);
+    line-height: 1.65;
+    text-align: left;
+    white-space: pre;
+    display: inline-block;
+  }
+  .chord-diagram .o  { color: #00c853; }
+  .chord-diagram .x  { color: var(--accent); }
+  .chord-diagram .d  { color: var(--accent3); }
+  .chord-diagram .b  { color: var(--accent2); }
+  .chord-fingers {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 8px;
+    text-align: left;
+    display: inline-block;
+  }
+  .chord-note {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--accent2);
+    margin-top: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  /* GROUP LABELS */
+  .chord-group-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 20px 0 8px;
+    padding: 6px 10px;
+    background: rgba(255,140,0,0.06);
+    border-left: 2px solid var(--accent2);
+    display: inline-block;
+  }
+
+  /* STRUMMING */
+  .strum-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .strum-title { font-family: var(--display); font-size: 20px; color: var(--bright); letter-spacing: 2px; margin-bottom: 4px; }
+  .strum-feel  { font-family: var(--mono); font-size: 10px; color: var(--accent2); letter-spacing: 2px; margin-bottom: 16px; }
+
+  .beat-grid { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+  .beat {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 7px 10px;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-align: center;
+    min-width: 38px;
+    line-height: 1.2;
+  }
+  .beat.down { color: var(--accent);  border-color: var(--accent);  background: rgba(232,0,61,0.10); }
+  .beat.up   { color: var(--accent3); border-color: var(--accent3); background: rgba(0,212,255,0.08); }
+  .beat.skip { color: var(--muted);   border-color: var(--border);  border-style: dashed; background: transparent; }
+  .beat-label { font-family: var(--mono); font-size: 9px; color: var(--muted); text-align: center; margin-top: 2px; }
+  .beat-wrap  { text-align: center; }
+
+  .strum-legend { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .legend-item  { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .legend-swatch { width: 18px; height: 18px; border-radius: 1px; }
+  .legend-swatch.down { background: rgba(232,0,61,0.2); border: 1px solid var(--accent); }
+  .legend-swatch.up   { background: rgba(0,212,255,0.12); border: 1px solid var(--accent3); }
+  .legend-swatch.skip { background: transparent; border: 1px dashed var(--border); }
+
+  /* STRUCTURE BOX */
+  .structure-box {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 2;
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* SECTION CHARTS */
+  .section-chart {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .sc-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+  }
+  .sc-name { font-family: var(--display); font-size: 20px; letter-spacing: 3px; color: var(--bright); }
+  .sc-tag  { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; padding: 3px 8px; border-radius: 2px; }
+  .sc-tag.red   { color: var(--accent);  background: rgba(232,0,61,0.12);  border: 1px solid rgba(232,0,61,0.3); }
+  .sc-tag.amber { color: var(--accent2); background: rgba(255,140,0,0.10); border: 1px solid rgba(255,140,0,0.3); }
+  .sc-tag.cyan  { color: var(--accent3); background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); }
+  .sc-body { padding: 16px 18px; }
+
+  .bar-row {
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    margin: 10px 0;
+  }
+  .bar-row-2 { grid-template-columns: repeat(2,1fr); }
+  .bar-row-3 { grid-template-columns: repeat(3,1fr); }
+  .bar-row-4 { grid-template-columns: repeat(4,1fr); }
+
+  .bar-cell { background: var(--deep); padding: 10px 14px; }
+  .bar-num  { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
+  .bar-chord { font-family: var(--display); font-size: 20px; letter-spacing: 2px; color: var(--accent3); }
+  .bar-chord.amber  { color: var(--accent2); }
+  .bar-chord.red    { color: var(--accent); }
+  .bar-chord.bright { color: var(--bright); }
+  .bar-chord.green  { color: #00c853; }
+  .bar-note { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+  .sc-instruction {
+    font-size: 13px;
+    color: var(--body);
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(0,212,255,0.04);
+    border-left: 2px solid var(--accent3);
+  }
+
+  /* TECHNIQUE NOTES */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+  .tech-cell  { background: var(--panel); padding: 16px 18px; }
+  .tech-num   { font-family: var(--display); font-size: 28px; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .tech-title { font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 2px; margin-bottom: 8px; }
+  .tech-body  { font-size: 13px; color: var(--body); }
+
+  /* FEEL BOX */
+  .feel-box {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-left: 3px solid var(--accent3);
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .feel-label { font-family: var(--mono); font-size: 10px; color: var(--accent3); letter-spacing: 3px; margin-bottom: 8px; }
+  .feel-body  { font-size: 14px; color: var(--body); font-style: italic; }
+
+  /* TEMPO LADDER */
+  .tempo-row { display: flex; gap: 1px; background: var(--border); margin: 12px 0; }
+  .tempo-cell { flex: 1; background: var(--deep); padding: 14px 16px; text-align: center; }
+  .tempo-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-bottom: 4px; }
+  .tempo-value { font-family: var(--display); font-size: 28px; letter-spacing: 2px; }
+  .tempo-cell.start  .tempo-value { color: var(--muted); }
+  .tempo-cell.mid    .tempo-value { color: var(--accent2); }
+  .tempo-cell.target .tempo-value { color: var(--accent3); }
+  .tempo-cell.perf   .tempo-value { color: var(--accent); }
+
+  /* GATE CHECKLIST */
+  .gate-list { list-style: none; margin: 12px 0; }
+  .gate-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .gate-list li:last-child { border-bottom: none; }
+  .gate-list li::before {
+    content: '[ ]'; font-family: var(--mono); font-size: 12px;
+    color: var(--accent); white-space: nowrap; margin-top: 2px;
+  }
+
+  /* FRET POSITION TABLE */
+  .fret-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .fret-table th {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+    color: var(--muted); text-align: left; padding: 8px 12px;
+    background: var(--deep); border: 1px solid var(--border);
+  }
+  .fret-table td {
+    padding: 8px 12px; border: 1px solid var(--border); vertical-align: top;
+  }
+  .fret-table tr:nth-child(odd)  td { background: var(--panel); }
+  .fret-table tr:nth-child(even) td { background: var(--deep); }
+  .fret-table td:first-child { color: var(--bright); font-weight: 600; font-family: var(--mono); }
+  .fret-table td:nth-child(2) { color: var(--accent3); font-family: var(--mono); }
+  .fret-table td:nth-child(3) { color: var(--accent2); }
+
+  hr { border: none; border-top: 1px solid var(--border); margin-top: 60px; }
+  p  { margin-bottom: 10px; color: var(--body); }
+
+  @media print {
+    body { background: #0a0a0b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══ -->
+<div class="site-header">
+  <div class="header-inner">
+    <div class="band-name">!BANG!PATH!</div>
+    <div class="song-tag">// RHYTHM CHART · ENCORE 1 OF 2</div>
+    <div class="song-title-display">BROKEN WINGS</div>
+    <div class="song-source">MR. MISTER · 1985 · ALBUM: WELCOME TO THE REAL WORLD</div>
+    <div class="chip-row">
+      <span class="chip chip-red">KEY: D#m (Eb MINOR)</span>
+      <span class="chip chip-amber">99 BPM</span>
+      <span class="chip chip-cyan">STANDARD TUNING</span>
+      <span class="chip chip-warn">⚠ BARRE LOAD: HIGH · FRET 11 REQUIRED</span>
+      <span class="chip chip-cyan">75% TARGET: 74 BPM</span>
+      <span class="chip chip-amber">9 CHORDS</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CONTAINER ══ -->
+<div class="container">
+
+  <!-- SOURCE FLAGS -->
+  <div style="margin-top: 32px;">
+    <div class="conflict-box">
+      <div class="conflict-label">// ⚠ SOURCE CONFLICTS RESOLVED — 3 CORRECTIONS</div>
+      <p style="font-size:13px; margin:0 0 8px;">
+        <strong style="color:var(--accent);">[1] TAB FILE IS A BASS TAB.</strong> The uploaded tab (labeled "B E A D G" tuning) is transcribed for 5-string bass, not guitar. Used for structure/timing confirmation only. All chord shapes sourced from the official chord chart exclusively.<br><br>
+        <strong style="color:var(--accent);">[2] KEY CORRECTED: G → D#m.</strong> Project context listed key as "G." Both sources confirm <strong style="color:#00c853;">D#m (Eb minor)</strong>. The chord chart explicitly states "Key: D#m." The bass tab root movement confirms D# as tonic. Built to D#m.<br><br>
+        <strong style="color:var(--accent);">[3] BPM CORRECTED: ~77 → 99.</strong> Project context listed ~77 BPM. Both sources (tab marking and chord chart) state <strong style="color:#00c853;">99 BPM</strong>. Built to 99 BPM.
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══ 01 · OVERVIEW ═══ -->
+  <div class="section-header">
+    <span class="section-num">01 //</span>
+    <span class="section-title">OVERVIEW</span>
+    <span class="section-sub">THE BIG PICTURE</span>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">// Mission Brief</div>
+    <p style="margin:0;">Mr. Mister's <em>Broken Wings</em> is a power ballad built on a hypnotic, floating arpeggio figure in the original. The heavy metal arrangement for !bang!path! replaces that arpeggiated synth/guitar texture with <strong style="color:var(--bright);">chord stabs and a locked rhythmic groove</strong> that preserves the emotional weight without losing the song's dreamy, suspended quality. This is your first encore — the crowd is warm, the energy is there. Play it like a ballad with a metal backbone, not a thrash track with a pretty melody over it. The sus2 chords throughout the verse are the signature sound — honor them.</p>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">// ⚠ The G#sus2 at Fret 11 Problem</div>
+    <p style="margin:0;">G#sus2 is voiced at the <strong style="color:var(--accent2);">11th fret</strong>. This is the highest barre position in the entire setlist. At the 11th fret, the fret spacing is narrower — this is actually easier physically than fret 1–3, but it's psychologically terrifying if you haven't drilled it. The shape itself is simple (just a sus2 barre), but the position will feel unfamiliar. Drill it isolated before integrating. The chord appears in verse sections and transitions — you'll need to land it cleanly at 99 BPM.</p>
+  </div>
+
+  <!-- ═══ 02 · FACTS GRID ═══ -->
+  <div class="section-header">
+    <span class="section-num">02 //</span>
+    <span class="section-title">SONG FACTS</span>
+  </div>
+
+  <div class="facts-grid">
+    <div class="fact-cell"><div class="fact-label">Key</div><div class="fact-value cyan">D#m (Eb Minor)</div></div>
+    <div class="fact-cell"><div class="fact-label">BPM</div><div class="fact-value amber">99</div></div>
+    <div class="fact-cell"><div class="fact-label">Time Signature</div><div class="fact-value">4/4</div></div>
+    <div class="fact-cell"><div class="fact-label">Tuning</div><div class="fact-value">Standard EADGBE</div></div>
+    <div class="fact-cell"><div class="fact-label">Chord Count</div><div class="fact-value red">9 CHORDS</div></div>
+    <div class="fact-cell"><div class="fact-label">75% Target</div><div class="fact-value cyan">74 BPM</div></div>
+    <div class="fact-cell"><div class="fact-label">Barre Load</div><div class="fact-value red">HIGH (max fret 11)</div></div>
+    <div class="fact-cell"><div class="fact-label">Artist</div><div class="fact-value">Mr. Mister · 1985</div></div>
+    <div class="fact-cell"><div class="fact-label">Original Genre</div><div class="fact-value">Soft Rock / Pop</div></div>
+    <div class="fact-cell"><div class="fact-label">Role in Set</div><div class="fact-value">Encore 1</div></div>
+  </div>
+
+  <!-- ═══ 03 · FRET POSITION REFERENCE ═══ -->
+  <div class="section-header">
+    <span class="section-num">03 //</span>
+    <span class="section-title">FRET POSITION MAP</span>
+    <span class="section-sub">ORIENT BEFORE CHORDS</span>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">// Read This First — The Fret Landscape</div>
+    <p style="margin:0;">With 9 chords spanning frets 2 through 11 plus open positions, knowing <em>where</em> you're going before worrying about shapes is critical. Study the position map below. There are three fret clusters: the <strong style="color:var(--accent2);">low cluster</strong> (frets 2–4, chorus chords), the <strong style="color:var(--bright);">high cluster</strong> (frets 6 and 11, verse chords), and the <strong style="color:#00c853;">open cluster</strong> (A, E, D — bridge/outro relief). The long jump from fret 4 to fret 11 within the verse is the hardest transition in the song.</p>
+  </div>
+
+  <table class="fret-table">
+    <thead>
+      <tr>
+        <th>Chord</th>
+        <th>Fret Position</th>
+        <th>Section / Function</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>D#sus2</td>
+        <td>6fr (barre)</td>
+        <td>Intro / Verse — TONIC</td>
+        <td>Am-style barre. Root = D#. Most common chord in the song.</td>
+      </tr>
+      <tr>
+        <td>C#sus2</td>
+        <td>4fr (barre)</td>
+        <td>Verse — PASSING</td>
+        <td>Same shape, slide down 2 frets from D#sus2.</td>
+      </tr>
+      <tr>
+        <td>G#sus2</td>
+        <td>11fr (barre)</td>
+        <td>Verse — COLOUR</td>
+        <td>⚠ Highest position in the set. Narrow fret spacing. Same shape. Jump from fret 4 or 6.</td>
+      </tr>
+      <tr>
+        <td>C#m</td>
+        <td>4fr (barre)</td>
+        <td>Chorus — TONIC START</td>
+        <td>Am-style barre at 4fr. Same position as C#sus2 — different shape (minor not sus2).</td>
+      </tr>
+      <tr>
+        <td>B</td>
+        <td>2fr (barre)</td>
+        <td>Chorus — PASSING</td>
+        <td>Am-style barre. Lower than C#m by 2 frets.</td>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>Open (5fr alt)</td>
+        <td>Chorus — RESOLUTION</td>
+        <td>Open A major. Hand relief chord — enjoy it.</td>
+      </tr>
+      <tr>
+        <td>F#madd11</td>
+        <td>2fr partial</td>
+        <td>Bridge / Outro — COLOUR</td>
+        <td>Partial barre voicing. Fingers: 4-1-2 on strings 2–4.</td>
+      </tr>
+      <tr>
+        <td>E</td>
+        <td>Open</td>
+        <td>Bridge / Outro — MOTION</td>
+        <td>Open E major. Full hand relief.</td>
+      </tr>
+      <tr>
+        <td>D</td>
+        <td>Open (xx0232)</td>
+        <td>Bridge / Outro — RESOLUTION</td>
+        <td>Open D major. Full hand relief.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══ 04 · CHORD DIAGRAMS ═══ -->
+  <div class="section-header">
+    <span class="section-num">04 //</span>
+    <span class="section-title">CHORD DIAGRAMS</span>
+    <span class="section-sub">9 CHORDS · 3 GROUPS</span>
+  </div>
+
+  <div class="chord-group-label">GROUP 1 — VERSE / INTRO CHORDS (SUS2 BARRES)</div>
+  <div class="chord-grid">
+
+    <!-- D#sus2 -->
+    <div class="chord-card">
+      <div class="chord-card-name">D#sus2</div>
+      <div class="chord-card-type">Eb SUS2 · BARRE 6th FRET</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">6fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |—<span class="d">●</span>—|   |
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 1 (barre 6fr)</div>
+      <div class="chord-note">// INDEX BARRE: fret 6 (strings 1–5)<br>// RING: D-string fret 8<br>// Most-played chord in song</div>
+    </div>
+
+    <!-- C#sus2 -->
+    <div class="chord-card">
+      <div class="chord-card-name">C#sus2</div>
+      <div class="chord-card-type">C# SUS2 · BARRE 4th FRET</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">4fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |—<span class="d">●</span>—|   |
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 1 (barre 4fr)</div>
+      <div class="chord-note">// SAME SHAPE AS D#sus2<br>// SLIDE DOWN 2 FRETS<br>// Same shape as C#m but different finger layout</div>
+    </div>
+
+    <!-- G#sus2 -->
+    <div class="chord-card">
+      <div class="chord-card-name">G#sus2</div>
+      <div class="chord-card-type">Ab SUS2 · BARRE 11th FRET ⚠</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">11fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |—<span class="d">●</span>—|   |
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 1 (barre 11fr)</div>
+      <div class="chord-note">// ⚠ HIGHEST FRET IN SETLIST<br>// SAME SHAPE as D#sus2/C#sus2<br>// Narrower frets = tighter squeeze but easier pressure</div>
+    </div>
+  </div>
+
+  <div class="chord-group-label">GROUP 2 — CHORUS CHORDS (BARRE + OPEN)</div>
+  <div class="chord-grid">
+
+    <!-- C#m -->
+    <div class="chord-card">
+      <div class="chord-card-name">C#m</div>
+      <div class="chord-card-type">C# MINOR · BARRE 4th FRET</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">4fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |   |—<span class="d">●</span>—|
+A |   |—<span class="d">●</span>—|
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 1 1 3 4 (barre 4fr)</div>
+      <div class="chord-note">// Am-shape barre at fret 4<br>// SAME FRET as C#sus2<br>// "Take these broken wings" — chorus tonic</div>
+    </div>
+
+    <!-- B -->
+    <div class="chord-card">
+      <div class="chord-card-name">B</div>
+      <div class="chord-card-type">B MAJOR · BARRE 2nd FRET</div>
+      <div class="chord-diagram"><span class="x">x</span>  <span class="b">2fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |   |—<span class="d">●</span>—|
+D |   |—<span class="d">●</span>—|
+A |   |—<span class="d">●</span>—|
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 2 3 4 (barre 2fr)</div>
+      <div class="chord-note">// Am-shape barre at fret 2<br>// "And learn to fly again"<br>// Slide down 2 from C#m</div>
+    </div>
+
+    <!-- A -->
+    <div class="chord-card">
+      <div class="chord-card-name">A</div>
+      <div class="chord-card-type">A MAJOR · OPEN POSITION</div>
+      <div class="chord-diagram">  <span class="o">○</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G |—<span class="d">●</span>—|   |
+D |—<span class="d">●</span>—|   |
+A  <span class="o">○</span>
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">1 2 3 (fret 2, D/G/B strings)</div>
+      <div class="chord-note">// OPEN CHORD — hand relief!<br>// "And learn to live so free"<br>// Open A-string, fret 2 on D/G/B</div>
+    </div>
+  </div>
+
+  <div class="chord-group-label">GROUP 3 — BRIDGE / OUTRO CHORDS (OPEN POSITION RELIEF)</div>
+  <div class="chord-grid">
+
+    <!-- F#madd11 -->
+    <div class="chord-card">
+      <div class="chord-card-name">F#madd11</div>
+      <div class="chord-card-type">F# MINOR add11 · PARTIAL</div>
+      <div class="chord-diagram">  <span class="b">2fr</span>
+e |—<span class="d">●</span>—|   |
+B |—<span class="d">●</span>—|   |
+G  <span class="o">○</span>
+D  <span class="o">○</span>
+A  <span class="x">×</span>
+E  <span class="x">×</span></div>
+      <div class="chord-fingers">4 1 2 (open G+D ring)</div>
+      <div class="chord-note">// Partial voicing — top 4 strings only<br>// Finger 4: e-string fret 2<br>// Open G and D strings ring through</div>
+    </div>
+
+    <!-- E -->
+    <div class="chord-card">
+      <div class="chord-card-name">E</div>
+      <div class="chord-card-type">E MAJOR · OPEN</div>
+      <div class="chord-diagram"><span class="o">○</span>
+e  <span class="o">○</span>
+B  <span class="o">○</span>
+G |—<span class="d">●</span>—|
+D |—<span class="d">●</span>—|
+A |—<span class="d">●</span>—|
+E  <span class="o">○</span></div>
+      <div class="chord-fingers">2 3 1 (fret 1 on G, 2 on A/D)</div>
+      <div class="chord-note">// Full open E major<br>// MAXIMUM hand relief<br>// Outro/fade loop</div>
+    </div>
+
+    <!-- D -->
+    <div class="chord-card">
+      <div class="chord-card-name">D</div>
+      <div class="chord-card-type">D MAJOR · OPEN</div>
+      <div class="chord-diagram"><span class="x">x</span>
+<span class="x">x</span>
+e |—<span class="d">●</span>—|
+B |—<span class="d">●</span>—|
+G |—<span class="d">●</span>—|
+D  <span class="o">○</span></div>
+      <div class="chord-fingers">1 3 2 (fret 2 on e/G, fret 3 on B)</div>
+      <div class="chord-note">// Top 4 strings only<br>// Open D-string root<br>// Outro/fade loop</div>
+    </div>
+  </div>
+
+  <!-- ═══ 05 · STRUMMING PATTERN ═══ -->
+  <div class="section-header">
+    <span class="section-num">05 //</span>
+    <span class="section-title">STRUMMING PATTERN</span>
+    <span class="section-sub">WHOLE SONG · 99 BPM</span>
+  </div>
+
+  <div class="strum-block">
+    <div class="strum-title">BALLAD GROOVE — SYNCOPATED 8TH</div>
+    <div class="strum-feel">// SOURCE-CONFIRMED · WHOLE SONG · CHORD CHART EXPLICIT NOTATION</div>
+
+    <div style="display:flex; gap: 32px; flex-wrap:wrap; margin-top:8px;">
+      <div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:8px;">BEAT GRID</div>
+        <div class="beat-grid">
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">1</div></div>
+          <div class="beat-wrap"><div class="beat skip">—</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat up">↑</div><div class="beat-label">2</div></div>
+          <div class="beat-wrap"><div class="beat up">↑</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">3</div></div>
+          <div class="beat-wrap"><div class="beat skip">—</div><div class="beat-label">&amp;</div></div>
+          <div class="beat-wrap"><div class="beat up">↑</div><div class="beat-label">4</div></div>
+          <div class="beat-wrap"><div class="beat down">↓</div><div class="beat-label">&amp;</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:8px;">NOTATION</div>
+        <div style="font-family:var(--mono); font-size:13px; color:var(--body); line-height:2.4; padding: 8px 0;">
+          <span style="color:var(--accent);">↓</span> &nbsp;
+          <span style="color:var(--muted);">—</span> &nbsp;
+          <span style="color:var(--accent3);">↑↑</span> &nbsp;
+          <span style="color:var(--accent);">↓</span> &nbsp;
+          <span style="color:var(--muted);">—</span> &nbsp;
+          <span style="color:var(--accent3);">↑</span>
+          <span style="color:var(--accent);">↓</span>
+        </div>
+        <div style="font-family:var(--mono); font-size:11px; color:var(--muted);">D · UU · D · UD</div>
+      </div>
+    </div>
+
+    <div class="strum-legend">
+      <div class="legend-item"><div class="legend-swatch down"></div>DOWNSTROKE</div>
+      <div class="legend-item"><div class="legend-swatch up"></div>UPSTROKE</div>
+      <div class="legend-item"><div class="legend-swatch skip"></div>SKIP / ARM KEEPS MOVING</div>
+    </div>
+
+    <div style="margin-top:14px; padding:10px 14px; background:rgba(255,140,0,0.06); border-left:2px solid var(--accent2);">
+      <div style="font-family:var(--mono); font-size:10px; color:var(--accent2); letter-spacing:2px; margin-bottom:4px;">// BALLAD CONTEXT</div>
+      <div style="font-size:13px; color:var(--body);">At 99 BPM with sus2 chords, this pattern creates a floating, breathable feel — exactly what Broken Wings needs even in a metal arrangement. The double upstroke on beats 2 and 2& (↑↑) is the characteristic swoop of the pattern. Don't rush it. The 4& downstroke landing is the groove anchor — that's where the pattern "clicks" into the next bar. The bridge/outro (E–D–F#madd11 loop) can breathe even more — lighter touch, more ring.</div>
+    </div>
+  </div>
+
+  <!-- ═══ 06 · SONG STRUCTURE ═══ -->
+  <div class="section-header">
+    <span class="section-num">06 //</span>
+    <span class="section-title">SONG STRUCTURE</span>
+    <span class="section-sub">FULL MAP</span>
+  </div>
+
+  <div class="structure-box"><span style="color:var(--accent3);">INTRO        </span>  <span style="color:var(--bright);">D#sus2 · C#sus2 · G#sus2</span>              (floating sus2 loop · ~8 bars)
+<span style="color:var(--muted);">VERSE 1      </span>  <span style="color:var(--bright);">D#sus2 · C#sus2 · G#sus2 · D#sus2</span>     (with C#sus2 variations · ~8 bars)
+<span style="color:var(--accent2);">CHORUS 1     </span>  <span style="color:var(--bright);">C#m · B · A</span>                            (× 2 passes · + D#sus2 tag)
+<span style="color:var(--muted);">VERSE 2      </span>  <span style="color:var(--bright);">D#sus2 · C#sus2 · G#sus2 · D#sus2</span>     (~8 bars)
+<span style="color:var(--accent2);">CHORUS 2     </span>  <span style="color:var(--bright);">C#m · B · A · + F#madd11 tag</span>          (extended · "yeah yeah" ending)
+<span style="color:var(--accent);">INTERLUDE    </span>  <span style="color:var(--bright);">D#sus2 · C#sus2 loop</span>                   (~4 bars instrumental)
+<span style="color:var(--muted);">VERSE 3      </span>  <span style="color:var(--bright);">D#sus2 · C#sus2 · G#sus2</span>              (shortened · ~4 bars)
+<span style="color:var(--accent2);">CHORUS 3     </span>  <span style="color:var(--bright);">C#m · B · A · F#madd11</span>                (full extended chorus)
+<span style="color:var(--accent3);">BRIDGE       </span>  <span style="color:var(--bright);">A · E · D · F#madd11</span>                  ("Let us in" section)
+<span style="color:var(--accent2);">OUTRO        </span>  <span style="color:var(--bright);">F#madd11 · E · D</span>                       (repeating loop)
+<span style="color:var(--accent);">FADE OUT     </span>  <span style="color:var(--bright);">F#madd11 · E · D</span>                       (loop to fade)</div>
+
+  <div class="callout">
+    <div class="callout-label">// Live Performance Note — Hard Ending</div>
+    <p style="margin:0;">The original fades out on the F#madd11–E–D loop. For !bang!path! live: run 2 loops of the outro, then end on a sustained open E chord — let it ring and decay naturally. Do not add a percussive stop here. The sustained E is the emotional exhale after the chorus peaks. Signal your drummer to stop on the E landing and let it fade acoustically.</p>
+  </div>
+
+  <!-- ═══ 07 · SECTION CHARTS ═══ -->
+  <div class="section-header">
+    <span class="section-num">07 //</span>
+    <span class="section-title">SECTION CHARTS</span>
+    <span class="section-sub">BAR-BY-BAR</span>
+  </div>
+
+  <!-- INTRO -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">INTRO</div>
+      <div class="sc-tag cyan">FLOATING SUS2 LOOP · ESTABLISH THE FEEL</div>
+      <div class="sc-tag amber">~8 BARS</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-3">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 1–2</div>
+          <div class="bar-chord">D#sus2</div>
+          <div class="bar-note">Fret 6 · Establish tonic</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 3–4</div>
+          <div class="bar-chord">C#sus2</div>
+          <div class="bar-note">Fret 4 · Slide down</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 5–8</div>
+          <div class="bar-chord bright">G#sus2</div>
+          <div class="bar-note">Fret 11 ⚠ · Jump up</div>
+        </div>
+      </div>
+      <div class="sc-instruction">The intro is the first time the audience hears you. The G#sus2 at fret 11 is the money shot — nail it. The bass tab confirms the root movement: D# → C# → G# creates the suspended, unresolved feeling that defines the song. Keep the strumming light and floaty here — this is not the time for metal aggression.</div>
+    </div>
+  </div>
+
+  <!-- VERSE -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">VERSE 1 &amp; 2 &amp; 3</div>
+      <div class="sc-tag cyan">SUS2 LOOP · THE VERSE ENGINE</div>
+      <div class="sc-tag amber">8 BARS EACH</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-4">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 1–2</div>
+          <div class="bar-chord">D#sus2</div>
+          <div class="bar-note">"Baby I don't understand"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 3</div>
+          <div class="bar-chord">C#sus2</div>
+          <div class="bar-note">"Why we can't just hold on"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 4</div>
+          <div class="bar-chord bright">G#sus2</div>
+          <div class="bar-note">Fret 11 · "…hands"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 5–6</div>
+          <div class="bar-chord">D#sus2</div>
+          <div class="bar-note">"This time will be the last"</div>
+        </div>
+      </div>
+      <div class="bar-row bar-row-3">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 7</div>
+          <div class="bar-chord">C#sus2</div>
+          <div class="bar-note">"I need you so"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 8</div>
+          <div class="bar-chord bright">G#sus2</div>
+          <div class="bar-note">Fret 11 · "Ooo"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">→ CHORUS</div>
+          <div class="bar-chord red">C#m</div>
+          <div class="bar-note">"Take these broken wings"</div>
+        </div>
+      </div>
+      <div class="sc-instruction">The D#sus2 → C#sus2 → G#sus2 loop is the verse engine. It repeats with slight lyric variations but the chord sequence is consistent. The jump from C#sus2 (fret 4) to G#sus2 (fret 11) is 7 frets — your biggest position shift in the set. Prepare the G#sus2 shape while the C#sus2 bar is still playing. The sus2 shapes are almost identical — only the fret position changes.</div>
+    </div>
+  </div>
+
+  <!-- CHORUS -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">CHORUS</div>
+      <div class="sc-tag red">EMOTIONAL PEAK · C#m → B → A</div>
+      <div class="sc-tag amber">8+ BARS</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-3">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 1</div>
+          <div class="bar-chord">C#m</div>
+          <div class="bar-note">"Take these broken wings"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 2</div>
+          <div class="bar-chord amber">B</div>
+          <div class="bar-note">"And learn to fly again"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 3</div>
+          <div class="bar-chord green">A</div>
+          <div class="bar-note">"And learn to live so free"</div>
+        </div>
+      </div>
+      <div class="bar-row bar-row-3">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 4</div>
+          <div class="bar-chord">C#m</div>
+          <div class="bar-note">"When we hear the voices sing"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 5</div>
+          <div class="bar-chord amber">B</div>
+          <div class="bar-note">"The book of love will open up"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 6</div>
+          <div class="bar-chord green">A</div>
+          <div class="bar-note">"And let us in"</div>
+        </div>
+      </div>
+      <div class="bar-row bar-row-2">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 7 (CHORUS 2 EXTENDED)</div>
+          <div class="bar-chord">C#m · B · A</div>
+          <div class="bar-note">"You've got to learn to fly…"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 8 (CHORUS 2 TAG)</div>
+          <div class="bar-chord red">F#madd11</div>
+          <div class="bar-note">"…yeah, yeah" · Chorus 2 only</div>
+        </div>
+      </div>
+      <div class="sc-instruction">The chorus is the emotional release after the suspended verse. C#m (fret 4) → B (fret 2) → A (open) is a descending movement that feels like resolution. The open A is a hand-relief gift — take it. The transition from G#sus2 at fret 11 (end of verse) to C#m at fret 4 (chorus start) is a BIG jump DOWN — 7 frets. Prepare early. The F#madd11 tag only appears in Chorus 2 and 3 on the "yeah, yeah" lyric.</div>
+    </div>
+  </div>
+
+  <!-- BRIDGE -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">BRIDGE</div>
+      <div class="sc-tag amber">OPEN POSITION LIFT · "LET US IN"</div>
+      <div class="sc-tag cyan">~4 BARS</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-4">
+        <div class="bar-cell">
+          <div class="bar-num">BAR 1</div>
+          <div class="bar-chord green">A</div>
+          <div class="bar-note">"Let us in"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 2</div>
+          <div class="bar-chord green">E</div>
+          <div class="bar-note">Open E</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 3</div>
+          <div class="bar-chord green">D</div>
+          <div class="bar-note">"Let us in"</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">BAR 4</div>
+          <div class="bar-chord red">F#madd11</div>
+          <div class="bar-note">Partial voicing</div>
+        </div>
+      </div>
+      <div class="sc-instruction">The bridge uses only open-position and near-open chords — maximum hand relief after the brutal verse/chorus barre workout. Let these chords breathe and ring. The F#madd11 (partial voicing at fret 2) is the colour chord — it creates that characteristic "yeah" moment. Slightly softer attack here. This is the song's emotional peak before the final chorus.</div>
+    </div>
+  </div>
+
+  <!-- OUTRO / FADE -->
+  <div class="section-chart">
+    <div class="sc-header">
+      <div class="sc-name">OUTRO / FADE</div>
+      <div class="sc-tag cyan">F#madd11 · E · D LOOP</div>
+      <div class="sc-tag red">LIVE ENDING: SUSTAINED E</div>
+    </div>
+    <div class="sc-body">
+      <div class="bar-row bar-row-3">
+        <div class="bar-cell">
+          <div class="bar-num">LOOP × REPEAT</div>
+          <div class="bar-chord red">F#madd11</div>
+          <div class="bar-note">Partial voicing</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">LOOP × REPEAT</div>
+          <div class="bar-chord green">E</div>
+          <div class="bar-note">Open E</div>
+        </div>
+        <div class="bar-cell">
+          <div class="bar-num">LOOP × REPEAT</div>
+          <div class="bar-chord green">D</div>
+          <div class="bar-note">Open D · → back to F#madd11</div>
+        </div>
+      </div>
+      <div class="sc-instruction"><strong style="color:var(--accent);">LIVE ENDING:</strong> After 2–3 loops of the F#madd11–E–D pattern, resolve to open E. Strike it once, let it ring fully. No muting. Your bandmates stop on that E landing. The chord decays naturally. Sustain = 10–15 seconds of natural acoustic decay. This is the most emotionally effective ending in your encore set. Don't rush it or cut it short.</div>
+    </div>
+  </div>
+
+  <!-- ═══ 08 · TECHNIQUE NOTES ═══ -->
+  <div class="section-header">
+    <span class="section-num">08 //</span>
+    <span class="section-title">TECHNIQUE NOTES</span>
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-cell">
+      <div class="tech-num">01</div>
+      <div class="tech-title">// THE FRET 4–TO–11 JUMP</div>
+      <div class="tech-body">The C#sus2 (fret 4) to G#sus2 (fret 11) jump is the hardest transition in this song and the longest position shift in the set. The chord shape is identical — it's purely a position shift. Drill it slowly: play C#sus2 for 2 bars, then on bar 3 beat 1 land G#sus2 at fret 11. At tempo, you need to begin moving your fretting hand during the last beat of the C#sus2 bar. The shape forms in transit. Trust it.</div>
+    </div>
+    <div class="tech-cell">
+      <div class="tech-num">02</div>
+      <div class="tech-title">// SUS2 vs MINOR — SAME FRET TRAP</div>
+      <div class="tech-body">C#sus2 (fret 4) and C#m (fret 4) are both at fret 4 but completely different shapes. C#sus2 is a sus2 barre (1-1-1-3-1 fingering), C#m is a minor Am-style barre (1-1-1-3-4). In the verse-to-chorus transition, you land from G#sus2 at fret 11 down to C#m at fret 4 — NOT C#sus2. The minor shape must be ready. Drill the G#sus2 → C#m transition specifically as its own exercise.</div>
+    </div>
+    <div class="tech-cell">
+      <div class="tech-num">03</div>
+      <div class="tech-title">// DYNAMIC SHAPING — METAL BALLAD</div>
+      <div class="tech-body">This is an encore, not a main-set track. The crowd needs a moment to breathe after the setlist. Play the intro and verses quieter than you think is right. The chorus should lift significantly — that's the emotional payoff. The bridge is the softest point of the whole song. The final chorus comes back loud. This dynamic architecture is what makes the song work in a metal context. Flatline volume = flatline emotion.</div>
+    </div>
+    <div class="tech-cell">
+      <div class="tech-num">04</div>
+      <div class="tech-title">// LETTING SUS2 CHORDS RING</div>
+      <div class="tech-body">The sus2 chords in the verse should ring longer than you'd expect for a metal arrangement. The original arpeggiates them — your strummed version needs to compensate by letting the chord sustain between strums. Reduce muting significantly in the verse. The suspended quality of D#sus2/C#sus2/G#sus2 comes from the unresolved 2nd — if you kill the ring, you kill the suspended feeling. Let it breathe.</div>
+    </div>
+  </div>
+
+  <!-- ═══ 09 · FEEL DESCRIPTION ═══ -->
+  <div class="section-header">
+    <span class="section-num">09 //</span>
+    <span class="section-title">FEEL DESCRIPTION</span>
+  </div>
+
+  <div class="feel-box">
+    <div class="feel-label">// THE TARGET STATE</div>
+    <div class="feel-body">You're opening the encore with a power ballad. The room has just roared through the main set and you're giving them something that cuts through with emotion instead of volume. Verse: floating, suspended, slightly haunted. Chorus: wide open, soaring — this is the part everyone in the room will sing. Bridge: intimate, almost conversational. Final outro: the lights go down, the last chord decays, and everyone is very, very still for about three seconds. That silence is the best sound in your set. Play toward it.</div>
+  </div>
+
+  <!-- ═══ 10 · TEMPO LADDER ═══ -->
+  <div class="section-header">
+    <span class="section-num">10 //</span>
+    <span class="section-title">TEMPO LADDER</span>
+  </div>
+
+  <div class="tempo-row">
+    <div class="tempo-cell start">
+      <div class="tempo-label">START</div>
+      <div class="tempo-value">50</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell mid">
+      <div class="tempo-label">STEP 2</div>
+      <div class="tempo-value">60</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell target">
+      <div class="tempo-label">75% TARGET</div>
+      <div class="tempo-value">74</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell mid">
+      <div class="tempo-label">STEP 4</div>
+      <div class="tempo-value">85</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+    <div class="tempo-cell perf">
+      <div class="tempo-label">PERFORMANCE</div>
+      <div class="tempo-value">99</div>
+      <div class="tempo-label" style="margin-top:4px;">BPM</div>
+    </div>
+  </div>
+
+  <div class="callout amber" style="margin-top:12px;">
+    <div class="callout-label">// Priority Drill</div>
+    <p style="margin:0;">Before running full songs at any tempo, isolate the three hardest transitions: <strong style="color:var(--bright);">(1)</strong> C#sus2→G#sus2 (fret 4 to fret 11) <strong style="color:var(--bright);">(2)</strong> G#sus2→C#m (fret 11 to fret 4, different shape on arrival) <strong style="color:var(--bright);">(3)</strong> C#sus2 shape vs C#m shape (same fret, different shape). These three transitions are the entire difficulty of this song. Everything else is straightforward.</p>
+  </div>
+
+  <!-- ═══ 11 · GATE CHECKLIST ═══ -->
+  <div class="section-header">
+    <span class="section-num">11 //</span>
+    <span class="section-title">GATE CHECKLIST</span>
+    <span class="section-sub">PERFORMANCE READY CRITERIA</span>
+  </div>
+
+  <ul class="gate-list">
+    <li>G#sus2 at fret 11 lands cleanly — no buzz, no hesitation — from both fret 4 AND fret 6 approach</li>
+    <li>C#sus2 vs C#m distinction is automatic at fret 4 — no shape confusion between the two</li>
+    <li>G#sus2 (fret 11) → C#m (fret 4) transition: lands on correct shape, not sus2 shape</li>
+    <li>Ballad groove pattern (D · UU · D · UD) consistent for 4+ bars without drift</li>
+    <li>Dynamic shaping present: verse < chorus < bridge < final chorus in volume</li>
+    <li>Sus2 chords allowed to ring between strums — not over-muted</li>
+    <li>Full song structure navigated: Intro → V1 → Ch1 → V2 → Ch2 → Interlude → V3 → Ch3 → Bridge → Outro</li>
+    <li>F#madd11 voiced correctly (partial voicing, not full barre)</li>
+    <li>Bridge (A–E–D–F#madd11) played with lighter touch than chorus</li>
+    <li>Live ending rehearsed: sustained open E, band signals aligned, no premature cut</li>
+  </ul>
+
+  <hr>
+  <div style="padding: 32px 0 0; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 1.5px;">
+    !BANG!PATH! RHYTHM CHART · BROKEN WINGS · MR. MISTER 1985 · KEY: D#m · 99 BPM · STANDARD TUNING<br>
+    SOURCES: ULTIMATE-GUITAR TAB (BASS TAB — STRUCTURE ONLY) + OFFICIAL CHORD CHART (CHORDS + KEY CONFIRMED)<br>
+    ⚠ CONFLICTS RESOLVED: KEY G→D#m · BPM ~77→99 · TAB IDENTIFIED AS BASS (NOT GUITAR) — CHORD CHART AUTHORITATIVE<br>
+    CHART BUILD: !bang!path! DARK INDUSTRIAL DESIGN SYSTEM · v1.0
+  </div>
+
+</div>
+</body>
+</html>

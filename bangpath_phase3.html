@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!bang!path! — Phase 3: Song Integration</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+  :root {
+    /* === CANONICAL TOKENS === */
+    --black:         #0a0a0a;
+    --near-black:    #111111;
+    --dark:          #1a1a1a;
+    --panel:         #1f1f1f;
+    --border:        #2a2a2a;
+    --red:           #e8001c;
+    --red-dim:       #7a0010;
+    --amber:         #ff8c00;
+    --cyan:          #00d4ff;
+    --green:         #00e676;
+    --white:         #f0f0f0;
+    --grey:          #888888;
+    --light-grey:    #cccccc;
+
+    /* === ALIASES (P2/P3 names) === */
+    --deep:          #111111;
+    --body:          #cccccc;
+    --bright:        #f0f0f0;
+    --muted:         #888888;
+    --accent:        #e8001c;
+    --accent2:       #ff8c00;
+    --accent3:       #00d4ff;
+
+    /* === ALIASES (P4 names) === */
+    --bg:            #0a0a0a;
+    --surface:       #1f1f1f;
+    --surface2:      #1a1a1a;
+    --border-bright: #3a3a3a;
+    --text:          #f0f0f0;
+    --accent4:       #9b72cf;
+
+    /* === FONT STACK === */
+    --display: 'Bebas Neue', sans-serif;
+    --mono:    'Share Tech Mono', monospace;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--body);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    background: var(--deep);
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 80px,
+      rgba(232,0,61,0.04) 80px,
+      rgba(232,0,61,0.04) 81px
+    );
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .band-name {
+    font-family: var(--display);
+    font-size: 72px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(232,0,61,0.4);
+  }
+
+  .phase-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    border-left: 2px solid var(--accent3);
+    padding-left: 12px;
+  }
+
+  .phase-subtitle {
+    font-family: var(--display);
+    font-size: 32px;
+    color: var(--bright);
+    letter-spacing: 3px;
+    margin-top: 12px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    letter-spacing: 1px;
+  }
+
+  .meta-chip.hot {
+    color: var(--accent2);
+    border-color: rgba(255,107,0,0.3);
+    background: rgba(255,107,0,0.06);
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    margin: 56px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .section-header h2 {
+    font-family: var(--display);
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--bright);
+  }
+
+  .section-header .section-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  /* ===== CALLOUT BOX ===== */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(232,0,61,0.05);
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+
+  .callout p {
+    color: var(--body);
+    margin-bottom: 10px;
+  }
+
+  .callout p:last-child { margin-bottom: 0; }
+
+  .callout.amber {
+    border-color: var(--accent2);
+    background: rgba(255,107,0,0.05);
+  }
+
+  .callout.cyan {
+    border-color: var(--accent3);
+    background: rgba(0,212,255,0.05);
+  }
+
+  /* ===== SONG CARD ===== */
+  .song-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .song-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .song-card.tier2::before {
+    background: linear-gradient(90deg, var(--accent2), transparent);
+  }
+
+  .song-card.tier3::before {
+    background: linear-gradient(90deg, var(--accent3), transparent);
+  }
+
+  .song-header {
+    padding: 24px 28px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .song-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .song-title {
+    font-family: var(--display);
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--bright);
+    line-height: 1.1;
+  }
+
+  .song-artist {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  .song-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .tier-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border: 1px solid;
+  }
+
+  .tier-badge.t1 { color: var(--accent); border-color: var(--accent); background: rgba(232,0,61,0.08); }
+  .tier-badge.t2 { color: var(--accent2); border-color: var(--accent2); background: rgba(255,107,0,0.08); }
+  .tier-badge.t3 { color: var(--accent3); border-color: var(--accent3); background: rgba(0,212,255,0.08); }
+
+  .song-body {
+    padding: 24px 28px;
+  }
+
+  .song-meta-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 28px;
+  }
+
+  .song-meta-cell {
+    background: var(--panel);
+    padding: 12px 16px;
+  }
+
+  .song-meta-cell .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .song-meta-cell .value {
+    font-size: 13px;
+    color: var(--bright);
+    font-weight: 600;
+  }
+
+  /* ===== SUBSECTION HEADERS ===== */
+  .subsection-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 24px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .subsection-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .subsection-label.amber { color: var(--accent2); }
+  .subsection-label.cyan { color: var(--accent3); }
+
+  /* ===== CHORD CHART ===== */
+  .chord-chart {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--body);
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.8;
+  }
+
+  .chord-chart .chord-name {
+    color: var(--accent3);
+    font-weight: bold;
+  }
+
+  /* ===== STRUCTURE BOX ===== */
+  .structure-box {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 2;
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ===== DRILL BOX ===== */
+  .drill-box {
+    background: rgba(255,107,0,0.06);
+    border: 1px solid rgba(255,107,0,0.2);
+    border-left: 3px solid var(--accent2);
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+
+  .drill-box .drill-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .drill-box p {
+    font-size: 14px;
+    color: var(--body);
+  }
+
+  /* ===== FEEL BOX ===== */
+  .feel-box {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-left: 3px solid var(--accent3);
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+
+  .feel-box .feel-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .feel-box p {
+    font-size: 14px;
+    color: var(--body);
+    font-style: italic;
+  }
+
+  /* ===== TEMPO ROW ===== */
+  .tempo-row {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+
+  .tempo-cell {
+    flex: 1;
+    background: var(--deep);
+    padding: 12px 16px;
+    text-align: center;
+  }
+
+  .tempo-cell .tempo-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .tempo-cell .tempo-value {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+
+  .tempo-cell.start .tempo-value { color: var(--muted); }
+  .tempo-cell.target .tempo-value { color: var(--accent2); }
+  .tempo-cell.perf .tempo-value { color: var(--accent); }
+
+  /* ===== RUBRIC TABLE ===== */
+  .rubric-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+
+  .rubric-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--deep);
+    border: 1px solid var(--border);
+  }
+
+  .rubric-table td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .rubric-table tr:nth-child(odd) td { background: var(--panel); }
+  .rubric-table tr:nth-child(even) td { background: var(--deep); }
+
+  .rubric-table td:first-child { color: var(--bright); font-weight: 600; }
+  .rubric-table td:nth-child(2) { color: var(--muted); font-style: italic; }
+  .rubric-table td:nth-child(3) { color: #00e676; }
+
+  /* ===== PATTERN REFERENCE ===== */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  .pattern-cell {
+    background: var(--panel);
+    padding: 16px 18px;
+  }
+
+  .pattern-cell .p-name {
+    font-family: var(--display);
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    margin-bottom: 4px;
+  }
+
+  .pattern-cell .p-notation {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent3);
+    margin-bottom: 8px;
+  }
+
+  .pattern-cell .p-desc {
+    font-size: 13px;
+    color: var(--body);
+    line-height: 1.5;
+  }
+
+  .pattern-cell .p-used {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* ===== WEEK SCHEDULE ===== */
+  .week-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .week-header {
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .week-number {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .week-goal {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+  }
+
+  .week-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .week-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .week-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba(42,42,48,0.5);
+    vertical-align: top;
+  }
+
+  .week-table td:first-child {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    white-space: nowrap;
+    width: 60px;
+  }
+
+  .week-table td:last-child {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .week-table tr:last-child td { border-bottom: none; }
+
+  /* ===== STAMINA BLOCKS ===== */
+  .stamina-pillar {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent2);
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .pillar-title {
+    font-family: var(--display);
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+
+  /* ===== MASTER RUBRIC TABLE ===== */
+  .master-rubric {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 16px 0;
+  }
+
+  .master-rubric th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--deep);
+    border: 1px solid var(--border);
+  }
+
+  .master-rubric td {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .master-rubric tr:nth-child(odd) td { background: var(--panel); }
+  .master-rubric tr:nth-child(even) td { background: var(--deep); }
+
+  .master-rubric td:first-child { color: var(--bright); font-weight: 600; }
+  .master-rubric td:nth-child(2) {
+    font-family: var(--mono);
+    color: var(--accent2);
+    font-size: 13px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .checkbox-col {
+    text-align: center;
+    width: 80px;
+  }
+
+  .checkbox {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border);
+    background: var(--deep);
+  }
+
+  /* ===== EXIT CRITERIA CHECKLIST ===== */
+  .exit-checklist {
+    list-style: none;
+    margin: 16px 0;
+  }
+
+  .exit-checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .exit-checklist li:last-child { border-bottom: none; }
+
+  .exit-checklist li::before {
+    content: '[ ]';
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  /* ===== INLINE CODE / MONO ===== */
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    background: rgba(0,212,255,0.07);
+    padding: 1px 5px;
+  }
+
+  /* ===== BODY TEXT ===== */
+  p { margin-bottom: 12px; color: var(--body); }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--bright); font-weight: 700; }
+
+  ul.body-list {
+    list-style: none;
+    margin: 12px 0;
+  }
+
+  ul.body-list li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    border-bottom: 1px solid rgba(42,42,48,0.4);
+    font-size: 14px;
+  }
+
+  ul.body-list li::before {
+    content: '//';
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 8px;
+  }
+
+  /* ===== TIER LEGEND ===== */
+  .tier-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  .tier-legend-cell {
+    background: var(--panel);
+    padding: 16px 20px;
+  }
+
+  .tier-legend-cell .tl-name {
+    font-family: var(--display);
+    font-size: 18px;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .tier-legend-cell .tl-weeks {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .tier-legend-cell .tl-desc {
+    font-size: 13px;
+    color: var(--body);
+  }
+
+  .tier-legend-cell.t1 .tl-name { color: var(--accent); }
+  .tier-legend-cell.t2 .tl-name { color: var(--accent2); }
+  .tier-legend-cell.t3 .tl-name { color: var(--accent3); }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin: 48px 0;
+    border: none;
+  }
+
+  /* ===== PHASE PROGRESS BAR ===== */
+  .phase-progress {
+    display: flex;
+    gap: 4px;
+    margin: 20px 0;
+  }
+
+  .phase-pip {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+  }
+
+  .phase-pip.done { background: var(--accent); }
+  .phase-pip.active { background: var(--accent2); }
+
+  /* ===== SMALL BODY TEXT ===== */
+  .small-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin: 8px 0;
+    letter-spacing: 1px;
+  }
+
+  /* ===== WARNING BOX ===== */
+  .warning-box {
+    background: rgba(232,0,61,0.08);
+    border: 1px solid rgba(232,0,61,0.25);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .warning-box .warn-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .band-name { font-size: 48px; }
+    .header-inner { padding: 24px 16px 20px; }
+    .container { padding: 32px 16px 60px; }
+    .song-header { flex-direction: column; }
+    .song-badges { align-items: flex-start; }
+    .tempo-row { flex-direction: column; gap: 1px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="band-name">!bang!path!</div>
+    <div class="phase-tag">// PHASE 3 OF 4 — SONG INTEGRATION</div>
+    <div class="phase-subtitle">THE PART WHERE IT GETS REAL</div>
+    <div class="header-meta">
+      <div class="meta-chip">MONTH 6 CHECKPOINT</div>
+      <div class="meta-chip">13 SONGS</div>
+      <div class="meta-chip">8–10 WEEKS</div>
+      <div class="meta-chip">5–10 HRS / WEEK</div>
+      <div class="meta-chip hot">ACOUSTIC PRIMARY</div>
+      <div class="meta-chip hot">EXIT CRITERIA: NON-NEGOTIABLE</div>
+    </div>
+    <div class="phase-progress" style="margin-top:20px;">
+      <div class="phase-pip done"></div>
+      <div class="phase-pip done"></div>
+      <div class="phase-pip active"></div>
+      <div class="phase-pip"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+  <!-- ===== OPENING BRIEF ===== -->
+  <div class="callout" style="margin-top:0;">
+    <p>You passed Phase 2. Congratulations. You built the tools. Chord voicings. Strumming patterns. Left-hand embellishment. Barre chord transitions. You practiced them in isolation, you got reps on individual skills, and you cleared the exit criteria.</p>
+    <p>Phase 3 does not care about your skills in isolation.</p>
+    <p>Phase 3 is 13 songs. Real structures. Real tempo. Real stamina demands. You will play things that sound bad before they sound good. You will discover that knowing a chord and playing it in context while maintaining time and feel are not the same thing. This is the phase where intermediate guitarists separate from people who "kind of play guitar."</p>
+    <p>You are not here to master these songs. You are here to make them <strong>not scary</strong>. There is a meaningful difference. Mastery is Phase 4. Phase 3 exit criteria are: 75% tempo, start to finish, no panic, 4–5 songs in a row without collapse. That is it. That is enough.</p>
+    <p>Do not skip ahead. Do not rush songs to "done" before the self-assessment rubric clears. Do not lie to yourself about what 75% tempo actually sounds like.</p>
+    <p><strong>Let's go.</strong></p>
+  </div>
+
+  <!-- ===== PHASE 3 EXIT CRITERIA ===== -->
+  <div class="section-header">
+    <h2>EXIT CRITERIA</h2>
+    <span class="section-tag">// NON-NEGOTIABLE GATES</span>
+  </div>
+
+  <ul class="exit-checklist">
+    <li>All 13 songs playable start to finish at 75% target tempo</li>
+    <li>No songs are actively intimidating even if not yet mastered</li>
+    <li>Can pick up any setlist song cold and run it without significant panic or preparation</li>
+    <li>Stamina to play 4–5 songs consecutively without quality collapse</li>
+  </ul>
+
+  <div class="warning-box">
+    <div class="warn-label">// WARNING</div>
+    <p>These criteria are gates, not guidelines. "Mostly there" is not "there." The rubric at the end of each song tells you exactly what done looks like. Use it. Be honest.</p>
+  </div>
+
+  <!-- ===== TIER SYSTEM ===== -->
+  <div class="section-header">
+    <h2>TIER SYSTEM</h2>
+    <span class="section-tag">// HOW THIS PHASE IS STRUCTURED</span>
+  </div>
+
+  <p>Songs are organized into three tiers based on your specific profile — acoustic primary, barre chords reliable but not effortless, left-hand embellishment functional. You will not work on one song at a time. By Week 4 you are running multiple songs in every session. Song-switching fatigue is a real thing you need to build resistance to.</p>
+
+  <div class="tier-legend">
+    <div class="tier-legend-cell t1">
+      <div class="tl-name">TIER 1</div>
+      <div class="tl-weeks">WEEKS 1–3 · ENTRY POINTS</div>
+      <div class="tl-desc">Learn these first. Build confidence and calibrate your song-learning process. Simpler chord sets, more familiar progressions.</div>
+    </div>
+    <div class="tier-legend-cell t2">
+      <div class="tl-name">TIER 2</div>
+      <div class="tl-weeks">WEEKS 3–7 · CORE REPERTOIRE</div>
+      <div class="tl-desc">The bulk of the setlist. These get the most calendar real estate. New technical demands introduced progressively.</div>
+    </div>
+    <div class="tier-legend-cell t3">
+      <div class="tl-name">TIER 3</div>
+      <div class="tl-weeks">WEEKS 6–10 · BOSS FIGHTS</div>
+      <div class="tl-desc">Songs with the most technical or stamina demands. Approached after the others are partially embedded. F#m barre, drop D, full-set closing.</div>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT HAND DEFAULT PATTERNS ===== -->
+  <div class="section-header">
+    <h2>RIGHT-HAND DEFAULT PATTERNS</h2>
+    <span class="section-tag">// YOUR TOOLKIT REFERENCE</span>
+  </div>
+
+  <p>Unless a song chart specifies otherwise, these are your four base patterns. Every song chart references these by letter. Know them before you open a song.</p>
+
+  <div class="pattern-grid">
+    <div class="pattern-cell">
+      <div class="p-name">PATTERN A</div>
+      <div class="p-notation">D D D D D D D D</div>
+      <div class="p-desc"><strong>Driving Eighths / Heavy Metal Base.</strong> All downstrokes, eighth note grid. The machine setting.</div>
+      <div class="p-used">// Heavy sections · Verse chug · Max energy</div>
+    </div>
+    <div class="pattern-cell">
+      <div class="p-name">PATTERN B</div>
+      <div class="p-notation">D D DU D DU</div>
+      <div class="p-desc"><strong>Metal Strum with Accent.</strong> Accents on beats 2 and 4 or where the kick drum pushes. Most song verses.</div>
+      <div class="p-used">// Mid-tempo · Most verses · Driving feel</div>
+    </div>
+    <div class="pattern-cell">
+      <div class="p-name">PATTERN C</div>
+      <div class="p-notation">X — X —— X</div>
+      <div class="p-desc"><strong>Syncopated Stab.</strong> Hit the chord, mute immediately, release on the upbeat. Post-punk stab rhythms and synth-pattern replacements.</div>
+      <div class="p-used">// Stab moments · Synth replacements</div>
+    </div>
+    <div class="pattern-cell">
+      <div class="p-name">PATTERN D</div>
+      <div class="p-notation">Strum · Hold · Embellish</div>
+      <div class="p-desc"><strong>Open Strum + Embellishment Platform.</strong> Strum chord, let it ring, embellish on beats 3–4 of a four-bar phrase.</div>
+      <div class="p-used">// Slower songs · Ballad sections · Breathing room</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== SONG CARDS ===== -->
+  <div class="section-header">
+    <h2>SONG CHARTS</h2>
+    <span class="section-tag">// ALL 13 SETLIST SONGS</span>
+  </div>
+
+  <!-- ======================================================
+       SONG 01: TAINTED LOVE
+       ====================================================== -->
+  <div class="song-card">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 01</div>
+        <div class="song-title">TAINTED LOVE</div>
+        <div class="song-artist">SOFT CELL</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t1">TIER 1 · ENTRY POINT</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">A minor · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">80 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">90 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">120 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern A throughout</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">Am  =  x 0 2 2 1 0
+F   =  1 3 3 2 1 1   (full barre, 1st fret)
+C   =  x 3 2 0 1 0
+G   =  3 2 0 0 0 3</div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:       Am  Am  Am  Am          (4 bars, driving eighths)
+VERSE:       Am  F  Am  F           (repeat x4)
+PRE-CHORUS:  C   G  C   G
+CHORUS:      Am  F  C   G           (repeat x2)
+BRIDGE:      Dm  Am  Dm  Am
+OUTRO:       Am                      (build to hold)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The original has a mechanical synth pulse. Your rhythm guitar <strong>replaces the sense of relentlessness</strong> the synth creates. The tempo is steady, the chug is steady, the chord changes are your only event. Lead guitar handles any melodic line. You do not decorate. You are the machine.</p>
+      <p>One arrangement option: the pre-chorus can use <strong>Pattern C (syncopated stab)</strong> instead of driving eighths to create contrast before the chorus opens up. Discuss with your band.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Am shape:</strong> Add pinky to 3rd fret B string (Am add9 color) on beat 4 of held measures. Pull off back to open. Use once per four-bar phrase maximum — seasoning, not the meal.</p>
+      <div class="chord-chart">Am embellishment (beat 4 only):
+e |--0------------|
+B |--1--1--1--3p1-|   (3=pinky, p=pull-off back to 1)
+G |--2--2--2--2---|
+D |--2--2--2--2---|
+A |--0--0--0--0---|
+E |---------------|</div>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Am → F barre at tempo</div>
+        <p>The F barre must land clean on beat 1. Late arrival collapses the whole grid. Drill: metronome at 60 BPM, play Am for 4 beats, pre-form the F shape while Am is still ringing, hit F on beat 1 of bar 2. Repeat 20 times. Increase 4 BPM only when clean 10 times in a row.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Sustaining drive without rushing</div>
+        <p>Tainted Love at 120 BPM with relentless eighth notes will cause your right hand to rush. The kick drum in the original is mechanical. Your internal clock must be that mechanical. Record yourself and listen back. Rushing will be obvious.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The chord changes happen without a hiccup. The drive doesn't speed up or slow down. If you close your eyes and only hear the rhythm guitar, it sounds like a machine, not a human struggling. The Am → F → Am → F cycle sounds inevitable. You are not thinking about chords. You are thinking about time.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Am→F transition clean</td><td>Audible gap or buzz</td><td>Clean, no gap</td></tr>
+          <tr><td>Drive consistent</td><td>Rushing or dragging</td><td>Machine steady</td></tr>
+          <tr><td>Song start-to-finish at 90 BPM</td><td>Falls apart somewhere</td><td>Complete run</td></tr>
+          <tr><td>Embellishment once per phrase</td><td>None or constant</td><td>One per phrase</td></tr>
+          <tr><td>No panic picking up cold</td><td>"Which chord was it?"</td><td>Just start playing</td></tr>
+        </tbody>
+      </table>
+      <p class="small-note">// PHASE COMPLETE WHEN: 4/5 rows in Phase Complete column, two sessions in a row.</p>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 02: INTO THE GROOVE
+       ====================================================== -->
+  <div class="song-card">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 02</div>
+        <div class="song-title">INTO THE GROOVE</div>
+        <div class="song-artist">MADONNA</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t1">TIER 1 · ENTRY POINT</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">E minor · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">70 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">95 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">126 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern B verse · Pattern A chorus</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">Em  =  0 2 2 0 0 0
+D   =  x x 0 2 3 2
+C   =  x 3 2 0 1 0
+G   =  3 2 0 0 0 3
+Am  =  x 0 2 2 1 0
+B7  =  x 2 1 2 0 2   (note the non-obvious fingering)</div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:   Em  D  C  D   (x2)
+VERSE:   Em  D  C  D   (x4)
+CHORUS:  C   G  Am  D  (x2)
+BRIDGE:  Em  C  Em  C  B7
+OUTRO:   Em  D  C  D   (fade or hard stop)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The original groove lives in the synth bass and drum pattern. Your rhythm guitar <strong>implies the groove through right-hand articulation</strong> — not funk guitar, not copying the synth line. Verse on Pattern B (accent on 2 and 4 replaces the snare). Chorus opens to Pattern A for contrast and lift.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Em shape:</strong> Lift and re-fret the 2nd fret D string within the Em chord on upbeats. Creates subtle pulse without leaving position.</p>
+      <div class="chord-chart">Em groove (lift index on the "&" of beat 2):
+e |--0------------|
+B |--0------------|
+G |--0------------|
+D |--2--0--2--0---|
+A |--2------------|
+E |--0------------|</div>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Em → B7 turnaround</div>
+        <p>B7 (x21202) has an unusual fingering: index on 2nd fret A string, middle on 1st fret G string, ring on 2nd fret D string. Get this shape automatic before song context. Drill: Em → B7 → Em → B7 at 60 BPM until effortless.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Groove without a drummer</div>
+        <p>This song sounds like nothing without its groove. Practicing alone on acoustic feels wrong even when it's right. Find the original track, play along with headphones to feel where the groove lives, then practice without it. Trust the chord grid.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>Chord changes flow without hesitation. The accent on beats 2 and 4 is clear and intentional. When you shift to driving eighths at the chorus, there's an audible change in energy. B7 appears on cue. You don't have to think about where you are in the form.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>B7 shape clean</td><td>Buzz or muted strings</td><td>Full ring</td></tr>
+          <tr><td>Groove accent consistent</td><td>Random or absent</td><td>Beats 2 and 4 clear</td></tr>
+          <tr><td>Verse/chorus energy contrast</td><td>Same throughout</td><td>Audible difference</td></tr>
+          <tr><td>Song at 95 BPM complete</td><td>Falls apart</td><td>Complete run</td></tr>
+          <tr><td>No hesitation on form</td><td>"Wait, where are we?"</td><td>Automatic</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 03: ONLY YOU
+       ====================================================== -->
+  <div class="song-card">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 03</div>
+        <div class="song-title">ONLY YOU</div>
+        <div class="song-artist">YAZOO</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t1">TIER 1 · ENTRY POINT</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">G major · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">50 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">75 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">100 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern D throughout</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">G   =  3 2 0 0 0 3
+Em  =  0 2 2 0 0 0
+C   =  x 3 2 0 1 0
+D   =  x x 0 2 3 2
+Am  =  x 0 2 2 1 0
+Bm  =  x 2 4 4 3 2   (full barre, 2nd fret)</div>
+
+      <p class="small-note">// The chords are not the challenge. G / Em / C / D is one of the most common progressions in Western music. The challenge is the feel.</p>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:   G   Em  C   D   (slow, feel each chord)
+VERSE:   G   Em  C   D   (x3–4)
+CHORUS:  C   D   G   Em  (x2) → C  D  G  (hold)
+BRIDGE:  Am  Bm  C   D
+OUTRO:   G   Em  C   D   (slow out)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The original is carried by Vince Clarke's synth arpeggio and Alison Moyet's vocal. No keys player means the rhythm guitar provides <strong>harmonic implied motion</strong> — strum the chord, let it ring, slight right-hand swell on long measures, let the vocal fill the space. Pattern D is your primary tool. This song is slower than everything else in the set. Your acoustic will ring beautifully here. Use it.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>G shape:</strong> Add pinky to 3rd fret B string (Gadd9 color) on beat 3. Let it ring, pull back before beat 4.</p>
+      <div class="chord-chart">G embellishment:
+e |--3------------|
+B |--0--0--3--0---|   (add pinky beat 3, pull off beat 4)
+G |--0------------|
+D |--0------------|
+A |--2------------|
+E |--3------------|</div>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Bm barre in the bridge</div>
+        <p>Bm (x24432) is a full barre at the 2nd fret. On acoustic it requires significant grip. Drill: Am → Bm → Am → Bm at 40 BPM. Every string must ring. If it buzzes, go slower. Add 5 BPM only when clean 10 times in a row.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Playing slowly without drifting</div>
+        <p>Slow songs are deceptively hard. Without a driving pulse, your internal clock drifts. This song at performance tempo is ~100 BPM with a half-time feel that makes it feel like 50. Your hand will want to fill the space. Resist it. Set metronome to 50 BPM. Play one chord per click. Count every click. Don't rush to the next chord.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>Each chord sounds intentional and full. The space between chords feels musical, not empty. The Bm in the bridge doesn't cause a flinch. When the vocal is layered over this, it breathes. You are the bed the singer sleeps on.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Bm barre clean</td><td>Buzz</td><td>Full ring</td></tr>
+          <tr><td>Tempo stable at 75 BPM</td><td>Drift up or down</td><td>Click-steady</td></tr>
+          <tr><td>Embellishments used</td><td>None</td><td>One per phrase</td></tr>
+          <tr><td>Song complete start-to-finish</td><td>Falls apart</td><td>Full run</td></tr>
+          <tr><td>Song feels musical slow</td><td>Feels like practicing</td><td>Feels like music</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 04: TRUE FAITH
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 04</div>
+        <div class="song-title">TRUE FAITH</div>
+        <div class="song-artist">NEW ORDER</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">A minor · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">80 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">96 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">128 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern A verse · Pattern B chorus</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">Am  =  x 0 2 2 1 0
+G   =  3 2 0 0 0 3
+F   =  1 3 3 2 1 1   (full barre, 1st fret)
+C   =  x 3 2 0 1 0
+E   =  0 2 2 1 0 0   (the metal move — bright turnaround)</div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:   Am  G   F   C   (x2)
+VERSE:   Am  G   F   C   (x4)
+CHORUS:  F   C   G   Am  (x2) → F  C  E  (hold)
+BRIDGE:  Am  Am  G   G   F   F   E   E
+OUTRO:   Am                  (driving, build, stop)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The E chord at the chorus resolution is the arrangement's statement — it's brighter and harder-edged than the Am the original resolves to. This is where the heavy metal new wave concept is most audible. <strong>Hit it like you mean it.</strong> Lead guitar takes any melodic hook. You drive the chord bed.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Am → G transition:</strong> On the last beat of the Am bar, lift your ring finger slightly to create an Am7 sound (0-0-2-2-1-0), then resolve to G. Creates smooth connection without leaving the phrase.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — F barre endurance at pace</div>
+        <p>At 128 BPM, the F barre appears every two bars in the verse. Your grip must sustain without fatigue for 4 minutes. Drill: F barre chord only, set timer for 90 seconds, play driving eighths. Do not stop. If your hand cramps, you are not ready — rest and try again next session.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — E chord arrival at chorus end</div>
+        <p>The E chord must feel like a landing, not an accident. Prepare the shape on beat 3 of the previous bar. Drill: G → E → G → E at 80 BPM. G uses fingers 2, 3, 4 — E uses fingers 1, 2, 3 in different positions. Map this consciously before running at tempo.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The verse grid is machine-steady. F barre doesn't cause a hesitation. The chorus shift to Pattern B creates audible lift. The E chord landing feels like a resolution, not an accident. You could play this song four times in a row and the barre chord hand would not complain.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>F barre 90-second endurance</td><td>Can't sustain</td><td>No fatigue at 90s</td></tr>
+          <tr><td>Am→G→F→C grid steady</td><td>Hiccups</td><td>Machine clean</td></tr>
+          <tr><td>E chord arrival clean</td><td>Scrambled</td><td>Prepared and landing</td></tr>
+          <tr><td>Song complete at 96 BPM</td><td>Falls apart</td><td>Full run</td></tr>
+          <tr><td>Verse/chorus feel contrast</td><td>Same throughout</td><td>Audible</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 05: SUBURBIA
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 05</div>
+        <div class="song-title">SUBURBIA</div>
+        <div class="song-artist">PET SHOP BOYS</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">E minor · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">65 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">82 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">110 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern D → Pattern B → Pattern A</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">Em  =  0 2 2 0 0 0
+C   =  x 3 2 0 1 0
+G   =  3 2 0 0 0 3
+D   =  x x 0 2 3 2
+Am  =  x 0 2 2 1 0
+Bm  =  x 2 4 4 3 2   (barre — appears at the climactic moment)</div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:         Em  C  G  D   (x2, stately)
+VERSE:         Em  C  G  D   (x3)
+CHORUS:        C   G  Am  B7 (x2)
+BUILD:         Em  C  G  D   (increase intensity, Pattern A)
+FINAL CHORUS:  C   G  Am  Bm  D  (Bm replaces B7 for weight)
+OUTRO:         Em              (hold and decay)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>Suburbia has enormous harmonic space in the original — orchestral pads, layered synths. Your job is to <strong>imply that sweep with full chord voicings and right-hand control</strong>. Start on Pattern D (stately, letting chords ring). The final chorus escalates to Pattern A. This is one of the songs where the acoustic guitar's natural resonance genuinely works in your favor. The full-ring G and C chords on acoustic sound enormous.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Em → C transition:</strong> Hold the Em shape, move only the top two fingers to form C. The shared note on the 3rd string acts as an anchor — this creates smooth voice leading instead of a full-hand chord swap.</p>
+      <p><strong>G shape:</strong> Gadd9 color on held G bars. Add pinky to 3rd fret B string, pull back before the chord change.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Dynamic control (soft to loud)</div>
+        <p>The arrangement requires genuine right-hand dynamic control. Most beginners play everything at the same volume. Drill: Play Em for 4 bars at 20% force, then 50%, then 80%, then 100%. Map what your arm feels like at each level. Apply to the song structure consciously.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Bm in the final chorus under fatigue</div>
+        <p>After playing through the whole song, your barre chord hand is tired. Bm appears at the most dramatic moment. Fatigued barre chords buzz. Play the song start to finish at practice tempo. When you hit the Bm in the final chorus, note what your hand feels like. If it fails, you need more overall song stamina before this song is phase-complete.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The opening is stately and controlled. The harmonic sweep is implied by the chord voicings even without keys. The final chorus lands with genuine weight. The dynamic arc is audible — someone listening would feel the song build. Bm is clean despite being song-end tired.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Dynamic range demonstrated</td><td>Flat throughout</td><td>Soft-to-loud arc audible</td></tr>
+          <tr><td>Bm at song-end clean</td><td>Buzz under fatigue</td><td>Clean</td></tr>
+          <tr><td>Full song at 82 BPM</td><td>Falls apart</td><td>Complete run</td></tr>
+          <tr><td>Pattern D used correctly</td><td>Drive throughout</td><td>Breathes and swells</td></tr>
+          <tr><td>Harmonic sweep implied</td><td>Just chords</td><td>Feels like something</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 06: SHOUT
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 06</div>
+        <div class="song-title">SHOUT</div>
+        <div class="song-artist">TEARS FOR FEARS</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">D minor · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">70 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">90 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">122 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern B verse · Pattern A chorus</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">Dm  =  x x 0 2 3 1
+Am  =  x 0 2 2 1 0
+Bb  =  x 1 3 3 3 1   (partial barre — NEW SHAPE)
+C   =  x 3 2 0 1 0
+F   =  1 3 3 2 1 1   (full barre, 1st fret)
+Gm  =  3 5 5 3 3 3   (full barre, 3rd fret)</div>
+
+      <div class="callout amber">
+        <p><strong>Bb chord note:</strong> Bb (x13331) uses a non-obvious fingering — index finger barring strings 1–4 at fret 1, ring finger on 3rd fret B string, pinky on 3rd fret high E. This is a new shape. Give it dedicated isolated drilling before putting it in song context. Do not skip this.</p>
+      </div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:      Dm  Am  Bb  C   (x2)
+VERSE:      Dm  Am  Bb  C   (x4)
+PRE-CHORUS: Gm  F   Gm  C
+CHORUS:     Bb  F   C   Dm  (x3) → Bb  F  C  (hold)
+BRIDGE:     Am  Dm  Am  Bb
+OUTRO:      Dm              (build and crash)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The original has a slow build that explodes at the chorus. Pattern B for the verse creates restrained tension. Pattern A at the chorus is the release. The Gm in the pre-chorus is the dark turn before the chorus arrives — <strong>play it slightly harder than the verse</strong>. Make the tension obvious.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Dm shape:</strong> Lift ring finger on beat 4 to create a Dm7 color (open B string). Resolve back to Dm (ring finger down) on beat 1 of the next bar.</p>
+      <div class="chord-chart">Dm embellishment (lift ring on beat 4):
+e |--1------------|
+B |--3--3--3--0---|   (open B on beat 4 = Dm7 color)
+G |--2------------|
+D |--0------------|</div>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Bb chord formation</div>
+        <p>Bb is the new technical challenge in this song. Drill it isolated for 15 minutes before touching the song. Form Bb. Strum. Check every string. Identify which finger causes any buzz. This is a minimum 3-session isolated shape drill before song context. Non-negotiable.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Gm (3rd fret barre) → C open</div>
+        <p>A physical leap across the fretboard at tempo. Gm releases completely before you form C. The travel time exists in the musical space if you don't rush it. Drill: Gm → C → Gm → C at 60 BPM. Map the movement. Add 4 BPM when the transition is clean 10 times.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>Bb rings every time without a second thought. The verse has restrained tension that breaks open at the chorus. Gm sounds dark and purposeful. When you play this song, the shape of it — the build, the explosion — is audible even on acoustic.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Bb chord clean</td><td>Buzz</td><td>Full ring every time</td></tr>
+          <tr><td>Gm→C transition</td><td>Scrambled</td><td>Smooth at 90 BPM</td></tr>
+          <tr><td>Verse/chorus dynamic arc</td><td>Flat</td><td>Obvious contrast</td></tr>
+          <tr><td>Full song at 90 BPM</td><td>Falls apart</td><td>Complete run</td></tr>
+          <tr><td>No Bb hesitation</td><td>Dread</td><td>Just another chord</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 07: EVERYDAY IS LIKE SUNDAY
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 07</div>
+        <div class="song-title">EVERYDAY IS LIKE SUNDAY</div>
+        <div class="song-artist">MORRISSEY</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">G major · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">55 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">78 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">104 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern D verse · Pattern B chorus</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">G     =  3 2 0 0 0 3
+Cadd9 =  x 3 2 0 3 3   (USE THIS instead of C wherever possible)
+Em    =  0 2 2 0 0 0
+D     =  x x 0 2 3 2
+Am    =  x 0 2 2 1 0
+Bm    =  x 2 4 4 3 2   (barre — bridge)</div>
+
+      <p class="small-note">// Cadd9 (x32033) sounds better than plain C on acoustic — fuller ring, no finger compression required. Use it throughout wherever the progression calls for C.</p>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:   G  Cadd9  Em  D   (x2)
+VERSE:   G  Cadd9  Em  D   (x4)
+CHORUS:  Cadd9  G  D  Em   (x2) → Cadd9  D  G  (resolve)
+BRIDGE:  Am  Bm  C  D      (x2)
+OUTRO:   G  Cadd9  Em  D   (x4, slow, like the Sundayness of it)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>This song has natural melancholy. Your arrangement honors that feel with Pattern D for the verse (open, breathing), then Pattern B at the chorus. The Cadd9 is your color chord — it implies the harmonic warmth the original orchestration created. Do not play this hard-driving throughout. <strong>The dynamic shape matters. This is a song about sadness. Play it like you mean that.</strong></p>
+
+      <div class="subsection-label">// Left-Hand Embellishment — Pivot Fingering</div>
+      <p>The G → Cadd9 transition is one of the cleanest in guitar. Your ring and pinky fingers on the 3rd fret of the B and high E strings <strong>do not move between G and Cadd9</strong>. Only index and middle move. This is a two-finger transition, not a full-hand reset. Exploit it.</p>
+      <div class="chord-chart">G     =  3-2-0-0-0-3  (pinky + ring planted on B and high E)
+Cadd9 =  x-3-2-0-3-3  (same pinky + ring — they don't move)
+
+The pivot: index and middle only move to cover the C bass notes.</div>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Bm in the bridge</div>
+        <p>This is the third song with Bm. Same approach: Am → Bm → C → D at 50 BPM. Build to 70 BPM before song context. If Bm is still not reliable across three songs, dedicate a full session to nothing but Bm drilling.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Not rushing the outro</div>
+        <p>The song's emotional arc requires the outro to feel slow and a little defeated. Your right hand wants to maintain energy. Resist it. Set metronome to 55 BPM. Play the outro chord progression four times. Feel the drag. Don't fight it.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The G → Cadd9 pivot is seamless. The song has emotional shape — not just chord sequences. Bm doesn't trip you. The outro sounds like a song ending, not a practice session stopping. If someone heard this on acoustic in a room, they'd recognize the sadness.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>G → Cadd9 pivot smooth</td><td>Full hand reset</td><td>Two-finger pivot</td></tr>
+          <tr><td>Bm clean in bridge</td><td>Buzz</td><td>Full ring</td></tr>
+          <tr><td>Dynamic arc present</td><td>Flat throughout</td><td>Verse soft / chorus harder</td></tr>
+          <tr><td>Outro doesn't rush</td><td>Rushes</td><td>Held and resolved</td></tr>
+          <tr><td>Song complete at 78 BPM</td><td>Falls apart</td><td>Full run</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 08: UNDER THE MILKY WAY
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 08</div>
+        <div class="song-title">UNDER THE MILKY WAY</div>
+        <div class="song-artist">THE CHURCH</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">E minor · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">50 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">72 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">96 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern D throughout · Restraint is technique</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">Em  =  0 2 2 0 0 0
+D   =  x x 0 2 3 2
+C   =  x 3 2 0 1 0
+G   =  3 2 0 0 0 3
+Am  =  x 0 2 2 1 0
+B7  =  x 2 1 2 0 2</div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:   Em  D  C  G   (x2, deliberate)
+VERSE:   Em  D  C  G   (x4)
+CHORUS:  C   G  Am  B7 (x2) → Em  (resolve)
+BRIDGE:  Am  Em  Am  B7
+OUTRO:   Em  D  C   G  (x4, fade or hold)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The original is layered arpeggios and reverb — multiple guitarists and studio treatment. In your arrangement, you play <strong>full chord voicings with deliberate strums</strong>, letting each chord ring fully before the next. Lead guitar handles any arpeggiated or melodic lines. You are the harmonic foundation. Every chord must ring clearly for its full duration. The B7 turnaround carries the emotional weight. Hit it cleanly.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p>This song is better served by <strong>clean ring with minimal embellishment</strong> than constant motion. Restraint is the technique here. If you use an embellishment, do it once in the Em bars — move pinky to 3rd fret B string (Em7 adjacent color) as a passing moment during the Em → D transition. Don't overdo it.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Making the loop not sound boring</div>
+        <p>Em / D / C / G for four minutes on acoustic without reverb can sound like a metronome exercise. The challenge is internal intensity. Play the four-bar loop 8 times in a row with a metronome. Each repetition, change something small: right-hand pressure, where on the strings you strum, pick attack angle. Develop awareness of what you can control.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — B7 under full-song fatigue</div>
+        <p>B7 (x21202) is an awkward shape that appears at the emotional peaks. Play the entire song. At every B7, check: does it ring? Does it arrive on beat 1 cleanly? If no — more Am → B7 drilling at 50 BPM before this song gets another full run.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The loop sounds hypnotic, not repetitive. Each chord rings fully. The B7 moments feel significant. Dynamic variation is subtle but present — the song grows and breathes over its duration. On acoustic, this song should sound almost meditative.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Loop has internal dynamic variation</td><td>Identical every bar</td><td>Subtle ebb and flow</td></tr>
+          <tr><td>B7 clean under fatigue</td><td>Buzz</td><td>Full ring</td></tr>
+          <tr><td>Chord ring duration full</td><td>Cut short</td><td>Full duration</td></tr>
+          <tr><td>Song complete at 72 BPM</td><td>Falls apart</td><td>Full run</td></tr>
+          <tr><td>Feel intentional not mechanical</td><td>Sounds like practice</td><td>Sounds like music</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 09: LAST NIGHT I DREAMT
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 09</div>
+        <div class="song-title">LAST NIGHT I DREAMT THAT SOMEBODY LOVED ME</div>
+        <div class="song-artist">THE SMITHS</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">G major · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">60 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">82 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">110 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern B verse · Pattern A chorus</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">G     =  3 2 0 0 0 3
+D     =  x x 0 2 3 2
+Em    =  0 2 2 0 0 0
+Cadd9 =  x 3 2 0 3 3
+Am    =  x 0 2 2 1 0
+Bm    =  x 2 4 4 3 2   (barre — bridge)</div>
+
+      <div class="callout cyan">
+        <p><strong>Orchestral intro note:</strong> The original recording has a lengthy orchestral intro before the song proper begins. In live performance this is typically handled by a synth sample or intro tape. Discuss with your band how the arrangement starts. For Phase 3 purposes, learn from bar 1 of the verse.</p>
+      </div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">(INTRO: band arrangement — discuss separately)
+VERSE:   G   D  Em  Cadd9  (x4)
+CHORUS:  Cadd9  G  D  Em   (x2)
+BRIDGE:  Am  Bm  C  D      (x2)
+VERSE 2: G   D  Em  Cadd9  (x3)
+OUTRO:   G   D  Em  Cadd9  D  G  (slow resolve)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>The Smiths arrangements are built on Marr's interlocking guitar parts. You play the <strong>chord bed</strong>. The lead guitarist handles the melodic hook lines. Your comp role: Pattern B for the verse building to Pattern A at the chorus. The bridge is the emotional peak — play it harder, wider, more intentional. The Cadd9 in the chorus provides harmonic warmth. The G → Cadd9 pivot fingering from Everyday Is Like Sunday applies here identically.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Emotional dynamic shaping</div>
+        <p>This song requires you to play with feeling, not just accuracy. Listen to the original recording twice — not to copy it, but to feel the emotional arc. Then play through your chord chart and try to match that arc with right-hand dynamic control. Playing the chords correctly is necessary but insufficient.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Bm in the bridge (again)</div>
+        <p>This is the third song with Bm. By now it should be becoming automatic. If it's still not — that is your diagnostic. Dedicate a full session to Bm drilling across all three song contexts before continuing.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The chord bed is solid and supportive under the vocal. Dynamic shaping is present — verse restrained, chorus opens, bridge is the most intense. Bm doesn't hesitate. The song has emotional weight. If you recorded yourself and played it back, you'd feel something.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Bm automatic</td><td>Still hesitating</td><td>Just happens</td></tr>
+          <tr><td>Dynamic shaping present</td><td>Flat throughout</td><td>Arc audible</td></tr>
+          <tr><td>G → Cadd9 pivot clean</td><td>Full hand reset</td><td>Two-finger pivot</td></tr>
+          <tr><td>Song at 82 BPM complete</td><td>Falls apart</td><td>Full run</td></tr>
+          <tr><td>Emotional weight in performance</td><td>Just chords</td><td>Feels like something</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 10: THE WHOLE OF THE MOON
+       ====================================================== -->
+  <div class="song-card tier2">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 10</div>
+        <div class="song-title">THE WHOLE OF THE MOON</div>
+        <div class="song-artist">THE WATERBOYS</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t2">TIER 2 · CORE REPERTOIRE</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">G major · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">70 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">96 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">128 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern D → Pattern B → Pattern A</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">G     =  3 2 0 0 0 3
+Cadd9 =  x 3 2 0 3 3
+D     =  x x 0 2 3 2
+Em    =  0 2 2 0 0 0
+Am    =  x 0 2 2 1 0
+Dsus4 =  x x 0 2 3 3   (add pinky to D — releases back to D)</div>
+
+      <p class="small-note">// Dsus4 → D is an embellishment move, not a separate chord. Add pinky to 3rd fret high E string, strum, release. Creates the soaring melodic motion the original mandolin provided.</p>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:         G  Cadd9  G  D      (x2)
+VERSE:         G  Cadd9  Em  D     (x4)
+CHORUS:        C  G  D  G          (x2) → C  G  D  (hold and build)
+BRIDGE:        Am  C  G  D         (x2)
+FINAL CHORUS:  C  G  D  G          (x4, Pattern A, full drive)
+OUTRO:         G                   (hold and crash)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>This is the <strong>biggest-feeling song in the set</strong>. It builds. It has a final chorus that should feel like a stadium moment. Start on Pattern D (breathing, implying space). Chorus on Pattern B. Final chorus on Pattern A — everything you have. Do not peak too early. The final chorus should feel like the biggest thing you've played all set.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Dsus4 → D:</strong> Form D, add pinky to 3rd fret high E (Dsus4), strum, pull pinky off to release to D. Use once per D bar in the verse. Remove it in the final chorus — pure drive only.</p>
+      <div class="chord-chart">Dsus4 → D (verse embellishment):
+e |--3--2--|   (pinky add on beat 1, pull off on beat 2)
+B |--3--3--|
+G |--2--2--|
+D |--0--0--|</div>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Building the arc without a band</div>
+        <p>On acoustic alone, this song does not sound enormous. Trust the architecture. Practice the dynamic arc even when it doesn't pay off without a band. Drill: play with headphones using the original track. Match your dynamic arc to the recording. This gives you band reference even in solo practice.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Final chorus endurance</div>
+        <p>After the full song, the final chorus requires maximum right-hand intensity when you're most fatigued. Drill: play the final chorus four bars at full Pattern A intensity. Repeat 4 times without break. Note when your pick attack softens. That's your endurance wall. Push past it.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The song grows from its opening to its final chorus. Dsus4 embellishment is present in the verse without being distracting. The final chorus is maximum drive. If someone was in the room, they would feel the song build and arrive. The outro crash feels earned.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Dsus4 embellishment clean</td><td>Buzzy or absent</td><td>Present in verse</td></tr>
+          <tr><td>Dynamic arc across full song</td><td>Flat</td><td>Build audible</td></tr>
+          <tr><td>Final chorus full drive</td><td>Softens</td><td>Maximum intensity</td></tr>
+          <tr><td>Song at 96 BPM complete</td><td>Falls apart</td><td>Full run</td></tr>
+          <tr><td>Outro lands with weight</td><td>Just stops</td><td>Feels like arrival</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 11: IN A BIG COUNTRY
+       ====================================================== -->
+  <div class="song-card tier3">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 11</div>
+        <div class="song-title">IN A BIG COUNTRY</div>
+        <div class="song-artist">BIG COUNTRY</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t3">TIER 3 · BOSS FIGHT</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">A major · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">70 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">102 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">136 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern A throughout · Bridge pull back only</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">A     =  x 0 2 2 2 0
+D     =  x x 0 2 3 2
+E     =  0 2 2 1 0 0
+F#m   =  2 4 4 2 2 2   (full barre, 2nd fret — THE BOSS FIGHT CHORD)
+Bm    =  x 2 4 4 3 2   (barre — bridge)
+Asus4 =  x 0 2 2 3 0   (add pinky to A, release back)</div>
+
+      <div class="warning-box">
+        <div class="warn-label">// F#m BARRE WARNING</div>
+        <p>F#m (244222) is a full barre at the 2nd fret with fingers 2, 3, 4 on A, D, and G strings. On acoustic at 136 BPM target tempo, this is the single hardest chord in the entire setlist. It requires a dedicated 2-week pre-drill before this song goes into full song context. Do not skip the protocol.</p>
+      </div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:   A    D    A    E     (x2, driving eighths)
+VERSE:   A    D    A    E     (x4) → F#m  D  A  E
+CHORUS:  D    A    E    A     (x4, maximum drive)
+BRIDGE:  Bm   D    G    D     → Bm  D  E  (hold)
+OUTRO:   A    D    A    E     (x2, crash)</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>This is one of the most energetic songs in the set. The original has relentless forward drive. Your arrangement maintains that drive through Pattern A throughout — only pulling back slightly in the bridge for dynamic contrast. Lead guitar handles the melodic hook (the original bagpipe guitar effect). You drive. <strong>Do not stop driving.</strong></p>
+      <p>Asus4 → A is your only embellishment — add pinky to 3rd fret B string, release back to A. Use at the start of A bars in the verse for motion. Everything else is raw chord drive.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — F#m barre at tempo (2-WEEK PROTOCOL)</div>
+        <p><strong>Week 1:</strong> F#m shape isolated, 2 minutes per session. Then A → F#m → A → F#m at 60 BPM, 10 minutes per session.</p>
+        <p><strong>Week 2:</strong> A → F#m → D → E at 70 BPM. Then full song verse loop at 80 BPM.</p>
+        <p>Add 4 BPM only when clean. This is not negotiable. The chord must be automatic before you run the full song.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — 136 BPM driving eighths for 4+ minutes</div>
+        <p>This is the most physically demanding thing in your set. Tabata-style right-hand stamina drill: 20 seconds driving eighths on A at 136 BPM. 10 seconds rest. Repeat 8 times. Do this as a dedicated block 2x per week from Week 6 onward.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>F#m rings cleanly and arrives without hesitation. The drive is relentless and machine-steady. The bridge has contrast. The full song at 102 BPM sounds like a band, not a practice session. Your right forearm may ache after this song. That is correct.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>F#m barre clean</td><td>Buzz</td><td>Full ring every time</td></tr>
+          <tr><td>Drive at 102 BPM sustained</td><td>Collapses mid-song</td><td>4 minutes of drive</td></tr>
+          <tr><td>A → F#m transition no hesitation</td><td>Scrambled</td><td>Smooth</td></tr>
+          <tr><td>Bridge dynamic contrast</td><td>Full drive throughout</td><td>Pull-back in bridge</td></tr>
+          <tr><td>Song complete at 102 BPM</td><td>Falls apart</td><td>Full run</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 12: THIS CORROSION
+       ====================================================== -->
+  <div class="song-card tier3">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 12</div>
+        <div class="song-title">THIS CORROSION</div>
+        <div class="song-artist">SISTERS OF MERCY</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t3">TIER 3 · BOSS FIGHT</div>
+        <div class="tier-badge t3" style="margin-top:4px;">DROP D TUNING</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Tuning</div><div class="value">DROP D — low E down to D</div></div>
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">D minor · Drop D</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">70 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">87 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">116 BPM</div></div>
+      </div>
+
+      <div class="warning-box">
+        <div class="warn-label">// DROP D TUNING REQUIRED</div>
+        <p>Tune your low E string down one whole step to D before playing this song. Standard EADGBE becomes DADGBE. This is a live retune — practice it until under 30 seconds every time. Place This Corrosion in the setlist where the lead guitarist has a spotlight moment to cover the retune time.</p>
+      </div>
+
+      <div class="subsection-label">// Chord Chart (Drop D Tuning)</div>
+      <div class="chord-chart">Dm (drop D)  =  0 0 0 2 3 1   (open D bass string rings — massive)
+C            =  x 3 2 0 1 0   (unchanged)
+Bb           =  x 1 3 3 3 1   (same as in Shout)
+F            =  1 3 3 2 1 1   (same barre as always)
+Gm           =  3 5 5 3 3 3   (barre, 3rd fret)
+
+Drop D power chord bonus:
+D5           =  0 0 0 x x x   (open low D + A strings — massive low end)</div>
+
+      <div class="subsection-label">// Song Structure (Live Shortened Arrangement)</div>
+      <div class="structure-box">INTRO:   Dm riff               (drum machine intro → band enters)
+         Dm  C  Bb  C          (x4)
+VERSE 1: Dm  C  Bb  C          (x8 — yes, eight repeats)
+CHORUS:  F   C  Dm  Bb         (x4)
+VERSE 2: Dm  C  Bb  C          (x4)
+CHORUS:  F   C  Dm  Bb         (x4)
+BRIDGE:  Gm  Am  Bb  C         (x2)
+OUTRO:   Dm                    (build and sustain)
+
+NOTE: The original is 11 minutes. Discuss a 5–6 minute edit with your
+band. Cut verses, not the chorus. The chorus is the payoff.</div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>This is the darkest, heaviest song in the set. The open D bass string in the Dm voicing sounds enormous on acoustic — let it ring. Pattern A throughout. No decoration. No embellishment. <strong>Just the chords, the time, and the weight.</strong> You are the Andrew Eldritch-worshipping drum machine.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Drop D retune under performance pressure</div>
+        <p>Retuning live in front of an audience is stressful. Practice the retune until it takes under 30 seconds consistently. Use a clip-on tuner. Time yourself every session that includes This Corrosion. Target: under 25 seconds.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Eight-bar verse repeats without drift</div>
+        <p>The verse is eight repetitions of the same four-bar phrase. At 116 BPM with driving eighths, this is sustained physical work plus mental discipline not to rush or drag. Drill: play the four-bar verse phrase 10 times in a row at 80 BPM with a metronome. Note when your attention drifts. That's the drill — catching it before it happens.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The open D string in the Dm chord sounds like doom. The drive is relentless. Eight-bar verse loops don't drift. Bb doesn't cause hesitation. Drop D retune happens calmly and quickly. This song should feel like a physical event when you play it.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Drop D retune under 30 seconds</td><td>60+ seconds</td><td>Under 30s every time</td></tr>
+          <tr><td>8-bar verse loop no drift</td><td>Rushes or drags</td><td>Metronome clean</td></tr>
+          <tr><td>Bb chord clean</td><td>Buzz</td><td>Full ring</td></tr>
+          <tr><td>Full song at 87 BPM</td><td>Falls apart</td><td>Complete run</td></tr>
+          <tr><td>Open D bass note sounds massive</td><td>Thin</td><td>Massive</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SONG 13: BROKEN WINGS
+       ====================================================== -->
+  <div class="song-card tier3">
+    <div class="song-header">
+      <div>
+        <div class="song-number">// SONG 13 · ENCORE</div>
+        <div class="song-title">BROKEN WINGS</div>
+        <div class="song-artist">MR. MISTER</div>
+      </div>
+      <div class="song-badges">
+        <div class="tier-badge t3">TIER 3 · BOSS FIGHT</div>
+        <div class="tier-badge t3" style="margin-top:4px;">THE CLOSER</div>
+      </div>
+    </div>
+    <div class="song-body">
+      <div class="song-meta-row">
+        <div class="song-meta-cell"><div class="label">Key</div><div class="value">G major · Standard Tuning</div></div>
+        <div class="song-meta-cell"><div class="label">Start Tempo</div><div class="value">60 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">75% Target</div><div class="value">78 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Performance</div><div class="value">104 BPM</div></div>
+        <div class="song-meta-cell"><div class="label">Right Hand</div><div class="value">Pattern D → Pattern B → Pattern A</div></div>
+      </div>
+
+      <div class="subsection-label">// Chord Chart</div>
+      <div class="chord-chart">G     =  3 2 0 0 0 3
+Am    =  x 0 2 2 1 0
+C     =  x 3 2 0 1 0
+D     =  x x 0 2 3 2
+Em    =  0 2 2 0 0 0
+Bm    =  x 2 4 4 3 2   (barre — verse and bridge)
+Cadd9 =  x 3 2 0 3 3
+Gsus4 =  3 x 0 0 1 3   (add pinky, release back to G)</div>
+
+      <div class="subsection-label">// Song Structure</div>
+      <div class="structure-box">INTRO:        G  Am  C  D     (x2)
+VERSE:        G  Am  C  D     (x3) → Em  Bm  C  D
+CHORUS:       C  G   D  G     (x2) → C  D  (build)
+BRIDGE:       Am  C  G  D     (x2) → Em  Bm  Am  D
+FINAL CHORUS: C  G   D  G     (x4, full drive, everything you have)
+OUTRO:        G               (sustain and release)</div>
+
+      <div class="callout">
+        <p>This is the encore. The last song of the night. Every ounce of stamina you've built over the set goes here. Lead guitarist will have a featured solo or melodic showcase moment in the bridge. You hold the bed. <strong>This is not a Phase 3 problem</strong> — Phase 4 addresses full-set stamina. For Phase 3, learn the song to 75% tempo with correct feel.</p>
+      </div>
+
+      <div class="subsection-label amber">// !bang!path! Arrangement Notes</div>
+      <p>Dynamic arc: Pattern D for the verse (space and feeling), Pattern B for the chorus, Pattern A for the final chorus. You have played this arc in other songs. Here it must be delivered when you're at maximum physical fatigue having already played 12 songs. The practice for this is treating it as the actual encore in your final session of every week.</p>
+
+      <div class="subsection-label">// Left-Hand Embellishment</div>
+      <p><strong>Gsus4 → G:</strong> Add pinky to 3rd fret high E string, strum, release. Same principle as Dsus4 → D in Whole of the Moon. Use in the verse G bars.</p>
+      <p><strong>Em → Bm in the verse:</strong> Em is release; Bm is tension. Play Em with some openness, set the Bm barre with intention. The contrast between these two chords carries emotional weight — make it audible.</p>
+
+      <div class="subsection-label amber">// Two Hardest Moments</div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 1 — Bm under accumulated fatigue</div>
+        <p>This is the fifth song in the setlist with Bm. By now it must be automatic. If it isn't — that's your signal. Back to Bm drilling before anything else. One session, nothing but Bm: isolated, in transitions, across all five song contexts.</p>
+      </div>
+      <div class="drill-box">
+        <div class="drill-label">// HARD MOMENT 2 — Delivering the final chorus when you're spent</div>
+        <p>The encore closer requires maximum intensity at your most fatigued moment. Practice this by making Broken Wings the last thing you play in your final weekly session. After everything else. Treat it as the actual encore. Build the mental and physical pattern now.</p>
+      </div>
+
+      <div class="subsection-label cyan">// What Good Execution Sounds and Feels Like</div>
+      <div class="feel-box">
+        <div class="feel-label">// THE TARGET</div>
+        <p>The verse has emotional space. The chorus arrives with weight. Bm is automatic. The final chorus sounds like you mean it, not like you're barely surviving it. When it ends, the song feels complete. Not like it just stopped. Like something happened.</p>
+      </div>
+
+      <div class="subsection-label">// Self-Assessment Rubric</div>
+      <table class="rubric-table">
+        <thead><tr><th>Criterion</th><th>Not Yet</th><th>Phase Complete</th></tr></thead>
+        <tbody>
+          <tr><td>Bm automatic without thought</td><td>Still hesitating</td><td>Automatic</td></tr>
+          <tr><td>Dynamic arc full song</td><td>Flat throughout</td><td>Verse soft / final chorus max</td></tr>
+          <tr><td>Final chorus with intensity</td><td>Fades out</td><td>Maximum</td></tr>
+          <tr><td>Song at 78 BPM complete</td><td>Falls apart</td><td>Full run</td></tr>
+          <tr><td>Gsus4 embellishment present</td><td>Absent</td><td>Used in verse G bars</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== WEEK SCHEDULE ===== -->
+  <div class="section-header">
+    <h2>WEEK-BY-WEEK SCHEDULE</h2>
+    <span class="section-tag">// 10 WEEKS · ALL 13 SONGS</span>
+  </div>
+
+  <div class="callout amber">
+    <p><strong>Honest math:</strong> This schedule is built for 5–10 hours per week. At 2 hours per week (your stated worst case), the timeline stretches to approximately 16–20 weeks. That is not a failure — it is math. If your schedule is consistently closer to 2 hours, adjust your expectations on phase duration and do not declare yourself "behind." You are not behind. You are on a different timeline.</p>
+  </div>
+
+  <p class="small-note" style="margin-bottom:16px;">// LEGEND: New Song = first introduction at slow tempo. Drill = hardest moments only. Run = start-to-finish at current comfortable tempo. Bump = increase 4–8 BPM if last session was clean. Multi-run = consecutive songs without stopping.</p>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 1</div>
+      <div class="week-goal">// First Contact — Three Tier 1 Songs</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Warm-up. New Song: Tainted Love — full chart read, slow play at 60 BPM</td><td>45 min</td></tr>
+        <tr><td>TUE</td><td>Tainted Love — Am→F drill 15 min. New Song: Into the Groove — chart read, 60 BPM</td><td>60 min</td></tr>
+        <tr><td>WED</td><td>Tainted Love run at 70 BPM. Into the Groove drill (B7 shape, 15 min)</td><td>45 min</td></tr>
+        <tr><td>THU</td><td>New Song: Only You — chart read, 50 BPM. Tainted Love run at 75 BPM</td><td>60 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 1: Tainted Love → Only You → Into the Groove. Each at comfortable tempo. Short rest between.</td><td>60 min</td></tr>
+      </tbody>
+    </table>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted);">// WEEK 1 CHECK: All three Tier 1 songs playable start-to-finish at 70–75 BPM? If no — repeat week 1 with extra session on weakest song.</div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 2</div>
+      <div class="week-goal">// Tier 1 Consolidation + Tier 2 Introduction</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Tainted Love — bump to 80 BPM. New Song: True Faith — chart read, 70 BPM</td><td>60 min</td></tr>
+        <tr><td>TUE</td><td>Into the Groove — bump to 80 BPM. True Faith — verse loop drill at 70 BPM</td><td>45 min</td></tr>
+        <tr><td>WED</td><td>Only You — bump to 65 BPM. New Song: Suburbia — chart read, 60 BPM</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>True Faith — F barre 90-second endurance drill. Suburbia — 60 BPM run attempt</td><td>45 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 2: Tainted Love → True Faith → Into the Groove. Rest. Only You.</td><td>75 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 3</div>
+      <div class="week-goal">// Expanding the Library — 6 Songs in Rotation</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>New Song: Shout — Bb chord isolated drill (15 min). Chart read at 60 BPM</td><td>60 min</td></tr>
+        <tr><td>TUE</td><td>True Faith — bump to 80 BPM. Suburbia — bump to 70 BPM</td><td>45 min</td></tr>
+        <tr><td>WED</td><td>New Song: Everyday Is Like Sunday — G→Cadd9 pivot drill (10 min). Full chart at 60 BPM</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>Shout — Bb isolated again. Gm→C transition drill. Song at 65 BPM</td><td>60 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 3: Suburbia → Only You → Everyday Is Like Sunday. Rest. Tainted Love → Shout.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 4</div>
+      <div class="week-goal">// Mid-Phase Consolidation — No Song Actively Scary</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Tainted Love bump to 88 BPM. True Faith bump to 88 BPM</td><td>45 min</td></tr>
+        <tr><td>TUE</td><td>Shout — bump to 75 BPM. Everyday Is Like Sunday — bump to 70 BPM</td><td>45 min</td></tr>
+        <tr><td>WED</td><td>New Song: Under the Milky Way — chart read, 50 BPM. B7 isolated drill</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>New Song: Last Night I Dreamt — chart read, 65 BPM. Bm drill</td><td>60 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 4 (stamina focus): Tainted Love → Shout → True Faith → Suburbia. No rest between songs.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 5</div>
+      <div class="week-goal">// The Middle Eight — Introduce Whole of the Moon + Mid-Phase Check</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Under the Milky Way — bump to 60 BPM. Last Night I Dreamt — bump to 70 BPM</td><td>45 min</td></tr>
+        <tr><td>TUE</td><td>New Song: The Whole of the Moon — Dsus4 drill. Chart read at 65 BPM</td><td>60 min</td></tr>
+        <tr><td>WED</td><td>Review weakest song from current roster (honest choice). Dedicated drill session</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>Whole of the Moon — bump to 75 BPM. Last Night I Dreamt — bump to 75 BPM</td><td>45 min</td></tr>
+        <tr><td>SAT</td><td><strong>MID-PHASE SELF-ASSESSMENT:</strong> Run every current song at current tempo. Mark rubric. Flag anything still intimidating.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 6</div>
+      <div class="week-goal">// Boss Fight Introduction — F#m Drilling Begins</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>New Song: In A Big Country — F#m isolated drill only (20 min). No song context yet</td><td>45 min</td></tr>
+        <tr><td>TUE</td><td>Under the Milky Way bump to 68 BPM. Whole of the Moon bump to 85 BPM</td><td>45 min</td></tr>
+        <tr><td>WED</td><td>In A Big Country — A→F#m→D→E at 60 BPM. Chart walkthrough only</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>This Corrosion — Drop D retune drill only (no song). Bb chord drill</td><td>30 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 5: Everyday Is Like Sunday → Last Night I Dreamt → Under the Milky Way. Maximum stamina test.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 7</div>
+      <div class="week-goal">// Boss Fights Active — All Three in Context</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>In A Big Country — full song at 70 BPM. F#m must ring</td><td>60 min</td></tr>
+        <tr><td>TUE</td><td>New Song: This Corrosion — Drop D retune, chart read, 65 BPM</td><td>60 min</td></tr>
+        <tr><td>WED</td><td>New Song: Broken Wings — chart read, 60 BPM. Bm drill</td><td>45 min</td></tr>
+        <tr><td>THU</td><td>In A Big Country bump to 80 BPM. This Corrosion bump to 72 BPM</td><td>60 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 6 (all tiers): True Faith → Shout → In A Big Country. Rest. This Corrosion → Broken Wings.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 8</div>
+      <div class="week-goal">// Full Roster Active — Tempo Push Across the Board</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Tempo bump: Tainted Love, Into the Groove, Only You at target 75% tempo</td><td>60 min</td></tr>
+        <tr><td>TUE</td><td>Tempo bump: True Faith, Suburbia, Shout at bumped tempos</td><td>60 min</td></tr>
+        <tr><td>WED</td><td>Tempo bump: Everyday Is Like Sunday, Last Night I Dreamt, Under the Milky Way</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>Boss fights: In A Big Country bump to 90 BPM. This Corrosion bump to 80 BPM. Broken Wings bump to 70 BPM.</td><td>60 min</td></tr>
+        <tr><td>SAT</td><td><strong>Full set run attempt:</strong> All 13 songs in setlist order. Varied tempos — goal is to play them all, not all at performance tempo.</td><td>120 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 9</div>
+      <div class="week-goal">// Pressure Testing — Verify or Identify Blockers</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Diagnostic: Run every Tier 1 song at 75% target tempo. Pass/fail note</td><td>45 min</td></tr>
+        <tr><td>TUE</td><td>Diagnostic: Run every Tier 2 song at 75% target tempo</td><td>60 min</td></tr>
+        <tr><td>WED</td><td>Boss fight diagnosis: In A Big Country, This Corrosion, Broken Wings — where are you?</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>Focused drill on any song not yet at 75% target. Identify the specific blocker.</td><td>60 min</td></tr>
+        <tr><td>SAT</td><td>Multi-run 7: 5 songs consecutively at comfortable tempo without rest. Any 5. Monitor quality collapse.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">WEEK 10</div>
+      <div class="week-goal">// Phase Exit Validation — Clear the Criteria</div>
+    </div>
+    <table class="week-table">
+      <thead><tr><th>Day</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>MON</td><td>Run every Tier 1 song at 75% target. All three must pass rubric</td><td>45 min</td></tr>
+        <tr><td>TUE</td><td>Run every Tier 2 song at 75% target. All seven must pass rubric</td><td>75 min</td></tr>
+        <tr><td>WED</td><td>Run every Tier 3 song at 75% target. All three must run start-to-finish</td><td>60 min</td></tr>
+        <tr><td>THU</td><td>Rest or light review of anything that didn't clear</td><td>30 min</td></tr>
+        <tr><td>SAT</td><td><strong>PHASE 3 EXIT EXAM:</strong> Pick up any song cold. Play it. No prep. No panic. Then run 4–5 songs consecutively. Criteria cleared? You are Phase 3 complete.</td><td>90 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== STAMINA BUILDING PROTOCOL ===== -->
+  <div class="section-header">
+    <h2>STAMINA BUILDING PROTOCOL</h2>
+    <span class="section-tag">// FOUR PILLARS</span>
+  </div>
+
+  <p>Your right hand is a muscle. Your left hand is a muscle. Your focus is a muscle. All three need progressive overload, not just technical drilling.</p>
+
+  <div class="stamina-pillar">
+    <div class="pillar-title">PILLAR 1 — RIGHT-HAND ENDURANCE</div>
+    <p>Pattern A (driving eighths) at tempo for 4 minutes per song, back to back, is a forearm endurance challenge. Target it directly rather than hoping it builds through song drilling alone.</p>
+    <div class="drill-box" style="margin-top:12px;">
+      <div class="drill-label">// WEEKLY TABATA DRILL (add from Week 4)</div>
+      <p>20 seconds driving eighths on any chord at target tempo. 10 seconds rest. Repeat 8 rounds. Total: 4 minutes. Do this 2× per week at the START of a session. Track: can you maintain pick attack quality through round 8? When yes, increase tempo by 4 BPM.</p>
+    </div>
+  </div>
+
+  <div class="stamina-pillar">
+    <div class="pillar-title">PILLAR 2 — LEFT-HAND BARRE ENDURANCE</div>
+    <p>Barre chords are harder on acoustic. They will cause fatigue before open chords do. This is the limiting factor in multi-song runs. Build resistance directly.</p>
+    <div class="drill-box" style="margin-top:12px;">
+      <div class="drill-label">// BARRE CHORD LADDER (from Week 5)</div>
+      <p>Play each barre chord for 30 seconds of driving eighths, then shift to the next without a break:</p>
+      <p>F (133211) → Bm (x24432) → F#m (244222) → Gm (355333) → Bb (x13331)</p>
+      <p>Total: 2.5 minutes continuous barre playing. 2× per week. Track: clean ring through all five? First week you probably can't. Build toward it.</p>
+    </div>
+  </div>
+
+  <div class="stamina-pillar">
+    <div class="pillar-title">PILLAR 3 — MULTI-SONG RUN PROGRESSION</div>
+    <table class="rubric-table" style="margin-top:12px;">
+      <thead><tr><th>Week</th><th>Target</th><th>Protocol</th></tr></thead>
+      <tbody>
+        <tr><td>Week 3</td><td>2 songs</td><td>No rest between</td></tr>
+        <tr><td>Week 4</td><td>3 songs</td><td>No rest between</td></tr>
+        <tr><td>Week 5</td><td>3–4 songs</td><td>Short rest between pairs</td></tr>
+        <tr><td>Week 6</td><td>4 songs</td><td>No rest between</td></tr>
+        <tr><td>Week 7</td><td>4–5 songs</td><td>No rest between</td></tr>
+        <tr><td>Week 8</td><td>5 songs</td><td>No rest (quality monitoring)</td></tr>
+        <tr><td>Weeks 9–10</td><td>Full set blocks</td><td>Rest only between set halves</td></tr>
+      </tbody>
+    </table>
+    <div class="drill-box" style="margin-top:12px;">
+      <div class="drill-label">// QUALITY COLLAPSE MONITORING</div>
+      <p>After each multi-song run, rate 1–5: (1) right-hand pick attack last vs first song; (2) left-hand barre clarity last vs first; (3) chord transition accuracy last vs first. A drop of 2+ points means you've hit your stamina ceiling. End the run. Note where it broke. This is diagnostic information, not failure.</p>
+    </div>
+  </div>
+
+  <div class="stamina-pillar">
+    <div class="pillar-title">PILLAR 4 — FOCUS AND FORM MAINTENANCE</div>
+    <p>After 30+ minutes of playing, your focus drifts. When focus drifts, time drifts. When time drifts, quality collapses before your hands do.</p>
+    <div class="drill-box" style="margin-top:12px;">
+      <div class="drill-label">// FOCUS DRILL</div>
+      <p>Play any chord progression with a metronome for 5 minutes. Think about nothing except the metronome click. Every time you realize you've drifted — a thought about dinner, whether that chord rang cleanly, anything — mark it mentally. At the end of 5 minutes, note how many times you drifted. This number should decrease over weeks.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== MASTER SELF-ASSESSMENT RUBRIC ===== -->
+  <div class="section-header">
+    <h2>MASTER SELF-ASSESSMENT RUBRIC</h2>
+    <span class="section-tag">// USE AT WEEK 5 AND WEEK 10</span>
+  </div>
+
+  <p>Use this at the end of Week 5 (mid-phase checkpoint) and the end of Week 10 (phase exit). Be honest. The rubric does not care about your feelings.</p>
+
+  <div class="subsection-label">// Song Completion Matrix</div>
+  <table class="master-rubric">
+    <thead>
+      <tr>
+        <th>Song</th>
+        <th>75% Tempo</th>
+        <th class="checkbox-col">Full Run Clean</th>
+        <th class="checkbox-col">No Panic</th>
+        <th class="checkbox-col">Embellishments</th>
+        <th class="checkbox-col">Phase ✓</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Tainted Love</td><td>90 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Into the Groove</td><td>95 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Only You</td><td>75 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>True Faith</td><td>96 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Suburbia</td><td>82 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Shout</td><td>90 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Everyday Is Like Sunday</td><td>78 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Under the Milky Way</td><td>72 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Last Night I Dreamt</td><td>82 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>The Whole of the Moon</td><td>96 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>In A Big Country</td><td>102 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>This Corrosion</td><td>87 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+      <tr><td>Broken Wings</td><td>78 BPM</td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td><td class="checkbox-col"><div class="checkbox"></div></td></tr>
+    </tbody>
+  </table>
+  <p class="small-note">// PHASE 3 COMPLETE WHEN: All 13 rows have checkmarks in all five columns. No exceptions. No "well, mostly." All 13.</p>
+
+  <div class="subsection-label" style="margin-top:32px;">// Global Exit Criteria Check</div>
+  <ul class="exit-checklist">
+    <li><strong>Cold start test:</strong> Pick any song from the list without preparation. Start playing it. Do you know the chord sequence? Do you start without significant hesitation? Test across any random three songs. If yes across all three: checked.</li>
+    <li><strong>Consecutive run test:</strong> Play 4–5 songs in a row without stopping between them. In the 5th song, is your right-hand pick attack still clean? Are barre chords ringing? Are chord transitions accurate? If yes: checked.</li>
+    <li><strong>Intimidation test:</strong> Look at the full song list. Is any song causing a sinking feeling? If yes: that song is not phase-complete and you have specific work to do. If no: checked.</li>
+    <li><strong>Tempo honesty test:</strong> 75% target is not "I played it once at that tempo." It is "I can run this song at that tempo three times in a row and the third run is as clean as the first." Apply this standard without negotiation.</li>
+  </ul>
+
+  <hr class="divider">
+
+  <!-- ===== CLOSING ===== -->
+  <div class="callout" style="margin-top:0;">
+    <p>Phase 3 is where most self-taught guitarists discover the gap between "I know this song" and "I can play this song." They are different things. Knowing a song means you've seen the chord chart and played through it a few times. Playing a song means you can pick it up cold, run it at tempo, and not fall apart when something unexpected happens.</p>
+    <p>The schedule above is structured to close that gap through repetition, progressive tempo, and multi-song runs. None of it is exciting. It is all necessary.</p>
+    <p>The songs in this setlist are genuinely good songs. When you're running Tainted Love at 90 BPM and it sounds like a machine and you're not thinking about the chords anymore — <strong>that is the feeling this phase is building toward.</strong></p>
+    <p>Phase 4 is the electric transition, the performance prep, the full setlist runs. To get there, you have to be here first. Do the work. Clear the rubric. Be honest with yourself about what's done and what isn't.</p>
+    <p style="margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:2px;">// DO THE WORK.</p>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <hr style="margin-top:60px;border:none;border-top:1px solid var(--border);">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-family:var(--display);font-size:28px;color:var(--accent);letter-spacing:4px;">!bang!path!</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px;">PHASE 3 — SONG INTEGRATION</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);">NEW WAVE · HEAVY METAL TREATMENT</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--border);margin-top:4px;">Phase 1 ✓ complete · Phase 2 ✓ complete · Phase 4 awaits</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>

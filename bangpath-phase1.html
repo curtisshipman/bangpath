@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!bang!path! — Phase 1: Make the Basics Automatic</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+  :root {
+    /* === CANONICAL TOKENS === */
+    --black:         #0a0a0a;
+    --near-black:    #111111;
+    --dark:          #1a1a1a;
+    --panel:         #1f1f1f;
+    --border:        #2a2a2a;
+    --red:           #e8001c;
+    --red-dim:       #7a0010;
+    --amber:         #ff8c00;
+    --cyan:          #00d4ff;
+    --green:         #00e676;
+    --white:         #f0f0f0;
+    --grey:          #888888;
+    --light-grey:    #cccccc;
+
+    /* === ALIASES (P2/P3 names) === */
+    --deep:          #111111;
+    --body:          #cccccc;
+    --bright:        #f0f0f0;
+    --muted:         #888888;
+    --accent:        #e8001c;
+    --accent2:       #ff8c00;
+    --accent3:       #00d4ff;
+
+    /* === ALIASES (P4 names) === */
+    --bg:            #0a0a0a;
+    --surface:       #1f1f1f;
+    --surface2:      #1a1a1a;
+    --border-bright: #3a3a3a;
+    --text:          #f0f0f0;
+    --accent4:       #9b72cf;
+
+    /* === FONT STACK === */
+    --display: 'Bebas Neue', sans-serif;
+    --mono:    'Share Tech Mono', monospace;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--near-black);
+    border-bottom: 3px solid var(--red);
+    padding: 2rem 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(232,0,28,0.04) 40px,
+      rgba(232,0,28,0.04) 41px
+    );
+  }
+  .band-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: 0.1em;
+    color: var(--red);
+    text-shadow: 0 0 40px rgba(232,0,28,0.4);
+    position: relative;
+  }
+  .phase-label {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--amber);
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+  }
+  .phase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    color: var(--white);
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+  }
+  .header-meta {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--grey);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* SECTION HEADERS */
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.4rem;
+    margin: 3rem 0 1.25rem;
+  }
+  h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+    color: var(--cyan);
+    margin: 2rem 0 0.75rem;
+  }
+  h4 {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 1.25rem 0 0.5rem;
+  }
+
+  p { margin-bottom: 0.75rem; color: var(--light-grey); }
+  strong { color: var(--white); }
+  em { color: var(--amber); font-style: normal; font-weight: 600; }
+
+  /* CALLOUT BOXES */
+  .callout {
+    border-left: 4px solid var(--red);
+    background: rgba(232,0,28,0.07);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout.amber {
+    border-left-color: var(--amber);
+    background: rgba(255,140,0,0.07);
+  }
+  .callout.green {
+    border-left-color: var(--green);
+    background: rgba(0,230,118,0.07);
+  }
+  .callout.cyan {
+    border-left-color: var(--cyan);
+    background: rgba(0,212,255,0.07);
+  }
+  .callout-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.35rem;
+  }
+
+  /* EXIT CRITERIA */
+  .exit-criteria {
+    background: var(--panel);
+    border: 2px solid var(--red);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .exit-criteria h3 {
+    color: var(--red);
+    margin-top: 0;
+    font-size: 1.6rem;
+  }
+  .criteria-list {
+    list-style: none;
+    margin-top: 0.75rem;
+  }
+  .criteria-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--light-grey);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+  }
+  .criteria-list li:last-child { border-bottom: none; }
+  .criteria-list .check {
+    color: var(--red);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* CHORD DIAGRAMS */
+  .chord-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .chord-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+    min-width: 120px;
+  }
+  .chord-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--amber);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+  .chord-diagram {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--light-grey);
+    line-height: 1.5;
+    text-align: left;
+    white-space: pre;
+  }
+  .chord-fingers {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--grey);
+    margin-top: 0.4rem;
+    text-align: left;
+  }
+
+  /* WEEK BLOCKS */
+  .week-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    overflow: hidden;
+  }
+  .week-header {
+    background: var(--dark);
+    border-bottom: 2px solid var(--border);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .week-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--red);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .week-subtitle {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+  .week-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--grey);
+    letter-spacing: 0.2em;
+    margin-left: auto;
+    text-transform: uppercase;
+  }
+  .week-body {
+    padding: 1.25rem;
+  }
+
+  /* SESSION TABLE */
+  .session-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+  .session-table th {
+    background: var(--dark);
+    color: var(--grey);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  .session-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--light-grey);
+    vertical-align: top;
+  }
+  .session-table tr:last-child td { border-bottom: none; }
+  .session-table .time {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--amber);
+    white-space: nowrap;
+    font-size: 0.85rem;
+  }
+  .session-table .exercise-name {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* BPM BADGE */
+  .bpm {
+    display: inline-block;
+    background: rgba(0,212,255,0.12);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-left: 0.3rem;
+  }
+  .bpm.amber {
+    background: rgba(255,140,0,0.12);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .bpm.red {
+    background: rgba(232,0,28,0.12);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .bpm.green {
+    background: rgba(0,230,118,0.12);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* CHECKPOINT */
+  .checkpoint {
+    background: var(--dark);
+    border: 2px solid var(--amber);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+  }
+  .checkpoint-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  /* SETLIST REFERENCE */
+  .setlist-ref {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,230,118,0.08);
+    border: 1px solid rgba(0,230,118,0.3);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    margin: 0.15rem;
+  }
+  .setlist-ref::before { content: '♪'; }
+
+  /* EXERCISE BOX */
+  .exercise {
+    background: var(--dark);
+    border-left: 3px solid var(--cyan);
+    padding: 0.875rem 1rem;
+    margin: 0.75rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .exercise-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--white);
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+  .exercise p { margin-bottom: 0.35rem; font-size: 0.9rem; }
+
+  /* TAB / NOTATION */
+  .tab-block {
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.875rem 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--light-grey);
+    white-space: pre;
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    line-height: 1.6;
+  }
+
+  /* PROGRESS TRACKER */
+  .progress-bar-outer {
+    background: var(--dark);
+    border-radius: 20px;
+    height: 8px;
+    margin: 0.3rem 0 0.8rem;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--red), var(--amber));
+  }
+
+  /* LEVEL BADGE */
+  .level-badge {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    padding: 0.15rem 0.6rem;
+    border-radius: 3px;
+    margin-right: 0.5rem;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 2px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--grey);
+    letter-spacing: 0.15em;
+  }
+
+  ul, ol {
+    margin: 0.5rem 0 0.75rem 1.5rem;
+    color: var(--light-grey);
+  }
+  li { margin-bottom: 0.3rem; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    .chord-grid { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="band-name">!bang!path!</div>
+  <div class="phase-label">▸ PHASE 1 OF 4 &nbsp;|&nbsp; STRUCTURED LEARNING PROGRAM</div>
+  <div class="phase-title">Make the Basics Automatic</div>
+  <div class="header-meta">DURATION: 6–8 WEEKS &nbsp;|&nbsp; TARGET LOAD: 5–10 HRS/WEEK &nbsp;|&nbsp; GATES: NON-NEGOTIABLE</div>
+</header>
+
+<div class="container">
+
+  <!-- ===== OVERVIEW ===== -->
+  <h2>// Overview</h2>
+  <p>You have a bass background, musical literacy, and the right gear. You also have open chords that don't ring cleanly under pressure, a strumming hand that doesn't know it's a rhythm instrument yet, and barre chords that are aspirational at best. Phase 1 fixes all of that. Not "good enough" — <em>automatic</em>.</p>
+  <p>This is eight weeks of unsexy, foundational work. Your Kiesel and your PRS are sitting there looking at you judgmentally. The metronome is going to tell you things you don't want to hear. Listen to it anyway.</p>
+
+  <div class="callout amber">
+    <div class="callout-label">⚠ Ground Rules</div>
+    <strong>The exit criteria are not suggestions.</strong> You don't move to Phase 2 because you hit week 8. You move when you pass the gates. Some people hit them in 6 weeks. Some take 10. The program doesn't care about your feelings — only your accuracy. Track your results honestly.
+  </div>
+
+  <!-- ===== EXIT CRITERIA ===== -->
+  <div class="exit-criteria">
+    <h3>// Phase 1 Exit Gates</h3>
+    <p style="color:var(--grey); font-size:0.85rem; font-family:'Share Tech Mono',monospace;">ALL FIVE MUST BE PASSED. NO PARTIAL CREDIT.</p>
+    <ul class="criteria-list">
+      <li><span class="check">▸</span> Open chord transitions E → A → D → G → C (any order) at <span class="bpm green">80 BPM</span> — no hesitation, rings clean, 2 minutes continuous</li>
+      <li><span class="check">▸</span> Down-up strumming pattern held steady for 2 minutes at <span class="bpm green">80 BPM</span> without drift or collapse</li>
+      <li><span class="check">▸</span> A-shape barre chord rings cleanly — <strong>8 out of 10 attempts</strong> (every string audible, no buzz, no mute)</li>
+      <li><span class="check">▸</span> F-shape (E-shape) barre chord rings cleanly — <strong>6 out of 10 attempts</strong></li>
+      <li><span class="check">▸</span> B string rings clearly on both barre chord shapes — <strong>7 out of 10 attempts</strong> isolated test</li>
+    </ul>
+  </div>
+
+  <!-- ===== GEAR SETUP ===== -->
+  <h2>// Gear Setup for Phase 1</h2>
+  <p>Use the <strong>NUX Mighty</strong> for most practice — you don't need the Katana's volume during exercises. Keep gain low or at zero for chord work. Distortion hides bad technique. You want to hear every dead note.</p>
+
+  <div class="callout cyan">
+    <div class="callout-label">Settings Recommendation</div>
+    <strong>Clean channel, light crunch at most.</strong> If a chord sounds good with high gain, it might still be sloppy. Clean tone is your truth serum. Save the Katana crunch for strumming pattern work in weeks 5–8 where you want to feel the energy.
+  </div>
+
+  <p>Guitar selection: The <strong>Epiphone LP</strong> or <strong>Revstar</strong> for barre chord work — their necks will build real hand strength. The PRS Vela is easier; save it for when you're testing your gate performance, not building the technique. The Kiesel is your reward for passing gates.</p>
+
+  <!-- ===== CHORD DIAGRAMS ===== -->
+  <h2>// Chord Diagrams — Phase 1 Vocabulary</h2>
+  <p>These are your tools for the next 8 weeks. Commit them visually before week 1 starts.</p>
+
+  <h3>Open Chords</h3>
+  <p style="font-size:0.82rem; color:var(--grey); font-family:'Share Tech Mono',monospace;">STRING ORDER: Low E — A — D — G — B — e (thick to thin) | X = mute | O = open | Numbers = fingers</p>
+
+  <div class="chord-grid">
+
+    <div class="chord-box">
+      <div class="chord-name">E Major</div>
+      <div class="chord-diagram">e |--0--|
+B |--0--|
+G |--1--|
+D |--2--|
+A |--2--|
+E |--0--|</div>
+      <div class="chord-fingers">1=G str, 2=A str, 3=D str</div>
+    </div>
+
+    <div class="chord-box">
+      <div class="chord-name">A Major</div>
+      <div class="chord-diagram">e |--0--|
+B |--2--|
+G |--2--|
+D |--2--|
+A |--0--|
+E |--X--|</div>
+      <div class="chord-fingers">1=D,2=G,3=B (or 1 bar D-G-B)</div>
+    </div>
+
+    <div class="chord-box">
+      <div class="chord-name">D Major</div>
+      <div class="chord-diagram">e |--2--|
+B |--3--|
+G |--2--|
+D |--0--|
+A |--X--|
+E |--X--|</div>
+      <div class="chord-fingers">1=G str, 2=e str, 3=B str</div>
+    </div>
+
+    <div class="chord-box">
+      <div class="chord-name">G Major</div>
+      <div class="chord-diagram">e |--3--|
+B |--3--|
+G |--0--|
+D |--0--|
+A |--2--|
+E |--3--|</div>
+      <div class="chord-fingers">2=A str, 3=low E, 4=B, pinky=e</div>
+    </div>
+
+    <div class="chord-box">
+      <div class="chord-name">C Major</div>
+      <div class="chord-diagram">e |--0--|
+B |--1--|
+G |--0--|
+D |--2--|
+A |--3--|
+E |--X--|</div>
+      <div class="chord-fingers">1=B str, 2=D str, 3=A str</div>
+    </div>
+
+    <div class="chord-box">
+      <div class="chord-name">Em</div>
+      <div class="chord-diagram">e |--0--|
+B |--0--|
+G |--0--|
+D |--2--|
+A |--2--|
+E |--0--|</div>
+      <div class="chord-fingers">1=A str, 2=D str</div>
+    </div>
+
+    <div class="chord-box">
+      <div class="chord-name">Am</div>
+      <div class="chord-diagram">e |--0--|
+B |--1--|
+G |--2--|
+D |--2--|
+A |--0--|
+E |--X--|</div>
+      <div class="chord-fingers">1=B str, 2=G str, 3=D str</div>
+    </div>
+
+  </div>
+
+  <h3>Barre Chords</h3>
+  <p>These use moveable shapes. Learn the shape, then move it up and down the neck. The fret number is your root position.</p>
+
+  <div class="chord-grid">
+
+    <div class="chord-box" style="min-width:160px;">
+      <div class="chord-name">A-Shape Barre</div>
+      <div class="chord-diagram">e |--X or bar--|
+B |---fret+2---|
+G |---fret+2---|
+D |---fret+2---|
+A |---ROOT fret-|
+E |---X---------|</div>
+      <div class="chord-fingers">Index bars A string at root fret. Fingers 2,3,4 fret D,G,B two frets up. Or use ring finger mini-barre on D,G,B.</div>
+    </div>
+
+    <div class="chord-box" style="min-width:160px;">
+      <div class="chord-name">F-Shape Barre (E-shape)</div>
+      <div class="chord-diagram">e |---full bar---|
+B |---full bar---|
+G |---full bar---|
+D |---full bar---|
+A |---full bar---|
+E |---ROOT fret--|</div>
+      <div class="chord-fingers">Index full-bars all 6 strings at fret. Middle=A str+1, Ring=D str+2, Pinky=G str+2. This is the beast.</div>
+    </div>
+
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">On the F-Shape</div>
+    Your B string is failing because your index finger is bending away from the fret. The fix: <strong>rotate your index finger slightly</strong> so the bony side (not the pad) contacts the B string. Your finger has a natural arch — you are fighting gravity and anatomy when you use the pad. Stop. The bony edge is flat. Use it.
+  </div>
+
+  <h3>Barre Chord Root Note Logic</h3>
+  <p>The A-shape: your root note is on the <strong>A string</strong>. The F-shape: your root is on the <strong>low E string</strong>. That's all you need to know to move chords around the neck. Memorize the notes on those two strings over time — for now, here are the ones you'll actually use:</p>
+
+  <div class="tab-block">A string frets (A-shape root):
+Fret 2 = B    Fret 3 = C    Fret 5 = D    Fret 7 = E
+Fret 8 = F    Fret 9 = F#   Fret 10 = G
+
+Low E string frets (F-shape root):
+Fret 1 = F    Fret 2 = F#   Fret 3 = G    Fret 5 = A
+Fret 7 = B    Fret 8 = C    Fret 9 = C#   Fret 10 = D</div>
+
+  <!-- ===== CORE EXERCISES ===== -->
+  <h2>// Core Exercise Library</h2>
+  <p>These exercises are the building blocks. Each week's schedule references them by name. Learn them now so the weekly schedule reads cleanly.</p>
+
+  <h3>Chord Transition Exercises</h3>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-1: The One-Minute Changes</div>
+    <p><strong>Purpose:</strong> Build chord switching speed through volume of reps, not thought.</p>
+    <p><strong>How:</strong> Set metronome to <span class="bpm">50 BPM</span>. Pick two chords. Switch on every beat — not every bar, every beat. One chord per click. Count how many clean switches you make in 60 seconds. Write it down. Compete with your previous number.</p>
+    <p><strong>Start with:</strong> E → A. Then A → D. Then D → G. Then G → C. Then C → E. Then randomize.</p>
+    <p><strong>Advancement:</strong> When you hit 30+ clean switches per minute at 50 BPM, bump to 60 BPM. Gate is 30 clean at 60 BPM before moving on.</p>
+    <div class="setlist-ref">In a Big Country — open chord cavalry charge, E/A/D transitions everywhere</div>
+    <div class="setlist-ref">The Whole of the Moon — G and C will be your workhorses</div>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-2: Chord Hold + Lift</div>
+    <p><strong>Purpose:</strong> Fix dead notes by training all fingers to land simultaneously, not sequentially.</p>
+    <p><strong>How:</strong> Form a chord slowly. Lift ALL fingers about 1cm off the strings, keeping the shape. Land them all at once. Strum. If any string buzzes or mutes, lift and retry. No metronome — this is about precision, not speed. 5–10 minutes.</p>
+    <p><strong>Targets:</strong> G Major (finger spread), C Major (finger stack), F-shape barre (full commitment).</p>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-3: Pivot Finger Transitions</div>
+    <p><strong>Purpose:</strong> Find the finger that doesn't need to move between chords and anchor it.</p>
+    <p><strong>How:</strong> Identify the shared note/position between chord pairs. Keep that finger planted, move only the fingers that need to change. This cuts transition time in half.</p>
+    <p><strong>Key pivots:</strong></p>
+    <ul>
+      <li>E → Am: index stays on 1st fret F note... wait, E to Am has no pivot. This is the hard one. Just rep it.</li>
+      <li>C → Am: fingers 2 and 3 stay. Only index moves.</li>
+      <li>G → Em: fingers 3 and 4 stay on high strings (4-finger G voicing) — both chord shapes share those notes.</li>
+      <li>A → D: no direct pivot, but D string stays open. Use it as a reference.</li>
+    </ul>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-4: Spider Crawl (Fretting Hand Independence)</div>
+    <p><strong>Purpose:</strong> Build finger independence and calluses simultaneously.</p>
+    <p><strong>How:</strong> Chromatic crawl, one finger per fret. Frets 5–8 on all strings, ascending and descending. Not musical. Purely mechanical. Use with metronome at <span class="bpm">60 BPM</span>, one note per click. Keep all fingers hovering close to strings.</p>
+    <p><strong>Duration:</strong> 5 minutes max. This is warm-up, not the main event.</p>
+  </div>
+
+  <h3>Strumming Hand Exercises</h3>
+
+  <div class="callout cyan">
+    <div class="callout-label">Bass Player Translation</div>
+    Your bass brain tracks the beat from the <em>downstroke</em>. In strumming, you need to internalize that <em>both</em> the downstroke AND upstroke carry rhythmic weight. The upstroke is the "and." You already know "1 and 2 and 3 and 4 and" — you just haven't trained your right arm to live inside that grid. That's the gap. These exercises close it.
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-5: Air Strum First</div>
+    <p><strong>Purpose:</strong> Decouple the strumming pattern from chord anxiety. Train the arm alone.</p>
+    <p><strong>How:</strong> Set metronome to <span class="bpm">60 BPM</span>. Do not touch the guitar. Strum the air in front of you. Down on every beat. Feel the arm move from the elbow, wrist loose. After 2 minutes, add upstrokes on the "and." Another 2 minutes. Your arm should feel like a pendulum — down-up is one continuous motion, not two separate gestures.</p>
+    <p><strong>Key insight:</strong> The arm never fully stops. Even when you skip a strum, the arm keeps moving. You just miss the strings intentionally.</p>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-6: The Open E Drone</div>
+    <p><strong>Purpose:</strong> Anchor the strumming hand without chord-change cognitive load.</p>
+    <p><strong>How:</strong> Mute all strings with your fretting hand (lightly rest fingers across strings, don't press). Strum freely. Set metronome to <span class="bpm">60 BPM</span>. Play: D D D D (all downstrokes) for 2 minutes. Then D-U D-U D-U D-U for 2 minutes. Then D-D-U-D-U for 2 minutes (the "money strum"). No chord changes. Just the arm. Track drift.</p>
+    <div class="setlist-ref">This Corrosion — Sisters of Mercy: relentless 8th note strumming is the core engine of this song</div>
+    <div class="setlist-ref">Shout — Tears for Fears: driving down-up pulse</div>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-7: The Money Strum Pattern</div>
+    <p><strong>Purpose:</strong> The single most useful strumming pattern in rhythm guitar for this genre.</p>
+    <div class="tab-block">Pattern (1 bar of 4/4):
+Beat:   1    +    2    +    3    +    4    +
+Strum:  D         D    U         U    D    U
+        ↓         ↓    ↑         ↑    ↓    ↑
+
+Read as: Down, [miss], Down-Up, [miss]-Up, Down-Up</div>
+    <p><strong>How:</strong> Learn it at <span class="bpm">50 BPM</span> on muted strings. When it's automatic, add one open chord. When that's clean, add chord changes. The pattern comes first — always.</p>
+    <div class="setlist-ref">Tainted Love — this pattern variant drives the 8th-note grid of the original</div>
+    <div class="setlist-ref">True Faith — New Order: mechanically regular strumming is intentional</div>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-8: Metronome Displacement Drill</div>
+    <p><strong>Purpose:</strong> Steel your internal pulse against metronome anxiety. If you tighten up near a click, you're following it. You should be generating the beat — the metronome just checks you.</p>
+    <p><strong>How:</strong> Set to <span class="bpm">60 BPM</span>. Play 4 bars of steady down-strokes on an open chord. Then turn off the metronome mid-pattern. Keep going for 8 bars. Turn it back on. Did you drift? This is your honest score.</p>
+  </div>
+
+  <h3>Barre Chord Exercises</h3>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-9: A-Shape Approach — Fret 5 First</div>
+    <p><strong>Purpose:</strong> Build the A-shape barre on the easiest fret before moving toward the dreaded low positions.</p>
+    <p><strong>How:</strong> Start your A-shape barre at fret 5 (D major barre). The tension is lower here. Press, strum all strings slowly, pluck each string individually. Identify dead notes. Adjust. Move to fret 3 (C barre) when fret 5 is clean. Move to fret 2 (B barre) when fret 3 is clean. Week 5 target: fret 2 clean on demand.</p>
+    <p><strong>Ring finger mini-barre option:</strong> For the A-shape, some players barre the D, G, and B strings with the ring finger instead of using three separate fingers. Try both. Use whatever rings cleanest for you — consistency beats orthodoxy.</p>
+    <div class="setlist-ref">Last Night I Dreamt — The Smiths: barre chord shapes are central to Johnny Marr's approach</div>
+    <div class="setlist-ref">Broken Wings — Mr. Mister: A-shape barre chord progressions throughout</div>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-10: The B-String Isolation Test</div>
+    <p><strong>Purpose:</strong> The B string is the tell. If it buzzes or mutes, your index finger is arching. This test makes it impossible to hide.</p>
+    <p><strong>How:</strong> Form your barre chord. Pluck ONLY the B string. Does it ring clearly? Adjust finger position micro-incrementally — roll slightly toward the bony ridge of your index finger. Pluck again. Repeat. Do this 10 times. Record your success rate. Gate: 7 out of 10.</p>
+    <p><strong>Why it's hard:</strong> The B string sits in the natural arch of your index finger. It requires active compensation — slight inward rotation of the index, thumb positioned directly behind the middle finger on the back of the neck, no death grip.</p>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-11: Barre Chord Pump</div>
+    <p><strong>Purpose:</strong> Build the hand strength needed to hold barre chords without fatigue collapse.</p>
+    <p><strong>How:</strong> Form A-shape barre at fret 5. Hold for 5 seconds. Release completely (open your hand, let the blood flow). Re-form. Strum. Release. Repeat 10 times. This is strength training, not speed training. Do NOT push through pain. Stop if your forearm cramps badly.</p>
+    <p><strong>Callus note:</strong> This and EX-9 will accelerate callus development on your index finger's side edge — exactly where you need it.</p>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-title">EX-12: Barre to Open Transitions</div>
+    <p><strong>Purpose:</strong> The real setlist challenge is moving between barre chords AND open chords in the same progression.</p>
+    <p><strong>How:</strong> Open E → A-shape barre at fret 5 (D). Back to open E. Slow. <span class="bpm">40 BPM</span>, one chord per bar. Increase speed when each transition is clean. Also: open A → F-shape barre at fret 3 (G barre) → open D.</p>
+    <div class="setlist-ref">Under the Milky Way — The Church: mix of open and barre chords in progression</div>
+  </div>
+
+  <!-- ===== WEEKLY SCHEDULE ===== -->
+  <h2>// Weekly Schedule — 8 Weeks</h2>
+
+  <div class="callout amber">
+    <div class="callout-label">How to Read the Schedule</div>
+    Each week has a <strong>focus</strong> and a <strong>daily session template</strong>. The template applies to your weekday evenings (assume 45–60 min sessions). On your longer sessions (weekend), extend any block by 50% and add the bonus exercise. Times are in minutes.
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W1</div>
+      <div class="week-subtitle">Contact, Calibration, and Zero Bullshit Baseline</div>
+      <div class="week-tag"><span class="bpm amber">40–50 BPM</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> Establish exactly where you are. No ego, no rushing. The metronome is a diagnostic tool this week, not a taskmaster.</p>
+      <p><strong>Goals:</strong> Form all 5 open chords. Hold each for 10 seconds without buzz. Begin EX-1 and record your baseline switch counts. Play EX-5 (air strum) until your arm is a pendulum.</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-4 Spider Crawl</span></td><td>Warm-up only. Slow. Deliberate.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-2 Chord Hold + Lift</span></td><td>All 5 open chords. No rush.</td></tr>
+          <tr><td class="time">15 min</td><td><span class="exercise-name">EX-1 One-Minute Changes</span></td><td>E↔A, A↔D, D↔G, G↔C at 40 BPM. Record counts.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-5 Air Strum</span></td><td>No guitar. Down-strokes only. Feel the pendulum.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-6 Open E Drone</span></td><td>Muted strings. Down-strokes at 50 BPM.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">Free play</span></td><td>No metronome. Play through the open chords. Just listen.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <div class="callout-label">Week 1 Baseline Test — Do on Day 7</div>
+        Run EX-1 for all chord pairs. Write your switch counts. This is your actual starting point. Be honest. No one is watching.
+      </div>
+
+      <p><strong>Callus note:</strong> By day 5 your fingertips will feel tender. Normal. Play to the edge of discomfort, not through real pain. An hour max. If skin breaks, take a day off.</p>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W2</div>
+      <div class="week-subtitle">Strumming Hand Awakening</div>
+      <div class="week-tag"><span class="bpm amber">50–60 BPM</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> The right hand is a rhythm instrument. Train it like one. This week is almost entirely strumming hand development — the left hand does maintenance only.</p>
+      <p><strong>Goals:</strong> Internalize down-up strumming as a physical loop. Introduce EX-7 (Money Strum) on muted strings. Begin EX-8 (Displacement Drill) to test your independence from the metronome click.</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-4 Spider Crawl</span></td><td>Warm-up.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-1 One-Minute Changes</span></td><td>Left hand maintenance. E↔A, C↔G. Record counts.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-5 Air Strum</span></td><td>Down-up at 60 BPM. The "and" must be as natural as the downbeat.</td></tr>
+          <tr><td class="time">15 min</td><td><span class="exercise-name">EX-6 Drone + EX-7 Money Strum</span></td><td>Muted strings, 50 BPM. Learn the money strum pattern. Slow is correct.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-1 with strumming</span></td><td>Down-strum only on chord changes. E→A→D→G→C. 1 chord per bar.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-8 Displacement Drill</span></td><td>4 bars on, 4 bars off metronome. Measure your drift.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout green">
+        <div class="callout-label">Week 2 Win Condition</div>
+        The money strum pattern (EX-7) is in your arm, not your head, on muted strings at 50 BPM. You shouldn't have to think about it. If you're thinking, it's not there yet. Keep going.
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W3</div>
+      <div class="week-subtitle">Chords + Strumming: The Collision</div>
+      <div class="week-tag"><span class="bpm amber">50–65 BPM</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> Combine the two skills for the first time under metronome pressure. This is where most people stall — chord changes and strumming patterns are two separate learned skills that suddenly need to cooperate. Expect it to feel broken. That's correct.</p>
+      <p><strong>Goals:</strong> Down-strum only through all 5 open chord changes at 60 BPM. Introduce EX-3 (Pivot Fingers). Begin EX-9 (A-shape barre at fret 5).</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-4 + EX-5</span></td><td>Spider crawl, then air strum. Warm both hands.</td></tr>
+          <tr><td class="time">15 min</td><td><span class="exercise-name">EX-1 + simple strum</span></td><td>All 5 open chords, down-strum only, 60 BPM. One chord per beat. Track drift.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-3 Pivot Fingers</span></td><td>C↔Am, G↔Em. Find and use the pivot. Record clean transitions.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-9 A-Shape at Fret 5</span></td><td>D barre. Hold, pluck each string. Adjust. 10 reps.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-11 Barre Pump</span></td><td>A-shape at fret 5. 10 pump reps. Open hand between each.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="checkpoint">
+        <div class="checkpoint-label">⚑ Week 3 Checkpoint</div>
+        <strong>Can you play E → A → D → G → C → E with a steady down-strum at 60 BPM for 2 minutes without the pattern collapsing on the change?</strong> If yes, proceed. If no, repeat this week's session structure before advancing. This is the foundation. Do not skip it.
+      </div>
+
+      <div class="callout amber">
+        <div class="callout-label">Callus Update</div>
+        By week 3 your calluses should be forming noticeably. The A-shape barre at fret 5 will test the side of your index finger. This is exactly where you need the callus to build. Don't avoid the discomfort — manage it. If the skin is cracking, use a small amount of plain hand cream (not the fingers you play with) and take a rest day.
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W4</div>
+      <div class="week-subtitle">Speed, Pattern, and the A-Shape Gate</div>
+      <div class="week-tag"><span class="bpm amber">65–75 BPM</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> Push open chord switches toward the 80 BPM gate. Introduce the full money strum on open chords. Lock in the A-shape barre — this week is when you take it to fret 3 and start the B-string isolation test.</p>
+      <p><strong>Goals:</strong> Open chords at 70 BPM with down-up strumming. A-shape barre at fret 3 ringing clean. EX-10 (B-String Test) baseline recorded.</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-4 + EX-5</span></td><td>Warm-up. Up the air strum to money strum pattern.</td></tr>
+          <tr><td class="time">15 min</td><td><span class="exercise-name">EX-1 + Money Strum</span></td><td>All 5 open chords. Full money strum. 65–70 BPM. Two minutes per chord pair.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-9 A-shape at Fret 3</span></td><td>C barre. Every string plucked individually. Adjust until clean.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-10 B-String Isolation</span></td><td>A-shape at fret 5 and 3. 10 attempts each. Record your score.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-12 Barre to Open</span></td><td>Open E → barre D (fret 5) → open E. 50 BPM. Slow and clean.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-8 Displacement</span></td><td>Drift check. Are you generating the beat or chasing the click?</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <div class="callout-label">Mid-Program Reality Check</div>
+        At week 4, the average student has: open chord switches getting cleaner but still hesitating on G, the money strum working on single chords but breaking on transitions, and the A-shape barre at fret 5 clean but fret 3 still buzzing occasionally. <strong>That's fine. That's exactly where you should be.</strong> If you're ahead, push BPM harder. If you're behind, do not advance the exercise — just add more reps at the current difficulty.
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 5 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W5</div>
+      <div class="week-subtitle">Introduce the F-Shape. Fear It. Do It Anyway.</div>
+      <div class="week-tag"><span class="bpm amber">70–75 BPM</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> The F-shape barre (E-shape) enters the rotation. It is harder. It requires more index pressure, a different hand angle, and the B string will immediately lie to you. Start high on the neck (fret 7–9) where tension is lower. Do not try F major at fret 1 this week.</p>
+      <p><strong>Goals:</strong> F-shape at fret 5 ringing on 4 out of 10 attempts. Open chord gates at 75 BPM. A-shape at fret 2 (B chord) attempted.</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-4 + EX-5</span></td><td>Standard warm-up.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-1 + Full Strum</span></td><td>Open chords, money strum, 75 BPM. This should be starting to feel automatic.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">F-Shape Introduction</span></td><td>Fret 7 (B barre, E-shape). EX-2 style: hold, pluck each string, identify dead notes. 10 reps. No metronome.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-10 B-String Test</span></td><td>Both barre shapes. Are you improving? Compare to week 4 score.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-9 A-shape at Fret 2</span></td><td>B major barre. The hardest A-shape position. Just form it and hold. Clean 5 out of 10.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-11 Barre Pump</span></td><td>F-shape at fret 5. Strength, not speed.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout cyan">
+        <div class="callout-label">F-Shape Index Finger Technique — Read This</div>
+        <strong>Three adjustments that actually work:</strong><br>
+        1. <strong>Move your index finger closer to the fret wire</strong> — not on top of it, but very close. Distance = pressure required = buzz.<br>
+        2. <strong>Rotate slightly toward the bony side.</strong> Feel the difference between your index pad and the ridge toward the thumb side. The ridge is flatter. Use it.<br>
+        3. <strong>Drop your elbow away from your body.</strong> This angles your wrist so the index can press more flat. Try it right now before continuing.
+      </div>
+
+      <div class="setlist-ref">Last Night I Dreamt — The Smiths: F-shape style barre movements underpin Johnny Marr's chord work</div>
+    </div>
+  </div>
+
+  <!-- WEEK 6 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W6</div>
+      <div class="week-subtitle">Gate Approach: Open Chords at 80 BPM</div>
+      <div class="week-tag"><span class="bpm red">TARGET: 80 BPM</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> The open chord gate is 80 BPM, no hesitation, two minutes. This is the week you attempt it. It may not happen yet. That's fine. The attempt is the training.</p>
+      <p><strong>Goals:</strong> Open chords at 80 BPM for 60 consecutive seconds. F-shape at fret 5 ringing 5 out of 10. Strumming at 80 BPM without drift for 2 minutes (this one should be closeable this week).</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">Warm-up</span></td><td>EX-4 at 80 BPM. Your fingers should feel fast now.</td></tr>
+          <tr><td class="time">20 min</td><td><span class="exercise-name">Gate Attempt — Open Chords</span></td><td>Money strum, all 5 chords, 80 BPM. 2 minutes continuous. Record result: did you make it? Where did it break?</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">Gate Attempt — Strum Drift</span></td><td>Money strum, 80 BPM, single open chord, 2 minutes. No drift. This is closeable this week.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">F-Shape at Fret 3</span></td><td>G major, E-shape barre. 10 attempts. Score it.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-10 B-String</span></td><td>Both shapes. Score it. You need 7/10.</td></tr>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-12 Barre to Open</span></td><td>Add the F-shape into your transition work. Open E → F-shape G barre → open A.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="checkpoint">
+        <div class="checkpoint-label">⚑ Week 6 Checkpoint — Strumming Gate</div>
+        <strong>GATE 2 — Strumming:</strong> Money strum or steady 8th note pattern, 80 BPM, 2 minutes, no drift. If you pass this: record it in your log as closed. You don't need to retest it — it's done. Move strumming practice time to barre chords next week.
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 7 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W7</div>
+      <div class="week-subtitle">Barre Chord Consolidation and Gate Hunting</div>
+      <div class="week-tag"><span class="bpm red">80 BPM ALL EXERCISES</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> Everything at gate speed now. Barre chord work is primary. The F-shape needs to hit 6/10 clean by end of this week. The A-shape needs to hit 8/10.</p>
+      <p><strong>Goals:</strong> A-shape 8/10 at fret 5, 7, and 3. F-shape 6/10 at fret 5. B-string 7/10 on both shapes. Open chord gate closed if not already.</p>
+
+      <table class="session-table">
+        <thead><tr><th>Minutes</th><th>Exercise</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="time">5 min</td><td><span class="exercise-name">EX-4 Warm-up</span></td><td>Fast. Clean. Fingers are callused now — use them.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">Open Chord Gate Confirmation</span></td><td>If not yet passed: focused 10-minute attempt. If passed: 5-minute maintenance only.</td></tr>
+          <tr><td class="time">15 min</td><td><span class="exercise-name">A-Shape Barre — Gate Test</span></td><td>10 attempts at frets 5, 3, and 2. Score each set. Need 8/10 at fret 5 minimum.</td></tr>
+          <tr><td class="time">15 min</td><td><span class="exercise-name">F-Shape Barre — Gate Approach</span></td><td>10 attempts at fret 5 (A barre). Score it. Need 6/10. Pluck each string individually — don't hide behind full strums.</td></tr>
+          <tr><td class="time">10 min</td><td><span class="exercise-name">EX-10 B-String Isolation</span></td><td>Both shapes. Need 7/10. This is your hardest gate — give it time.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout green">
+        <div class="callout-label">What Passing Feels Like</div>
+        When the A-shape gate is real, you'll know. The chord rings without effort. You're not thinking about the index finger position — it just goes there. When you have to think about it, it's not automatic yet. When you stop thinking about it, it is. That's the actual measurement.
+      </div>
+
+      <div class="setlist-ref">Suburbia — Pet Shop Boys: synth-driven, but the metal arrangement needs locked-in barre chord power chords derived from the A and F shapes</div>
+      <div class="setlist-ref">Into the Groove — Madonna: driving rhythm, consistent chord voicing holds everything together</div>
+    </div>
+  </div>
+
+  <!-- WEEK 8 -->
+  <div class="week-block">
+    <div class="week-header">
+      <div class="week-number">W8</div>
+      <div class="week-subtitle">Gate Closure Week. All or Nothing.</div>
+      <div class="week-tag"><span class="bpm red">EXIT CRITERIA: ALL 5 GATES</span></div>
+    </div>
+    <div class="week-body">
+      <p><strong>Focus:</strong> This is not a new content week. This is the week you close open gates and formally test all exit criteria. If you still have open gates, diagnose specifically what's failing and address only that.</p>
+
+      <h4>Final Gate Testing Protocol</h4>
+      <p>Run this full test on Day 1 of week 8 and Day 7 of week 8. If you pass both, you're done. If you pass one but not the other, you need one more week.</p>
+
+      <table class="session-table">
+        <thead><tr><th>Gate</th><th>Test Method</th><th>Pass / Fail</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Open Chord Transitions</strong></td>
+            <td>Metronome at 80 BPM. Money strum. All 5 open chords in sequence (E→A→D→G→C→E), repeat continuously for 2 minutes. Zero hesitation on changes. Every strum rings clean.</td>
+            <td class="time">___/___</td>
+          </tr>
+          <tr>
+            <td><strong>Strumming Drift</strong></td>
+            <td>Open A chord. Money strum, 80 BPM. Run 2 full minutes with metronome. Then run 1 minute without. Turn it back on. Did you drift? Pass = no drift.</td>
+            <td class="time">___/___</td>
+          </tr>
+          <tr>
+            <td><strong>A-Shape Barre 8/10</strong></td>
+            <td>10 attempts, fret 5, no rush. Pluck each string individually after forming chord. Count clean rings (all strings audible, no buzz). Need 8.</td>
+            <td class="time">___/10</td>
+          </tr>
+          <tr>
+            <td><strong>F-Shape Barre 6/10</strong></td>
+            <td>10 attempts, fret 5, no rush. Same test. Need 6.</td>
+            <td class="time">___/10</td>
+          </tr>
+          <tr>
+            <td><strong>B-String Isolation 7/10</strong></td>
+            <td>Form either barre shape. Pluck ONLY the B string. 10 attempts each shape. Score separately. Need 7 on both.</td>
+            <td class="time">___/10 &nbsp; ___/10</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <div class="callout-label">If You Have Unresolved Gates at End of Week 8</div>
+        This is not failure — it's the gate working correctly. Add a bonus week 9 with 100% of practice time on the unclosed gate. One specific drill, targeted daily. Do not spread across all exercises. Fix the specific failure. Common extensions:<br>
+        <strong>Open chords hesitating:</strong> More EX-1. Drop BPM to 70, do 5 minutes of pure switches, then bump to 80 for 2-minute run.<br>
+        <strong>F-shape under 6/10:</strong> Stay at fret 7 another week. Move down only when 8/10 at current fret.<br>
+        <strong>B-string:</strong> Rotate your index finger. Every. Single. Time.
+      </div>
+
+      <div class="callout green">
+        <div class="callout-label">✓ Phase 1 Complete — What You've Built</div>
+        Five open chords that switch without thought. A strumming arm that generates rhythm rather than following it. An A-shape barre chord that's reliable. An F-shape barre that's functional. A B-string that has stopped being your enemy. This is not exciting music — it's the infrastructure that makes exciting music possible. Phase 2 is where the setlist gets involved. You're not there yet. You will be.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROGRESS LOG ===== -->
+  <h2>// Suggested Progress Log Format</h2>
+  <p>Keep a simple log. This is not journaling — it's data. One line per session.</p>
+
+  <div class="tab-block">DATE | BPM | EXERCISE | SCORE | NOTES
+--------------------------------------------
+2025-01-06 | 50  | EX-1 E↔A | 22/min | hesitating on A
+2025-01-06 | 50  | EX-6 Drone | pass  | clean 2 min
+2025-01-07 | 50  | EX-9 Fret5 | 6/10  | B string buzzing
+...</div>
+
+  <p>Review your log at the start of each week. Progress should be visible. If it's not visible over a two-week window, something is wrong with your technique — get a video of your hands and look at it critically.</p>
+
+  <!-- ===== WHAT TO DO WHEN IT'S NOT WORKING ===== -->
+  <h2>// Troubleshooting: When It's Broken</h2>
+
+  <h3>Chords Buzzing Randomly</h3>
+  <p>Root cause: fingers not pressing close enough to the fret wire, or adjacent finger touching the string above it. Check: press each string individually after forming the chord. Identify the specific string. Then look at which finger is causing it — it may not be the finger fretting that string.</p>
+
+  <h3>Transitions Breaking at Speed</h3>
+  <p>Root cause: you're thinking about where the fingers go instead of having them memorized physically. Solution: slow down to where it's clean. Not "slightly slower" — <em>dramatically</em> slower. Half speed. Build up again. Speed is the result of accuracy, not the training method.</p>
+
+  <h3>Strumming Arm Tensing Up</h3>
+  <p>Root cause: you're gripping the pick too hard. The pick should feel almost loose. Tension travels up the arm. Shake your arm out, consciously loosen your grip, and re-approach the exercise. Most strumming problems are tension problems.</p>
+
+  <h3>Barre Chord Fatigue Collapse</h3>
+  <p>Root cause: death grip. You don't need as much pressure as you think — you need <em>precise</em> pressure in the right place. Try pressing with 60% of your maximum force. If it buzzes, adjust position before increasing force. Strength builds over weeks; technique is immediate.</p>
+
+  <h3>Progress Stalling in Week 5–6</h3>
+  <p>This is the normal plateau. The brain has automated the easy patterns and is now fighting to hold them under increased demand. It's not regression — it's consolidation. Keep the sessions shorter and more focused. Drop to one exercise per session if needed. Quality beats quantity here.</p>
+
+  <!-- ===== SETLIST CONTEXT ===== -->
+  <h2>// Setlist Context — Phase 1 Relevance</h2>
+  <p>You don't play any of these yet. But here's why what you're building matters for each of them:</p>
+
+  <table class="session-table">
+    <thead><tr><th>Song</th><th>Phase 1 Skill Being Built</th></tr></thead>
+    <tbody>
+      <tr><td><strong>This Corrosion</strong> — Sisters of Mercy</td><td>Relentless 8th-note strumming endurance. EX-6 and EX-7 directly.</td></tr>
+      <tr><td><strong>Tainted Love</strong> — Soft Cell</td><td>Rhythmic precision, locked-in down-up grid, clean open chord ringing.</td></tr>
+      <tr><td><strong>In a Big Country</strong> — Big Country</td><td>Open chord E/A/D transitions at pace. The cavalry charge is this exercise, played fast.</td></tr>
+      <tr><td><strong>Into the Groove</strong> — Madonna</td><td>Driving steady strumming on barre chord positions.</td></tr>
+      <tr><td><strong>True Faith</strong> — New Order</td><td>Mechanical rhythmic regularity. The feel you're building in EX-7 and EX-8.</td></tr>
+      <tr><td><strong>Last Night I Dreamt</strong> — The Smiths</td><td>Barre chord vocabulary and clean chord voicing. Your EX-9/10/11 work.</td></tr>
+      <tr><td><strong>Shout</strong> — Tears for Fears</td><td>Strumming endurance and consistent rhythm across long sections.</td></tr>
+      <tr><td><strong>The Whole of the Moon</strong> — Waterboys</td><td>Open chord progression fluency, G and C in particular.</td></tr>
+      <tr><td><strong>Under the Milky Way</strong> — The Church</td><td>Mixed open and barre chord movement. EX-12 is your prep for this.</td></tr>
+      <tr><td><strong>Everyday Is Like Sunday</strong> — Morrissey</td><td>Clean, measured chord playing. No slop allowed on this one.</td></tr>
+      <tr><td><strong>Broken Wings</strong> — Mr. Mister</td><td>A-shape barre chord progressions. Your encore depends on this gate.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===== FINAL NOTE ===== -->
+  <h2>// Final Note</h2>
+  <p>Phase 1 is boring. That's the point. The things that become automatic aren't the ones you practiced excitedly — they're the ones you practiced boringly and consistently until they stopped requiring attention.</p>
+  <p>Your bass background is an asset for pulse and subdivision. It's not an asset for your fretting hand, your strumming arm, or your calluses. Those you're building from scratch regardless of prior history. The metronome doesn't care what you played in college. Neither do the exit gates.</p>
+  <p>Close the gates. Then we talk about Phase 2.</p>
+
+  <div class="callout amber">
+    <div class="callout-label">TL;DR</div>
+    Eight weeks. Five gates. All non-negotiable. Week 1–2: calibrate and train the strumming arm. Week 3–4: combine chords and strumming under metronome. Week 5–6: introduce F-shape barre, push toward 80 BPM. Week 7–8: gate closure. The setlist waits. Close the gates first.
+  </div>
+
+</div>
+
+<footer>
+  !bang!path! — Phase 1 Training Program &nbsp;|&nbsp; Built for a specific human with a specific goal &nbsp;|&nbsp; Revision when gates close
+</footer>
+
+</body>
+</html>
